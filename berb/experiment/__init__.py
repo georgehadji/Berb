@@ -16,6 +16,15 @@ from berb.experiment.progress import (
     ExperimentReport,
     run_structured_experiment,
 )
+from berb.experiment.auto_debugger import (
+    AutomatedDebugger,
+    ErrorCategory,
+    ErrorSeverity,
+    ErrorDiagnosis,
+    FixSuggestion,
+    DebugResult,
+    auto_debug,
+)
 
 __all__ = [
     "ExperimentSandbox",
@@ -30,4 +39,11 @@ __all__ = [
     "StageResult",
     "ExperimentReport",
     "run_structured_experiment",
+    "AutomatedDebugger",
+    "ErrorCategory",
+    "ErrorSeverity",
+    "ErrorDiagnosis",
+    "FixSuggestion",
+    "DebugResult",
+    "auto_debug",
 ]
