@@ -1,4 +1,4 @@
-"""ResearchClaw config loading and validation."""
+"""Berb config loading and validation."""
 
 from __future__ import annotations
 
@@ -62,7 +62,7 @@ def _safe_float(val: Any, default: float) -> float:
         return default
 
 
-EXAMPLE_CONFIG = "config.researchclaw.example.yaml"
+EXAMPLE_CONFIG = "config.berb.example.yaml"
 
 
 def resolve_config_path(explicit: str | None) -> Path | None:
@@ -182,7 +182,7 @@ class AcpConfig:
     agent: str = "claude"
     cwd: str = "."
     acpx_command: str = ""
-    session_name: str = "researchclaw"
+    session_name: str = "berb"
     timeout_sec: int = 1800
 
 
@@ -230,11 +230,11 @@ class SshRemoteConfig:
     port: int = 22
     key_path: str = ""
     gpu_ids: tuple[int, ...] = ()
-    remote_workdir: str = "/tmp/researchclaw_experiments"
+    remote_workdir: str = "/tmp/berb_experiments"
     remote_python: str = "python3"
     setup_commands: tuple[str, ...] = ()
     use_docker: bool = False
-    docker_image: str = "researchclaw/experiment:latest"
+    docker_image: str = "berb/experiment:latest"
     docker_network_policy: str = "none"
     docker_memory_limit_mb: int = 8192
     docker_shm_size_mb: int = 2048
@@ -247,7 +247,7 @@ class SshRemoteConfig:
 class ColabDriveConfig:
     """Configuration for Google Drive-based async Colab execution."""
 
-    drive_root: str = ""  # local mount path, e.g. ~/Google Drive/MyDrive/researchclaw
+    drive_root: str = ""  # local mount path, e.g. ~/Google Drive/MyDrive/berb
     poll_interval_sec: int = 30
     timeout_sec: int = 3600
     setup_script: str = ""  # commands to run before experiment, written to setup.sh
@@ -257,7 +257,7 @@ class ColabDriveConfig:
 class DockerSandboxConfig:
     """Configuration for Docker-based experiment sandbox."""
 
-    image: str = "researchclaw/experiment:latest"
+    image: str = "berb/experiment:latest"
     gpu_enabled: bool = True
     gpu_device_ids: tuple[int, ...] = ()
     memory_limit_mb: int = 8192
@@ -278,7 +278,7 @@ class AgenticConfig:
     and iteratively complete the experiment.
     """
 
-    image: str = "researchclaw/experiment:latest"
+    image: str = "berb/experiment:latest"
     agent_cli: str = "claude"
     agent_install_cmd: str = "npm install -g @anthropic-ai/claude-code"
     network_policy: str = "full"  # Agent needs network access
@@ -364,7 +364,7 @@ class FigureAgentConfig:
     # Renderer security
     render_timeout_sec: int = 30
     use_docker: bool | None = None  # None = auto-detect, True/False to force
-    docker_image: str = "researchclaw/experiment:latest"
+    docker_image: str = "berb/experiment:latest"
     # Code generation output format
     output_format: str = "python"  # "python" (matplotlib) or "latex" (TikZ/PGFPlots)
     # Nano Banana (Gemini image generation)
@@ -516,7 +516,7 @@ class MemoryConfig:
     """Configuration for the persistent evolutionary memory system."""
 
     enabled: bool = True
-    store_dir: str = ".researchclaw/memory"
+    store_dir: str = ".berb/memory"
     embedding_model: str = "text-embedding-3-small"
     max_entries_per_category: int = 500
     decay_half_life_days: int = 90
@@ -542,7 +542,7 @@ class KnowledgeGraphConfig:
     """Configuration for the research knowledge graph."""
 
     enabled: bool = False
-    store_path: str = ".researchclaw/knowledge_graph"
+    store_path: str = ".berb/knowledge_graph"
     max_entities: int = 10000
     auto_update: bool = True
 
@@ -582,7 +582,7 @@ class MultiProjectConfig:
     """C1: Multi-project parallel management."""
 
     enabled: bool = False
-    projects_dir: str = ".researchclaw/projects"
+    projects_dir: str = ".berb/projects"
     max_concurrent: int = 2
     shared_knowledge: bool = True
 
@@ -970,7 +970,7 @@ def _parse_llm_config(data: dict[str, Any]) -> LlmConfig:
             agent=acp_data.get("agent", "claude"),
             cwd=acp_data.get("cwd", "."),
             acpx_command=acp_data.get("acpx_command", ""),
-            session_name=acp_data.get("session_name", "researchclaw"),
+            session_name=acp_data.get("session_name", "berb"),
             timeout_sec=int(acp_data.get("timeout_sec", 1800)),
         ),
     )
@@ -980,7 +980,7 @@ def _parse_agentic_config(data: dict[str, Any]) -> AgenticConfig:
     if not data:
         return AgenticConfig()
     return AgenticConfig(
-        image=data.get("image", "researchclaw/experiment:latest"),
+        image=data.get("image", "berb/experiment:latest"),
         agent_cli=data.get("agent_cli", "claude"),
         agent_install_cmd=data.get(
             "agent_install_cmd", "npm install -g @anthropic-ai/claude-code"
@@ -1017,7 +1017,7 @@ def _parse_experiment_config(data: dict[str, Any]) -> ExperimentConfig:
             max_memory_mb=_safe_int(sandbox_data.get("max_memory_mb"), 4096),
         ),
         docker=DockerSandboxConfig(
-            image=docker_data.get("image", "researchclaw/experiment:latest"),
+            image=docker_data.get("image", "berb/experiment:latest"),
             gpu_enabled=bool(docker_data.get("gpu_enabled", True)),
             gpu_device_ids=tuple(int(g) for g in docker_data.get("gpu_device_ids", ())),
             memory_limit_mb=_safe_int(docker_data.get("memory_limit_mb"), 8192),
@@ -1037,12 +1037,12 @@ def _parse_experiment_config(data: dict[str, Any]) -> ExperimentConfig:
             key_path=ssh_data.get("key_path", ""),
             gpu_ids=tuple(int(g) for g in ssh_data.get("gpu_ids", ())),
             remote_workdir=ssh_data.get(
-                "remote_workdir", "/tmp/researchclaw_experiments"
+                "remote_workdir", "/tmp/berb_experiments"
             ),
             remote_python=ssh_data.get("remote_python", "python3"),
             setup_commands=tuple(ssh_data.get("setup_commands") or ()),
             use_docker=bool(ssh_data.get("use_docker", False)),
-            docker_image=ssh_data.get("docker_image", "researchclaw/experiment:latest"),
+            docker_image=ssh_data.get("docker_image", "berb/experiment:latest"),
             docker_network_policy=_validate_network_policy(
                 ssh_data.get("docker_network_policy", "none"),
             ),
@@ -1101,7 +1101,7 @@ def _parse_figure_agent_config(data: dict[str, Any]) -> FigureAgentConfig:
         max_iterations=_safe_int(data.get("max_iterations"), 3),
         render_timeout_sec=_safe_int(data.get("render_timeout_sec"), 30),
         use_docker=(None if use_docker_raw is None else bool(use_docker_raw)),
-        docker_image=data.get("docker_image", "researchclaw/experiment:latest"),
+        docker_image=data.get("docker_image", "berb/experiment:latest"),
         output_format=data.get("output_format", "python"),
         gemini_api_key=data.get("gemini_api_key", ""),
         gemini_model=data.get("gemini_model", "gemini-2.5-flash-image"),
@@ -1209,7 +1209,7 @@ def _parse_memory_config(data: dict[str, Any]) -> MemoryConfig:
     stages = data.get("inject_at_stages", (1, 9, 10, 17))
     return MemoryConfig(
         enabled=bool(data.get("enabled", True)),
-        store_dir=str(data.get("store_dir", ".researchclaw/memory")),
+        store_dir=str(data.get("store_dir", ".berb/memory")),
         embedding_model=str(data.get("embedding_model", "text-embedding-3-small")),
         max_entries_per_category=int(data.get("max_entries_per_category", 500)),
         decay_half_life_days=int(data.get("decay_half_life_days", 90)),
@@ -1237,7 +1237,7 @@ def _parse_knowledge_graph_config(data: dict[str, Any]) -> KnowledgeGraphConfig:
         return KnowledgeGraphConfig()
     return KnowledgeGraphConfig(
         enabled=bool(data.get("enabled", False)),
-        store_path=str(data.get("store_path", ".researchclaw/knowledge_graph")),
+        store_path=str(data.get("store_path", ".berb/knowledge_graph")),
         max_entities=int(data.get("max_entities", 10000)),
         auto_update=bool(data.get("auto_update", True)),
     )
@@ -1248,7 +1248,7 @@ def _parse_multi_project_config(data: dict[str, Any]) -> MultiProjectConfig:
         return MultiProjectConfig()
     return MultiProjectConfig(
         enabled=bool(data.get("enabled", False)),
-        projects_dir=data.get("projects_dir", ".researchclaw/projects"),
+        projects_dir=data.get("projects_dir", ".berb/projects"),
         max_concurrent=int(data.get("max_concurrent", 2)),
         shared_knowledge=bool(data.get("shared_knowledge", True)),
     )
