@@ -7,12 +7,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from researchclaw.servers.registry import ServerEntry, ServerRegistry
-from researchclaw.servers.monitor import ServerMonitor, _parse_status_output
-from researchclaw.servers.dispatcher import TaskDispatcher
-from researchclaw.servers.ssh_executor import SSHExecutor
-from researchclaw.servers.slurm_executor import SlurmExecutor
-from researchclaw.servers.cloud_executor import CloudExecutor
+from berb.servers.registry import ServerEntry, ServerRegistry
+from berb.servers.monitor import ServerMonitor, _parse_status_output
+from berb.servers.dispatcher import TaskDispatcher
+from berb.servers.ssh_executor import SSHExecutor
+from berb.servers.slurm_executor import SlurmExecutor
+from berb.servers.cloud_executor import CloudExecutor
 
 
 # ── fixtures ──────────────────────────────────────────────────────

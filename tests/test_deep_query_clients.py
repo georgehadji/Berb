@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
 
-from researchclaw.llm.deep_query_client import (
+from berb.llm.deep_query_client import (
     DeepQueryClient,
     DeepQueryResult,
     DeepMindAIClient,

@@ -26,7 +26,7 @@ class TestServerConfig:
     """Test ServerConfig and DashboardConfig in config.py."""
 
     def test_server_config_defaults(self) -> None:
-        from researchclaw.config import ServerConfig
+        from berb.config import ServerConfig
 
         cfg = ServerConfig()
         assert cfg.enabled is False
@@ -37,7 +37,7 @@ class TestServerConfig:
         assert cfg.voice_enabled is False
 
     def test_dashboard_config_defaults(self) -> None:
-        from researchclaw.config import DashboardConfig
+        from berb.config import DashboardConfig
 
         cfg = DashboardConfig()
         assert cfg.enabled is True
@@ -45,7 +45,7 @@ class TestServerConfig:
         assert cfg.max_log_lines == 1000
 
     def test_parse_server_config(self) -> None:
-        from researchclaw.config import _parse_server_config
+        from berb.config import _parse_server_config
 
         cfg = _parse_server_config({
             "enabled": True,
@@ -59,14 +59,14 @@ class TestServerConfig:
         assert cfg.auth_token == "secret123"
 
     def test_parse_server_config_empty(self) -> None:
-        from researchclaw.config import _parse_server_config
+        from berb.config import _parse_server_config
 
         cfg = _parse_server_config({})
         assert cfg.enabled is False
         assert cfg.port == 8080
 
     def test_parse_dashboard_config(self) -> None:
-        from researchclaw.config import _parse_dashboard_config
+        from berb.config import _parse_dashboard_config
 
         cfg = _parse_dashboard_config({
             "refresh_interval_sec": 10,
@@ -76,7 +76,7 @@ class TestServerConfig:
         assert cfg.max_log_lines == 500
 
     def test_rcconfig_has_server_and_dashboard(self) -> None:
-        from researchclaw.config import RCConfig, ServerConfig, DashboardConfig
+        from berb.config import RCConfig, ServerConfig, DashboardConfig
 
         # Build minimal valid config dict
         data = {
@@ -110,21 +110,21 @@ class TestCLI:
     """Test new CLI subcommands are registered."""
 
     def test_serve_subcommand_exists(self) -> None:
-        from researchclaw.cli import main
+        from berb.cli import main
 
         with pytest.raises(SystemExit) as exc:
             main(["serve", "--help"])
         assert exc.value.code == 0
 
     def test_dashboard_subcommand_exists(self) -> None:
-        from researchclaw.cli import main
+        from berb.cli import main
 
         with pytest.raises(SystemExit) as exc:
             main(["dashboard", "--help"])
         assert exc.value.code == 0
 
     def test_wizard_subcommand_exists(self) -> None:
-        from researchclaw.cli import main
+        from berb.cli import main
 
         with pytest.raises(SystemExit) as exc:
             main(["wizard", "--help"])
@@ -140,67 +140,67 @@ class TestIntents:
     """Test intent classification."""
 
     def test_help_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, conf = classify_intent("help")
         assert intent == Intent.HELP
 
     def test_status_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("What stage are we at?")
         assert intent == Intent.CHECK_STATUS
 
     def test_start_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("Start the pipeline")
         assert intent == Intent.START_PIPELINE
 
     def test_topic_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("Help me find a research direction")
         assert intent == Intent.TOPIC_SELECTION
 
     def test_results_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("What are the results?")
         assert intent == Intent.DISCUSS_RESULTS
 
     def test_config_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("Change the learning rate to 0.001")
         assert intent == Intent.MODIFY_CONFIG
 
     def test_paper_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("Edit the abstract")
         assert intent == Intent.EDIT_PAPER
 
     def test_general_intent(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("Hello there")
         assert intent == Intent.GENERAL_CHAT
 
     def test_chinese_status(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("现在到哪一步了")
         assert intent == Intent.CHECK_STATUS
 
     def test_chinese_start(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, _ = classify_intent("开始跑实验")
         assert intent == Intent.START_PIPELINE
 
     def test_empty_message(self) -> None:
-        from researchclaw.server.dialog.intents import Intent, classify_intent
+        from berb.server.dialog.intents import Intent, classify_intent
 
         intent, conf = classify_intent("")
         assert intent == Intent.GENERAL_CHAT
@@ -216,7 +216,7 @@ class TestSession:
     """Test chat session management."""
 
     def test_session_create(self) -> None:
-        from researchclaw.server.dialog.session import SessionManager
+        from berb.server.dialog.session import SessionManager
 
         mgr = SessionManager()
         session = mgr.get_or_create("client1")
@@ -224,7 +224,7 @@ class TestSession:
         assert len(session.history) == 0
 
     def test_session_add_message(self) -> None:
-        from researchclaw.server.dialog.session import SessionManager
+        from berb.server.dialog.session import SessionManager
 
         mgr = SessionManager()
         session = mgr.get_or_create("client1")
@@ -234,7 +234,7 @@ class TestSession:
         assert session.history[0].role == "user"
 
     def test_session_context(self) -> None:
-        from researchclaw.server.dialog.session import SessionManager
+        from berb.server.dialog.session import SessionManager
 
         mgr = SessionManager()
         session = mgr.get_or_create("client1")
@@ -244,7 +244,7 @@ class TestSession:
         assert len(ctx) == 5
 
     def test_session_max_history(self) -> None:
-        from researchclaw.server.dialog.session import ChatSession
+        from berb.server.dialog.session import ChatSession
 
         session = ChatSession(client_id="test")
         for i in range(100):
@@ -252,7 +252,7 @@ class TestSession:
         assert len(session.history) <= session.MAX_HISTORY
 
     def test_session_persistence(self) -> None:
-        from researchclaw.server.dialog.session import SessionManager
+        from berb.server.dialog.session import SessionManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             mgr = SessionManager(persist_dir=tmpdir)
@@ -277,7 +277,7 @@ class TestDashboardCollector:
     """Test dashboard data collection from artifacts/."""
 
     def test_collect_empty_dir(self) -> None:
-        from researchclaw.dashboard.collector import DashboardCollector
+        from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
             collector = DashboardCollector(artifacts_dir=tmpdir)
@@ -285,7 +285,7 @@ class TestDashboardCollector:
             assert runs == []
 
     def test_collect_run_with_checkpoint(self) -> None:
-        from researchclaw.dashboard.collector import DashboardCollector
+        from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "rc-20260315-abc123"
@@ -300,7 +300,7 @@ class TestDashboardCollector:
             assert runs[0].current_stage_name == "LITERATURE_SCREEN"
 
     def test_collect_run_active_heartbeat(self) -> None:
-        from researchclaw.dashboard.collector import DashboardCollector
+        from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "rc-20260315-test01"
@@ -314,7 +314,7 @@ class TestDashboardCollector:
             assert runs[0].is_active is True
 
     def test_collect_run_stale_heartbeat(self) -> None:
-        from researchclaw.dashboard.collector import DashboardCollector
+        from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "rc-20260315-stale1"
@@ -327,7 +327,7 @@ class TestDashboardCollector:
             assert runs[0].is_active is False
 
     def test_collect_stage_directories(self) -> None:
-        from researchclaw.dashboard.collector import DashboardCollector
+        from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "rc-20260315-stages"
@@ -341,7 +341,7 @@ class TestDashboardCollector:
             assert len(runs[0].stages_completed) == 3
 
     def test_collect_metrics(self) -> None:
-        from researchclaw.dashboard.collector import DashboardCollector
+        from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "rc-20260315-metric"
@@ -354,7 +354,7 @@ class TestDashboardCollector:
             assert runs[0].metrics["accuracy"] == 0.85
 
     def test_snapshot_to_dict(self) -> None:
-        from researchclaw.dashboard.collector import RunSnapshot
+        from berb.dashboard.collector import RunSnapshot
 
         snap = RunSnapshot(run_id="test-1", path="/tmp/test")
         d = snap.to_dict()
@@ -371,13 +371,13 @@ class TestMetrics:
     """Test metric aggregation."""
 
     def test_aggregate_empty(self) -> None:
-        from researchclaw.dashboard.metrics import aggregate_metrics
+        from berb.dashboard.metrics import aggregate_metrics
 
         result = aggregate_metrics([])
         assert result["total_runs"] == 0
 
     def test_aggregate_mixed(self) -> None:
-        from researchclaw.dashboard.metrics import aggregate_metrics
+        from berb.dashboard.metrics import aggregate_metrics
 
         runs = [
             {"is_active": True, "status": "running", "current_stage": 10},
@@ -391,7 +391,7 @@ class TestMetrics:
         assert result["failed_runs"] == 1
 
     def test_extract_training_curve(self) -> None:
-        from researchclaw.dashboard.metrics import extract_training_curve
+        from berb.dashboard.metrics import extract_training_curve
 
         metrics = {
             "training_log": [
@@ -413,37 +413,37 @@ class TestVoiceCommands:
     """Test voice command parsing."""
 
     def test_start_command(self) -> None:
-        from researchclaw.voice.commands import VoiceCommand, parse_voice_input
+        from berb.voice.commands import VoiceCommand, parse_voice_input
 
         result = parse_voice_input("start experiment")
         assert result.command == VoiceCommand.START
 
     def test_stop_command(self) -> None:
-        from researchclaw.voice.commands import VoiceCommand, parse_voice_input
+        from berb.voice.commands import VoiceCommand, parse_voice_input
 
         result = parse_voice_input("stop")
         assert result.command == VoiceCommand.STOP
 
     def test_chinese_start(self) -> None:
-        from researchclaw.voice.commands import VoiceCommand, parse_voice_input
+        from berb.voice.commands import VoiceCommand, parse_voice_input
 
         result = parse_voice_input("开始实验")
         assert result.command == VoiceCommand.START
 
     def test_chinese_pause(self) -> None:
-        from researchclaw.voice.commands import VoiceCommand, parse_voice_input
+        from berb.voice.commands import VoiceCommand, parse_voice_input
 
         result = parse_voice_input("暂停")
         assert result.command == VoiceCommand.PAUSE
 
     def test_not_a_command(self) -> None:
-        from researchclaw.voice.commands import VoiceCommand, parse_voice_input
+        from berb.voice.commands import VoiceCommand, parse_voice_input
 
         result = parse_voice_input("What about the neural network?")
         assert result.command == VoiceCommand.NONE
 
     def test_status_command(self) -> None:
-        from researchclaw.voice.commands import VoiceCommand, parse_voice_input
+        from berb.voice.commands import VoiceCommand, parse_voice_input
 
         result = parse_voice_input("查看进度")
         assert result.command == VoiceCommand.STATUS
@@ -458,7 +458,7 @@ class TestWizard:
     """Test wizard templates and validation."""
 
     def test_list_templates(self) -> None:
-        from researchclaw.wizard.templates import list_templates
+        from berb.wizard.templates import list_templates
 
         templates = list_templates()
         assert len(templates) >= 3
@@ -467,19 +467,19 @@ class TestWizard:
         assert "standard-cv" in names
 
     def test_get_template(self) -> None:
-        from researchclaw.wizard.templates import get_template
+        from berb.wizard.templates import get_template
 
         tpl = get_template("quick-demo")
         assert tpl is not None
         assert tpl["experiment.mode"] == "simulated"
 
     def test_get_template_missing(self) -> None:
-        from researchclaw.wizard.templates import get_template
+        from berb.wizard.templates import get_template
 
         assert get_template("nonexistent") is None
 
     def test_wizard_web_mode(self) -> None:
-        from researchclaw.wizard.quickstart import QuickStartWizard
+        from berb.wizard.quickstart import QuickStartWizard
 
         wizard = QuickStartWizard()
         config = wizard.run_web([
@@ -491,7 +491,7 @@ class TestWizard:
         assert config.get("research", {}).get("topic") == "neural scaling laws"
 
     def test_environment_detection(self) -> None:
-        from researchclaw.wizard.validator import detect_environment
+        from berb.wizard.validator import detect_environment
 
         report = detect_environment()
         assert report.has_python is True
@@ -510,7 +510,7 @@ class TestEvents:
     """Test WebSocket event types."""
 
     def test_event_serialization(self) -> None:
-        from researchclaw.server.websocket.events import Event, EventType
+        from berb.server.websocket.events import Event, EventType
 
         evt = Event(type=EventType.STAGE_COMPLETE, data={"stage": 5})
         json_str = evt.to_json()
@@ -519,7 +519,7 @@ class TestEvents:
         assert parsed["data"]["stage"] == 5
 
     def test_event_deserialization(self) -> None:
-        from researchclaw.server.websocket.events import Event, EventType
+        from berb.server.websocket.events import Event, EventType
 
         raw = json.dumps({
             "type": "heartbeat",
@@ -531,7 +531,7 @@ class TestEvents:
         assert evt.data["active_clients"] == 3
 
     def test_event_types_enum(self) -> None:
-        from researchclaw.server.websocket.events import EventType
+        from berb.server.websocket.events import EventType
 
         assert EventType.CONNECTED.value == "connected"
         assert EventType.STAGE_START.value == "stage_start"
@@ -548,14 +548,14 @@ class TestDialogRouter:
 
     @pytest.mark.asyncio
     async def test_route_help_message(self) -> None:
-        from researchclaw.server.dialog.router import route_message
+        from berb.server.dialog.router import route_message
 
         response = await route_message("help", "test-client")
         assert "help" in response.lower() or "I can" in response
 
     @pytest.mark.asyncio
     async def test_route_json_message(self) -> None:
-        from researchclaw.server.dialog.router import route_message
+        from berb.server.dialog.router import route_message
 
         msg = json.dumps({"message": "help me"})
         response = await route_message(msg, "test-client-2")
@@ -564,7 +564,7 @@ class TestDialogRouter:
 
     @pytest.mark.asyncio
     async def test_route_status_message(self) -> None:
-        from researchclaw.server.dialog.router import route_message
+        from berb.server.dialog.router import route_message
 
         response = await route_message("What's the current progress?", "test-client-3")
         assert isinstance(response, str)
@@ -588,7 +588,7 @@ class TestFastAPIApp:
 
     @pytest.fixture
     def app(self, _skip_if_no_fastapi: None) -> object:
-        from researchclaw.config import RCConfig
+        from berb.config import RCConfig
 
         data = {
             "project": {"name": "test"},
@@ -603,7 +603,7 @@ class TestFastAPIApp:
             },
         }
         config = RCConfig.from_dict(data, check_paths=False)
-        from researchclaw.server.app import create_app
+        from berb.server.app import create_app
         return create_app(config)
 
     @pytest.mark.asyncio

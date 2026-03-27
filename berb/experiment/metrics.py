@@ -255,7 +255,7 @@ class UniversalMetricParser:
 
         Delegates to ``sandbox.parse_metrics`` for backward compatibility.
         """
-        from researchclaw.experiment.sandbox import parse_metrics
+        from berb.experiment.sandbox import parse_metrics
 
         metrics = parse_metrics(stdout)
         return ExperimentResults(

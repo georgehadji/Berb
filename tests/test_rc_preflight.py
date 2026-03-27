@@ -4,7 +4,7 @@ import urllib.error
 from email.message import Message
 from unittest.mock import patch
 
-from researchclaw.llm.client import LLMClient, LLMConfig, LLMResponse
+from berb.llm.client import LLMClient, LLMConfig, LLMResponse
 
 
 def _make_client(

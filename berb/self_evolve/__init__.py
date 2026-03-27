@@ -20,7 +20,7 @@ Architecture:
 4. SelfEvolve Orchestrator — Coordinates improvement cycle
 
 Usage:
-    from researchclaw.self_evolve import SelfEvolveOrchestrator
+    from berb.self_evolve import SelfEvolveOrchestrator
     
     evolve = SelfEvolveOrchestrator(config)
     await evolve.start_improvement_cycle()

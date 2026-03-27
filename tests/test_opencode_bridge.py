@@ -9,8 +9,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.config import OpenCodeConfig, _parse_opencode_config
-from researchclaw.pipeline.opencode_bridge import (
+from berb.config import OpenCodeConfig, _parse_opencode_config
+from berb.pipeline.opencode_bridge import (
     ComplexityScore,
     OpenCodeBridge,
     OpenCodeResult,

@@ -2,7 +2,7 @@
 
 import pytest
 from pydantic import ValidationError
-from researchclaw.llm.structured_outputs import (
+from berb.llm.structured_outputs import (
     DecompositionOutput,
     HypothesisOutput,
     ExperimentDesignOutput,

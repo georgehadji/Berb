@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
 
-from researchclaw.literature.grey_search import (
+from berb.literature.grey_search import (
     GreyLiteratureSearch,
     GreyLiteratureResult,
     BioRxivClient,

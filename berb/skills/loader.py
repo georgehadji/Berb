@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 import yaml
 
-from researchclaw.skills.schema import Skill
+from berb.skills.schema import Skill
 
 logger = logging.getLogger(__name__)
 

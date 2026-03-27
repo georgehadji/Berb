@@ -58,7 +58,7 @@ class ScholarPaper:
 
     def to_literature_paper(self) -> Any:
         """Convert to researchclaw.literature.models.Paper."""
-        from researchclaw.literature.models import Author, Paper
+        from berb.literature.models import Author, Paper
         authors_tuple = tuple(Author(name=a) for a in self.authors)
         return Paper(
             paper_id=self.scholar_id or f"gs-{hashlib.sha256(self.title.encode()).hexdigest()[:8]}",

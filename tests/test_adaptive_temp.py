@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock
 
-from researchclaw.llm.adaptive_temp import (
+from berb.llm.adaptive_temp import (
     AdaptiveTemperatureClient,
     TemperatureStrategy,
     RetryStage,

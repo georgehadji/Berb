@@ -8,7 +8,7 @@ Architecture: Two-phase generation (tests → implementation)
 Paradigm: TDD workflow with automated test execution
 
 Usage:
-    from researchclaw.pipeline.tdd_generation import TDDCodeGenerator
+    from berb.pipeline.tdd_generation import TDDCodeGenerator
     
     generator = TDDCodeGenerator(
         test_runner=test_runner,

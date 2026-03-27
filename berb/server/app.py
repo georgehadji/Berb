@@ -11,10 +11,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from researchclaw.config import RCConfig
-from researchclaw.server.middleware.auth import TokenAuthMiddleware
-from researchclaw.server.websocket.manager import ConnectionManager
-from researchclaw.server.websocket.events import Event, EventType
+from berb.config import RCConfig
+from berb.server.middleware.auth import TokenAuthMiddleware
+from berb.server.websocket.manager import ConnectionManager
+from berb.server.websocket.events import Event, EventType
 
 logger = logging.getLogger(__name__)
 
@@ -84,20 +84,20 @@ def create_app(
         }
 
     # --- Routes ---
-    from researchclaw.server.routes.pipeline import router as pipeline_router
-    from researchclaw.server.routes.projects import router as projects_router
+    from berb.server.routes.pipeline import router as pipeline_router
+    from berb.server.routes.projects import router as projects_router
 
     app.include_router(pipeline_router)
     app.include_router(projects_router)
 
     if not dashboard_only:
-        from researchclaw.server.routes.chat import router as chat_router, set_chat_manager
+        from berb.server.routes.chat import router as chat_router, set_chat_manager
 
         set_chat_manager(event_manager)
         app.include_router(chat_router)
 
         if config.server.voice_enabled:
-            from researchclaw.server.routes.voice import router as voice_router
+            from berb.server.routes.voice import router as voice_router
 
             app.include_router(voice_router)
 
@@ -135,7 +135,7 @@ def create_app(
         asyncio.create_task(event_manager.heartbeat_loop(interval=15.0))
 
         if config.dashboard.enabled:
-            from researchclaw.dashboard.broadcaster import start_dashboard_loop
+            from berb.dashboard.broadcaster import start_dashboard_loop
 
             asyncio.create_task(
                 start_dashboard_loop(

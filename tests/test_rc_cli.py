@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from researchclaw import cli as rc_cli
-from researchclaw.config import resolve_config_path
+from berb.config import resolve_config_path
 
 
 def _write_valid_config(path: Path) -> None:

@@ -119,7 +119,7 @@ class LLMClient:
 
     @classmethod
     def from_rc_config(cls, rc_config: Any) -> LLMClient:
-        from researchclaw.llm import PROVIDER_PRESETS
+        from berb.llm import PROVIDER_PRESETS
 
         provider = getattr(rc_config.llm, "provider", "openai")
         preset = PROVIDER_PRESETS.get(provider, {})
@@ -224,7 +224,7 @@ class LLMClient:
             try:
                 resp = self._call_with_retry(m, messages, max_tok, temp, json_mode)
                 if strip_thinking:
-                    from researchclaw.utils.thinking_tags import strip_thinking_tags
+                    from berb.utils.thinking_tags import strip_thinking_tags
 
                     resp = LLMResponse(
                         content=strip_thinking_tags(resp.content),

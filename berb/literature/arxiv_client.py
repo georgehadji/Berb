@@ -27,7 +27,7 @@ try:
 except ImportError:
     arxiv = None  # type: ignore[assignment]
 
-from researchclaw.literature.models import Author, Paper
+from berb.literature.models import Author, Paper
 
 logger = logging.getLogger(__name__)
 

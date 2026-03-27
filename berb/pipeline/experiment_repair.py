@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from researchclaw.pipeline.experiment_diagnosis import (
+from berb.pipeline.experiment_diagnosis import (
     DeficiencyType,
     ExperimentDiagnosis,
     ExperimentQualityAssessment,
@@ -334,7 +334,7 @@ def run_repair_loop(
 
     # Create LLM client
     try:
-        from researchclaw.llm import create_llm_client
+        from berb.llm import create_llm_client
         llm = create_llm_client(config)
     except Exception as exc:
         logger.error("[%s] Repair loop: cannot create LLM client: %s", run_id, exc)
@@ -647,7 +647,7 @@ def _repair_via_opencode(
 ) -> dict[str, str] | None:
     """Attempt repair via OpenCode agent."""
     try:
-        from researchclaw.pipeline.opencode_bridge import OpenCodeBridge
+        from berb.pipeline.opencode_bridge import OpenCodeBridge
 
         _oc_cfg = config.experiment.opencode
         bridge = OpenCodeBridge(
@@ -781,7 +781,7 @@ def _run_experiment_in_sandbox(
     Returns None if sandbox creation fails.
     """
     try:
-        from researchclaw.experiment.factory import create_sandbox
+        from berb.experiment.factory import create_sandbox
 
         sandbox_dir = work_dir / "sandbox"
         sandbox_dir.mkdir(parents=True, exist_ok=True)
@@ -821,7 +821,7 @@ def _build_experiment_summary_from_run(
     # Also parse metrics from stdout if sandbox didn't capture them
     if not metrics and stdout:
         try:
-            from researchclaw.experiment.sandbox import parse_metrics
+            from berb.experiment.sandbox import parse_metrics
             metrics = parse_metrics(stdout)
         except ImportError:
             pass

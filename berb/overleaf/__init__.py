@@ -1,8 +1,8 @@
 """Overleaf bidirectional sync for AutoResearchClaw."""
 
-from researchclaw.overleaf.sync import OverleafSync
-from researchclaw.overleaf.conflict import ConflictResolver
-from researchclaw.overleaf.watcher import FileWatcher
-from researchclaw.overleaf.formatter import LatexFormatter
+from berb.overleaf.sync import OverleafSync
+from berb.overleaf.conflict import ConflictResolver
+from berb.overleaf.watcher import FileWatcher
+from berb.overleaf.formatter import LatexFormatter
 
 __all__ = ["OverleafSync", "ConflictResolver", "FileWatcher", "LatexFormatter"]

@@ -7,10 +7,10 @@ import logging
 import uuid
 from typing import Any
 
-from researchclaw.servers.registry import ServerEntry, ServerRegistry
-from researchclaw.servers.monitor import ServerMonitor
-from researchclaw.servers.ssh_executor import SSHExecutor
-from researchclaw.servers.slurm_executor import SlurmExecutor
+from berb.servers.registry import ServerEntry, ServerRegistry
+from berb.servers.monitor import ServerMonitor
+from berb.servers.ssh_executor import SSHExecutor
+from berb.servers.slurm_executor import SlurmExecutor
 
 logger = logging.getLogger(__name__)
 

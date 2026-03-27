@@ -7,7 +7,7 @@ Architecture: Event-driven failure capture with JSONL storage
 Paradigm: Observer pattern for failure tracking
 
 Usage:
-    from researchclaw.llm.eval_dataset import EvalDatasetBuilder
+    from berb.llm.eval_dataset import EvalDatasetBuilder
     
     builder = EvalDatasetBuilder(dataset_path=".researchclaw/eval_dataset.jsonl")
     

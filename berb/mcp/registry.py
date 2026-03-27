@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from researchclaw.mcp.client import MCPClient
+from berb.mcp.client import MCPClient
 
 logger = logging.getLogger(__name__)
 

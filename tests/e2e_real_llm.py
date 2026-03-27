@@ -17,12 +17,12 @@ import yaml
 # Ensure project root is on path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from researchclaw.config import RCConfig
-from researchclaw.adapters import AdapterBundle
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline.stages import Stage, STAGE_SEQUENCE
-from researchclaw.pipeline.executor import execute_stage, StageResult
-from researchclaw.pipeline.runner import execute_pipeline
+from berb.config import RCConfig
+from berb.adapters import AdapterBundle
+from berb.llm.client import LLMClient
+from berb.pipeline.stages import Stage, STAGE_SEQUENCE
+from berb.pipeline.executor import execute_stage, StageResult
+from berb.pipeline.runner import execute_pipeline
 
 
 def main() -> None:

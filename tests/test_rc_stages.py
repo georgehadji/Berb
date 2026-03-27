@@ -1,6 +1,6 @@
 import pytest
 
-from researchclaw.pipeline.stages import (
+from berb.pipeline.stages import (
     DECISION_ROLLBACK,
     GATE_ROLLBACK,
     GATE_STAGES,

@@ -8,7 +8,7 @@ Architecture: Strategy pattern with retry-aware temperature selection
 Paradigm: Functional configuration with state tracking
 
 Usage:
-    from researchclaw.llm.adaptive_temp import AdaptiveTemperatureClient, TemperatureStrategy
+    from berb.llm.adaptive_temp import AdaptiveTemperatureClient, TemperatureStrategy
     
     strategy = TemperatureStrategy(
         initial=0.0,      # Start deterministic

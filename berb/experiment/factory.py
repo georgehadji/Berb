@@ -6,11 +6,11 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from researchclaw.config import ExperimentConfig
-from researchclaw.experiment.sandbox import ExperimentSandbox, SandboxProtocol
+from berb.config import ExperimentConfig
+from berb.experiment.sandbox import ExperimentSandbox, SandboxProtocol
 
 if TYPE_CHECKING:
-    from researchclaw.experiment.agentic_sandbox import AgenticSandbox
+    from berb.experiment.agentic_sandbox import AgenticSandbox
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def create_sandbox(config: ExperimentConfig, workdir: Path) -> SandboxProtocol:
     - ``"docker"``  → :class:`DockerSandbox`  (Docker container)
     """
     if config.mode == "docker":
-        from researchclaw.experiment.docker_sandbox import DockerSandbox
+        from berb.experiment.docker_sandbox import DockerSandbox
 
         docker_cfg = config.docker
 
@@ -45,7 +45,7 @@ def create_sandbox(config: ExperimentConfig, workdir: Path) -> SandboxProtocol:
         return DockerSandbox(docker_cfg, workdir)
 
     if config.mode == "ssh_remote":
-        from researchclaw.experiment.ssh_sandbox import SshRemoteSandbox
+        from berb.experiment.ssh_sandbox import SshRemoteSandbox
 
         ssh_cfg = config.ssh_remote
         if not ssh_cfg.host:
@@ -61,7 +61,7 @@ def create_sandbox(config: ExperimentConfig, workdir: Path) -> SandboxProtocol:
         return SshRemoteSandbox(ssh_cfg, workdir)
 
     if config.mode == "colab_drive":
-        from researchclaw.experiment.colab_sandbox import ColabDriveSandbox
+        from berb.experiment.colab_sandbox import ColabDriveSandbox
 
         colab_cfg = config.colab_drive
         ok, msg = ColabDriveSandbox.check_drive_available(colab_cfg)
@@ -99,7 +99,7 @@ def create_agentic_sandbox(
 
     Validates that Docker is available before returning.
     """
-    from researchclaw.experiment.agentic_sandbox import AgenticSandbox
+    from berb.experiment.agentic_sandbox import AgenticSandbox
 
     if not AgenticSandbox.check_docker_available():
         raise RuntimeError(

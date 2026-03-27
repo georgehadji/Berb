@@ -13,15 +13,15 @@ import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from researchclaw.domains.detector import (
+from berb.domains.detector import (
     DomainProfile,
     detect_domain,
     get_profile,
     is_ml_domain,
     load_all_profiles,
 )
-from researchclaw.domains.prompt_adapter import get_adapter, PromptBlocks
-from researchclaw.domains.experiment_schema import (
+from berb.domains.prompt_adapter import get_adapter, PromptBlocks
+from berb.domains.experiment_schema import (
     Condition,
     ConditionRole,
     EvaluationSpec,
@@ -29,10 +29,10 @@ from researchclaw.domains.experiment_schema import (
     UniversalExperimentPlan,
     from_legacy_exp_plan,
 )
-from researchclaw.experiment.metrics import UniversalMetricParser
-from researchclaw.experiment.evaluators.convergence import analyze_convergence
-from researchclaw.agents.code_searcher.agent import CodeSearchAgent, CodeSearchResult
-from researchclaw.agents.code_searcher.pattern_extractor import CodePatterns
+from berb.experiment.metrics import UniversalMetricParser
+from berb.experiment.evaluators.convergence import analyze_convergence
+from berb.agents.code_searcher.agent import CodeSearchAgent, CodeSearchResult
+from berb.agents.code_searcher.pattern_extractor import CodePatterns
 
 
 # ---------------------------------------------------------------------------
@@ -296,7 +296,7 @@ class TestCodeSearchIntegration:
 class TestCodeAgentDomainInjection:
     def test_code_agent_accepts_domain_profile(self):
         """CodeAgent should accept domain_profile and code_search_result."""
-        from researchclaw.pipeline.code_agent import CodeAgent, CodeAgentConfig
+        from berb.pipeline.code_agent import CodeAgent, CodeAgentConfig
 
         config = CodeAgentConfig(enabled=True)
         profile = DomainProfile(
@@ -325,7 +325,7 @@ class TestCodeAgentDomainInjection:
 
     def test_code_agent_ml_domain_no_extra_context(self):
         """ML domain should add minimal extra context (preserve existing behavior)."""
-        from researchclaw.pipeline.code_agent import CodeAgent, CodeAgentConfig
+        from berb.pipeline.code_agent import CodeAgent, CodeAgentConfig
 
         config = CodeAgentConfig(enabled=True)
         profile = get_profile("ml_vision") or DomainProfile(

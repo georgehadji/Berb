@@ -16,12 +16,12 @@ Public API
 - ``check_url_ssrf`` — SSRF validation for URLs
 """
 
-from researchclaw.web._ssrf import check_url_ssrf
-from researchclaw.web.crawler import WebCrawler
-from researchclaw.web.search import WebSearchClient
-from researchclaw.web.scholar import GoogleScholarClient
-from researchclaw.web.pdf_extractor import PDFExtractor
-from researchclaw.web.agent import WebSearchAgent
+from berb.web._ssrf import check_url_ssrf
+from berb.web.crawler import WebCrawler
+from berb.web.search import WebSearchClient
+from berb.web.scholar import GoogleScholarClient
+from berb.web.pdf_extractor import PDFExtractor
+from berb.web.agent import WebSearchAgent
 
 __all__ = [
     "check_url_ssrf",

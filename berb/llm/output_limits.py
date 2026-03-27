@@ -7,7 +7,7 @@ Architecture: Configuration dataclass with stage-specific limits
 Paradigm: Declarative configuration
 
 Usage:
-    from researchclaw.llm.output_limits import get_stage_token_limit
+    from berb.llm.output_limits import get_stage_token_limit
     
     max_tokens = get_stage_token_limit(Stage.HYPOTHESIS_GEN)
     # Returns: 2000

@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from researchclaw.trends.opportunity_finder import OpportunityFinder
-from researchclaw.trends.trend_analyzer import TrendAnalyzer
+from berb.trends.opportunity_finder import OpportunityFinder
+from berb.trends.trend_analyzer import TrendAnalyzer
 
 logger = logging.getLogger(__name__)
 

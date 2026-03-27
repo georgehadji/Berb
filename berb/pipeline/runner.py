@@ -9,12 +9,12 @@ import tempfile
 import time as _time
 from pathlib import Path
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.evolution import EvolutionStore, extract_lessons
-from researchclaw.knowledge.base import write_stage_to_kb
-from researchclaw.pipeline.executor import StageResult, execute_stage
-from researchclaw.pipeline.stages import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.evolution import EvolutionStore, extract_lessons
+from berb.knowledge.base import write_stage_to_kb
+from berb.pipeline.executor import StageResult, execute_stage
+from berb.pipeline.stages import (
     DECISION_ROLLBACK,
     MAX_DECISION_PIVOTS,
     NONCRITICAL_STAGES,
@@ -197,7 +197,7 @@ def _run_experiment_diagnosis(run_dir: Path, config: RCConfig, run_id: str) -> N
     - ``run_dir/repair_prompt.txt`` — repair instructions (if quality is insufficient)
     """
     try:
-        from researchclaw.pipeline.experiment_diagnosis import (
+        from berb.pipeline.experiment_diagnosis import (
             diagnose_experiment,
             assess_experiment_quality,
         )
@@ -277,7 +277,7 @@ def _run_experiment_diagnosis(run_dir: Path, config: RCConfig, run_id: str) -> N
 
         if not qa.sufficient:
             # Generate repair prompt for the REFINE loop
-            from researchclaw.pipeline.experiment_repair import build_repair_prompt
+            from berb.pipeline.experiment_repair import build_repair_prompt
 
             code: dict[str, str] = {}
             # Try refined code first, then stage-10 experiment dir, then raw stage-10
@@ -330,7 +330,7 @@ def _run_experiment_repair(run_dir: Path, config: RCConfig, run_id: str) -> None
     5. Repeats up to max_cycles
     """
     try:
-        from researchclaw.pipeline.experiment_repair import run_repair_loop
+        from berb.pipeline.experiment_repair import run_repair_loop
 
         repair_result = run_repair_loop(
             run_dir=run_dir,
@@ -350,7 +350,7 @@ def _run_experiment_repair(run_dir: Path, config: RCConfig, run_id: str) -> None
         # empty summaries (metrics: {}, 0 conditions) which would
         # overwrite enriched data from the analysis stage.
         if repair_result.best_experiment_summary:
-            from researchclaw.pipeline.experiment_repair import (
+            from berb.pipeline.experiment_repair import (
                 _summary_quality_score,
             )
 
@@ -696,8 +696,8 @@ def _package_deliverables(
         and verified_md.stat().st_size > 0
     ):
         try:
-            from researchclaw.templates import get_template, markdown_to_latex
-            from researchclaw.pipeline.executor import _extract_paper_title
+            from berb.templates import get_template, markdown_to_latex
+            from berb.pipeline.executor import _extract_paper_title
 
             tpl = get_template(config.export.target_conference)
             v_text = verified_md.read_text(encoding="utf-8")
@@ -791,7 +791,7 @@ def _package_deliverables(
 
     # --- 7. Conference style files (.sty, .bst) ---
     try:
-        from researchclaw.templates import get_template
+        from berb.templates import get_template
 
         tpl = get_template(config.export.target_conference)
         style_files = tpl.get_style_files()
@@ -879,7 +879,7 @@ def _package_deliverables(
     # --- 9. IMP-18: Compile LaTeX to verify paper.tex ---
     if tex_path.exists() and bib_path.exists():
         try:
-            from researchclaw.templates.compiler import compile_latex
+            from berb.templates.compiler import compile_latex
 
             compile_result = compile_latex(tex_path, max_attempts=3, timeout=120)
             if compile_result.success:
@@ -1413,13 +1413,13 @@ def _metaclaw_post_pipeline(
     if not bridge or not getattr(bridge, "enabled", False):
         return
 
-    from researchclaw.llm.client import LLMClient
+    from berb.llm.client import LLMClient
 
     # 1. Lesson-to-skill conversion
     l2s = getattr(bridge, "lesson_to_skill", None)
     if l2s and getattr(l2s, "enabled", False) and lessons:
         try:
-            from researchclaw.metaclaw_bridge.lesson_to_skill import (
+            from berb.metaclaw_bridge.lesson_to_skill import (
                 convert_lessons_to_skills,
             )
 
@@ -1443,11 +1443,11 @@ def _metaclaw_post_pipeline(
 
     # 2. Skill effectiveness feedback
     try:
-        from researchclaw.metaclaw_bridge.skill_feedback import (
+        from berb.metaclaw_bridge.skill_feedback import (
             SkillFeedbackStore,
             record_stage_skills,
         )
-        from researchclaw.metaclaw_bridge.stage_skill_map import get_stage_config
+        from berb.metaclaw_bridge.stage_skill_map import get_stage_config
 
         feedback_store = SkillFeedbackStore(run_dir / "evolution" / "skill_effectiveness.jsonl")
         for result in results:
@@ -1483,7 +1483,7 @@ def _metaclaw_post_pipeline(
 
     # 3. Signal session end (fire-and-forget)
     try:
-        from researchclaw.metaclaw_bridge.session import MetaClawSession
+        from berb.metaclaw_bridge.session import MetaClawSession
         import json as _json
         import urllib.request as _urllib_req
 

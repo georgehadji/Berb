@@ -8,7 +8,7 @@ Architecture: Batch queue with async submission and polling
 Paradigm: Producer-consumer pattern with async support
 
 Usage:
-    from researchclaw.llm.batch_api import BatchClient, BatchJob
+    from berb.llm.batch_api import BatchClient, BatchJob
     
     client = BatchClient(api_key="...")
     

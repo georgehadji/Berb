@@ -8,13 +8,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.pipeline.experiment_diagnosis import (
+from berb.pipeline.experiment_diagnosis import (
     DeficiencyType,
     Deficiency,
     ExperimentDiagnosis,
     PaperMode,
 )
-from researchclaw.pipeline.experiment_repair import (
+from berb.pipeline.experiment_repair import (
     ExperimentRepairResult,
     RepairCycleResult,
     build_repair_prompt,
@@ -387,7 +387,7 @@ class TestRunRepairLoop:
         }
         (s14 / "experiment_summary.json").write_text(json.dumps(summary))
 
-        from researchclaw.config import ExperimentConfig, ExperimentRepairConfig
+        from berb.config import ExperimentConfig, ExperimentRepairConfig
 
         class FakeConfig:
             class experiment:
@@ -411,7 +411,7 @@ class TestRunRepairLoop:
             "best_run": {"metrics": {}},
         }))
 
-        from researchclaw.config import ExperimentRepairConfig
+        from berb.config import ExperimentRepairConfig
 
         class FakeConfig:
             class experiment:
@@ -429,7 +429,7 @@ class TestRunRepairLoop:
         """Test full repair loop with mocked LLM and sandbox."""
         run_dir = self._make_run_dir(tmp_path, n_conditions=1)
 
-        from researchclaw.config import ExperimentRepairConfig, ExperimentConfig, OpenCodeConfig
+        from berb.config import ExperimentRepairConfig, ExperimentConfig, OpenCodeConfig
 
         class FakeConfig:
             class experiment:

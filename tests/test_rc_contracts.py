@@ -2,8 +2,8 @@ import re
 
 import pytest
 
-from researchclaw.pipeline.contracts import CONTRACTS, StageContract
-from researchclaw.pipeline.stages import GATE_STAGES, STAGE_SEQUENCE, Stage
+from berb.pipeline.contracts import CONTRACTS, StageContract
+from berb.pipeline.stages import GATE_STAGES, STAGE_SEQUENCE, Stage
 
 
 def test_contracts_dict_has_exactly_23_entries():

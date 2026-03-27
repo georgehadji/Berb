@@ -7,7 +7,7 @@ import logging
 import re
 from typing import Any
 
-from researchclaw.assessor.rubrics import RUBRICS, Rubric
+from berb.assessor.rubrics import RUBRICS, Rubric
 
 logger = logging.getLogger(__name__)
 

@@ -9,10 +9,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.config import DockerSandboxConfig, ExperimentConfig
-from researchclaw.experiment.docker_sandbox import DockerSandbox, _next_container_name
-from researchclaw.experiment.factory import create_sandbox
-from researchclaw.experiment.sandbox import SandboxResult
+from berb.config import DockerSandboxConfig, ExperimentConfig
+from berb.experiment.docker_sandbox import DockerSandbox, _next_container_name
+from berb.experiment.factory import create_sandbox
+from berb.experiment.sandbox import SandboxResult
 
 
 # ── SandboxResult contract ─────────────────────────────────────────────
@@ -136,7 +136,7 @@ def test_harness_injection(tmp_path: Path):
 
 
 def test_factory_returns_experiment_sandbox(tmp_path: Path):
-    from researchclaw.experiment.sandbox import ExperimentSandbox
+    from berb.experiment.sandbox import ExperimentSandbox
 
     config = ExperimentConfig(mode="sandbox")
     sandbox = create_sandbox(config, tmp_path / "work")
@@ -156,7 +156,7 @@ def test_factory_falls_back_when_docker_unavailable(mock_avail, tmp_path: Path):
     config = ExperimentConfig(mode="docker")
     sandbox = create_sandbox(config, tmp_path / "work")
     # BUG-002: Should fall back to subprocess sandbox instead of raising
-    from researchclaw.experiment.sandbox import ExperimentSandbox
+    from berb.experiment.sandbox import ExperimentSandbox
     assert isinstance(sandbox, ExperimentSandbox)
 
 

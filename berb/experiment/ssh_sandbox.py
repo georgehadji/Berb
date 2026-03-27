@@ -16,8 +16,8 @@ import time
 import uuid
 from pathlib import Path
 
-from researchclaw.config import SshRemoteConfig
-from researchclaw.experiment.sandbox import (
+from berb.config import SshRemoteConfig
+from berb.experiment.sandbox import (
     SandboxResult,
     parse_metrics,
     validate_entry_point,

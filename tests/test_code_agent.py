@@ -9,15 +9,15 @@ from typing import Any
 
 import pytest
 
-from researchclaw.llm.client import LLMResponse
-from researchclaw.pipeline.code_agent import (
+from berb.llm.client import LLMResponse
+from berb.pipeline.code_agent import (
     CodeAgent,
     CodeAgentConfig,
     CodeAgentResult,
     SolutionNode,
     _SimpleResult,
 )
-from researchclaw.prompts import PromptManager
+from berb.prompts import PromptManager
 
 
 # ---------------------------------------------------------------------------
@@ -570,7 +570,7 @@ class TestHelpers:
 
 class TestConfigIntegration:
     def test_code_agent_config_in_experiment_config(self) -> None:
-        from researchclaw.config import CodeAgentConfig, ExperimentConfig
+        from berb.config import CodeAgentConfig, ExperimentConfig
 
         exp = ExperimentConfig()
         assert hasattr(exp, "code_agent")
@@ -578,7 +578,7 @@ class TestConfigIntegration:
         assert exp.code_agent.enabled is True
 
     def test_code_agent_config_from_dict(self, tmp_path: Path) -> None:
-        from researchclaw.config import RCConfig
+        from berb.config import RCConfig
 
         data = {
             "project": {"name": "test", "mode": "docs-first"},

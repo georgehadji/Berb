@@ -20,7 +20,7 @@ import textwrap
 import threading
 from dataclasses import dataclass, field
 
-from researchclaw.templates.conference import ConferenceTemplate
+from berb.templates.conference import ConferenceTemplate
 
 _render_counters = threading.local()
 
@@ -1727,7 +1727,7 @@ def check_paper_completeness(sections: list[_Section]) -> list[str]:
 
 
     # Per-section word count check (safety net during LaTeX conversion)
-    from researchclaw.prompts import SECTION_WORD_TARGETS, _SECTION_TARGET_ALIASES
+    from berb.prompts import SECTION_WORD_TARGETS, _SECTION_TARGET_ALIASES
 
     for sec in sections:
         if sec.level not in (1, 2) or not sec.heading:

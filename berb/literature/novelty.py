@@ -8,7 +8,7 @@ Usage
 -----
 ::
 
-    from researchclaw.literature.novelty import check_novelty
+    from berb.literature.novelty import check_novelty
 
     report = check_novelty(
         topic="Adaptive learning rate schedules",
@@ -227,7 +227,7 @@ def check_novelty(
 
     # Try real API search
     try:
-        from researchclaw.literature.search import search_papers_multi_query
+        from berb.literature.search import search_papers_multi_query
 
         found = search_papers_multi_query(
             queries,

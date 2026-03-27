@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from typing import Any
 from urllib.request import Request, urlopen
 
-from researchclaw.web._ssrf import check_url_ssrf
+from berb.web._ssrf import check_url_ssrf
 
 logger = logging.getLogger(__name__)
 

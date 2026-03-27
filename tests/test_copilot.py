@@ -15,15 +15,15 @@ from unittest.mock import patch
 
 import pytest
 
-from researchclaw.copilot.modes import ResearchMode
-from researchclaw.copilot.feedback import (
+from berb.copilot.modes import ResearchMode
+from berb.copilot.feedback import (
     FEEDBACK_ACTIONS,
     Feedback,
     FeedbackHandler,
 )
-from researchclaw.copilot.branching import BranchManager
-from researchclaw.copilot.controller import CoPilotController
-from researchclaw.config import CoPilotConfig
+from berb.copilot.branching import BranchManager
+from berb.copilot.controller import CoPilotController
+from berb.config import CoPilotConfig
 
 
 # ===================================================================

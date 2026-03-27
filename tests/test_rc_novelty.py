@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.literature.novelty import (
+from berb.literature.novelty import (
     _assess_novelty,
     _build_novelty_queries,
     _compute_similarity,
@@ -371,9 +371,9 @@ class TestHypothesisGenNoveltyIntegration:
 
     def test_novelty_report_written_when_available(self, tmp_path: Path) -> None:
         """Hypothesis gen should write novelty_report.json when check succeeds."""
-        from researchclaw.pipeline.executor import _execute_hypothesis_gen
-        from researchclaw.adapters import AdapterBundle
-        from researchclaw.config import RCConfig
+        from berb.pipeline.executor import _execute_hypothesis_gen
+        from berb.adapters import AdapterBundle
+        from berb.config import RCConfig
 
         # Set up minimal run directory
         run_dir = tmp_path / "run"
@@ -421,9 +421,9 @@ class TestHypothesisGenNoveltyIntegration:
 
     def test_novelty_failure_does_not_block(self, tmp_path: Path) -> None:
         """If novelty check crashes, hypothesis gen still succeeds."""
-        from researchclaw.pipeline.executor import _execute_hypothesis_gen
-        from researchclaw.adapters import AdapterBundle
-        from researchclaw.config import RCConfig
+        from berb.pipeline.executor import _execute_hypothesis_gen
+        from berb.adapters import AdapterBundle
+        from berb.config import RCConfig
 
         run_dir = tmp_path / "run"
         run_dir.mkdir()

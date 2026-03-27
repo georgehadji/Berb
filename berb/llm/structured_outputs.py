@@ -7,7 +7,7 @@ Architecture: Pydantic v2 models with validation
 Paradigm: Declarative schema definition
 
 Usage:
-    from researchclaw.llm.structured_outputs import DecompositionOutput
+    from berb.llm.structured_outputs import DecompositionOutput
     
     # Use with LLM tool/function calling
     response = client.chat(

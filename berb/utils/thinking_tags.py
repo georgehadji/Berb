@@ -16,7 +16,7 @@ Without this stripping, these artifacts contaminate:
 
 Usage::
 
-    from researchclaw.utils.thinking_tags import strip_thinking_tags
+    from berb.utils.thinking_tags import strip_thinking_tags
 
     clean = strip_thinking_tags(raw_llm_output)
 """

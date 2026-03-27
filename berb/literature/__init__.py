@@ -1,13 +1,12 @@
-"""Real literature search and citation management for ResearchClaw.
+"""Berb literature search and citation management.
 
 Provides API clients for Semantic Scholar and arXiv, plus unified search
-with deduplication and BibTeX generation.  All network I/O uses stdlib
-``urllib`` — **zero** extra pip dependencies.
+with deduplication and BibTeX generation.
 """
 
-from researchclaw.literature.models import Author, Paper
-from researchclaw.literature.search import search_papers
-from researchclaw.literature.verify import (
+from .models import Author, Paper
+from .search import search_papers
+from .verify import (
     CitationResult,
     VerificationReport,
     VerifyStatus,

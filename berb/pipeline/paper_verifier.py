@@ -15,7 +15,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from researchclaw.pipeline.verified_registry import VerifiedRegistry
+from berb.pipeline.verified_registry import VerifiedRegistry
 
 logger = logging.getLogger(__name__)
 

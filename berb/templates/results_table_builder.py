@@ -14,7 +14,7 @@ import math
 from dataclasses import dataclass, field
 from typing import Any
 
-from researchclaw.pipeline.verified_registry import ConditionResult, VerifiedRegistry
+from berb.pipeline.verified_registry import ConditionResult, VerifiedRegistry
 
 logger = logging.getLogger(__name__)
 

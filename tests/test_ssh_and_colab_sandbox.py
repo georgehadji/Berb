@@ -11,7 +11,7 @@ from unittest import mock
 
 import pytest
 
-from researchclaw.config import (
+from berb.config import (
     ColabDriveConfig,
     ExperimentConfig,
     SandboxConfig,
@@ -21,16 +21,16 @@ from researchclaw.config import (
     BenchmarkAgentConfig,
     FigureAgentConfig,
 )
-from researchclaw.experiment.ssh_sandbox import (
+from berb.experiment.ssh_sandbox import (
     SshRemoteSandbox,
     _build_ssh_base,
     _ssh_target,
 )
-from researchclaw.experiment.colab_sandbox import (
+from berb.experiment.colab_sandbox import (
     ColabDriveSandbox,
     COLAB_WORKER_TEMPLATE,
 )
-from researchclaw.experiment.factory import create_sandbox
+from berb.experiment.factory import create_sandbox
 
 
 # ---------------------------------------------------------------------------
@@ -203,7 +203,7 @@ class TestSshSandboxRun:
         call_count = [0]
 
         def fake_ssh_run(command, *, timeout_sec=60):
-            from researchclaw.experiment.ssh_sandbox import _SshResult
+            from berb.experiment.ssh_sandbox import _SshResult
             idx = min(call_count[0], len(fake_results) - 1)
             r = fake_results[idx]
             call_count[0] += 1
@@ -228,7 +228,7 @@ class TestSshSandboxRun:
         cfg = SshRemoteConfig(host="fake", user="test")
         sb = SshRemoteSandbox(cfg, tmp_path)
 
-        from researchclaw.experiment.ssh_sandbox import _SshResult
+        from berb.experiment.ssh_sandbox import _SshResult
 
         with mock.patch.object(sb, '_ssh_run', return_value=_SshResult(0, "", "")):
             with mock.patch.object(sb, '_scp_upload', return_value=False):
@@ -411,8 +411,8 @@ class TestFactoryIntegration:
 
 class TestAcpTimeoutFix:
     def test_timeout_passed_from_config(self):
-        from researchclaw.config import RCConfig, AcpConfig, LlmConfig
-        from researchclaw.llm.acp_client import ACPClient, ACPConfig
+        from berb.config import RCConfig, AcpConfig, LlmConfig
+        from berb.llm.acp_client import ACPClient, ACPConfig
 
         acp_cfg = AcpConfig(agent="codex", timeout_sec=1500)
         llm_cfg = LlmConfig(provider="acp", acp=acp_cfg)
@@ -425,7 +425,7 @@ class TestAcpTimeoutFix:
         assert client.config.timeout_sec == 1500
 
     def test_timeout_default(self):
-        from researchclaw.llm.acp_client import ACPClient
+        from berb.llm.acp_client import ACPClient
 
         fake_rc = mock.Mock()
         fake_rc.llm.acp.agent = "claude"
@@ -445,7 +445,7 @@ class TestAcpTimeoutFix:
 class TestAcpSessionReconnect:
     def test_reconnect_on_session_died(self):
         """_send_prompt retries when session dies with 'agent needs reconnect'."""
-        from researchclaw.llm.acp_client import ACPClient, ACPConfig
+        from berb.llm.acp_client import ACPClient, ACPConfig
 
         client = ACPClient(ACPConfig(agent="claude"))
         client._acpx = "/usr/bin/true"
@@ -470,7 +470,7 @@ class TestAcpSessionReconnect:
 
     def test_reconnect_exhausted_raises(self):
         """_send_prompt raises after exhausting reconnect attempts."""
-        from researchclaw.llm.acp_client import ACPClient, ACPConfig
+        from berb.llm.acp_client import ACPClient, ACPConfig
 
         client = ACPClient(ACPConfig(agent="claude"))
         client._acpx = "/usr/bin/true"
@@ -489,7 +489,7 @@ class TestAcpSessionReconnect:
 
     def test_non_reconnectable_error_raises_immediately(self):
         """_send_prompt does not retry on non-session errors."""
-        from researchclaw.llm.acp_client import ACPClient, ACPConfig
+        from berb.llm.acp_client import ACPClient, ACPConfig
 
         client = ACPClient(ACPConfig(agent="claude"))
         client._acpx = "/usr/bin/true"
@@ -518,13 +518,13 @@ class TestAcpSessionReconnect:
 class TestAcpWeakrefCleanup:
     def setup_method(self):
         """Reset class state between tests."""
-        from researchclaw.llm.acp_client import ACPClient
+        from berb.llm.acp_client import ACPClient
         ACPClient._live_instances.clear()
         ACPClient._atexit_registered = False
 
     def test_dead_weakrefs_pruned(self):
         """Dead weakrefs are removed when a new instance is created."""
-        from researchclaw.llm.acp_client import ACPClient, ACPConfig
+        from berb.llm.acp_client import ACPClient, ACPConfig
 
         a = ACPClient(ACPConfig(agent="claude"))
         b = ACPClient(ACPConfig(agent="claude"))
@@ -543,7 +543,7 @@ class TestAcpWeakrefCleanup:
     def test_atexit_registered_once(self):
         """atexit.register is called exactly once across multiple instances."""
         with mock.patch("researchclaw.llm.acp_client.atexit") as mock_atexit:
-            from researchclaw.llm.acp_client import ACPClient, ACPConfig
+            from berb.llm.acp_client import ACPClient, ACPConfig
             ACPClient._atexit_registered = False
             ACPClient(ACPConfig(agent="claude"))
             ACPClient(ACPConfig(agent="claude"))
@@ -552,7 +552,7 @@ class TestAcpWeakrefCleanup:
 
     def test_atexit_cleanup_closes_live_and_clears(self):
         """_atexit_cleanup calls close() on live instances and clears list."""
-        from researchclaw.llm.acp_client import ACPClient, ACPConfig
+        from berb.llm.acp_client import ACPClient, ACPConfig
 
         a = ACPClient(ACPConfig(agent="claude"))
         b = ACPClient(ACPConfig(agent="claude"))

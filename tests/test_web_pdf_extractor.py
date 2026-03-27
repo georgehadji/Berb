@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.web.pdf_extractor import PDFContent, PDFExtractor
+from berb.web.pdf_extractor import PDFContent, PDFExtractor
 
 
 # ---------------------------------------------------------------------------

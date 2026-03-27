@@ -17,12 +17,12 @@ import pytest
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from researchclaw.utils.token_tracker import TokenTracker, TokenUsage
-from researchclaw.llm.nadirclaw_router import NadirClawRouter, ModelSelection
-from researchclaw.llm.smart_client import SmartLLMClient, SmartLLMResponse
-from researchclaw.mnemo_bridge import MnemoBridge, ContextChunk
-from researchclaw.reasoner_bridge import ReasonerBridge, HypothesisCandidate, PerspectiveType
-from researchclaw.literature.searxng_client import SearXNGClient, SearXNGConfig, SearXNGResult
+from berb.utils.token_tracker import TokenTracker, TokenUsage
+from berb.llm.nadirclaw_router import NadirClawRouter, ModelSelection
+from berb.llm.smart_client import SmartLLMClient, SmartLLMResponse
+from berb.mnemo_bridge import MnemoBridge, ContextChunk
+from berb.reasoner_bridge import ReasonerBridge, HypothesisCandidate, PerspectiveType
+from berb.literature.searxng_client import SearXNGClient, SearXNGConfig, SearXNGResult
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ def mock_llm_client():
 @pytest.fixture
 def smart_client(mock_llm_client, token_tracker) -> SmartLLMClient:
     """Create SmartLLMClient with mock dependencies."""
-    from researchclaw.llm.client import LLMConfig
+    from berb.llm.client import LLMConfig
     
     config = LLMConfig(
         base_url="https://test.api",

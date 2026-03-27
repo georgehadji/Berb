@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
 
-from researchclaw.domains.detector import DomainProfile, is_ml_domain
+from berb.domains.detector import DomainProfile, is_ml_domain
 
 logger = logging.getLogger(__name__)
 
@@ -260,42 +260,42 @@ def _build_adapter_registry() -> dict[str, type[PromptAdapter]]:
         "generic": GenericPromptAdapter,
     }
     try:
-        from researchclaw.domains.adapters.physics import PhysicsPromptAdapter
+        from berb.domains.adapters.physics import PhysicsPromptAdapter
         registry["physics_"] = PhysicsPromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.economics import EconomicsPromptAdapter
+        from berb.domains.adapters.economics import EconomicsPromptAdapter
         registry["economics_"] = EconomicsPromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.biology import BiologyPromptAdapter
+        from berb.domains.adapters.biology import BiologyPromptAdapter
         registry["biology_"] = BiologyPromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.chemistry import ChemistryPromptAdapter
+        from berb.domains.adapters.chemistry import ChemistryPromptAdapter
         registry["chemistry_"] = ChemistryPromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.security import SecurityPromptAdapter
+        from berb.domains.adapters.security import SecurityPromptAdapter
         registry["security_"] = SecurityPromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.math import MathPromptAdapter
+        from berb.domains.adapters.math import MathPromptAdapter
         registry["mathematics_"] = MathPromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.neuroscience import NeurosciencePromptAdapter
+        from berb.domains.adapters.neuroscience import NeurosciencePromptAdapter
         registry["neuroscience_"] = NeurosciencePromptAdapter
     except ImportError:
         pass
     try:
-        from researchclaw.domains.adapters.robotics import RoboticsPromptAdapter
+        from berb.domains.adapters.robotics import RoboticsPromptAdapter
         registry["robotics_"] = RoboticsPromptAdapter
     except ImportError:
         pass

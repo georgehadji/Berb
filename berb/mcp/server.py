@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from researchclaw.mcp.tools import TOOL_DEFINITIONS, list_tool_names
+from berb.mcp.tools import TOOL_DEFINITIONS, list_tool_names
 
 logger = logging.getLogger(__name__)
 

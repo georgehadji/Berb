@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import patch
 
-from researchclaw.experiment.sandbox import (
+from berb.experiment.sandbox import (
     ExperimentSandbox,
     validate_entry_point,
     validate_entry_point_resolved,
@@ -97,7 +97,7 @@ class TestExperimentSandboxEntryPointValidation:
     """Verify validation is wired into ExperimentSandbox.run_project()."""
 
     def _make_sandbox(self, tmp_path: Path) -> ExperimentSandbox:
-        from researchclaw.config import SandboxConfig
+        from berb.config import SandboxConfig
 
         cfg = SandboxConfig()
         return ExperimentSandbox(cfg, tmp_path / "work")

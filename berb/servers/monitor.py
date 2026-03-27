@@ -6,7 +6,7 @@ import asyncio
 import logging
 from typing import Any
 
-from researchclaw.servers.registry import ServerEntry, ServerRegistry
+from berb.servers.registry import ServerEntry, ServerRegistry
 
 logger = logging.getLogger(__name__)
 

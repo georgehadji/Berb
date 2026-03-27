@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from researchclaw.pipeline.diff_revisions import (
+from berb.pipeline.diff_revisions import (
     DiffBasedReviser,
     DiffRevisionResult,
     is_diff_worthwhile,

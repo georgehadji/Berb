@@ -17,8 +17,8 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from researchclaw.config import AgenticConfig
-from researchclaw.experiment.sandbox import SandboxResult, parse_metrics
+from berb.config import AgenticConfig
+from berb.experiment.sandbox import SandboxResult, parse_metrics
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ import pytest
 import time
 from unittest.mock import AsyncMock, MagicMock
 
-from researchclaw.llm.prompt_cache import (
+from berb.llm.prompt_cache import (
     PromptCache,
     CacheEntry,
     CacheWarmer,

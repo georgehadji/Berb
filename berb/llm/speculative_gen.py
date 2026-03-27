@@ -8,7 +8,7 @@ Architecture: Parallel execution with quality gating
 Paradigm: Speculative execution with cancellation
 
 Usage:
-    from researchclaw.llm.speculative_gen import SpeculativeClient, SpeculativeConfig
+    from berb.llm.speculative_gen import SpeculativeClient, SpeculativeConfig
     
     config = SpeculativeConfig(
         cheap_model="gpt-4o-mini",

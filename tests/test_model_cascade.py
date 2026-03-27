@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from researchclaw.llm.model_cascade import (
+from berb.llm.model_cascade import (
     CascadeStep,
     CascadeConfig,
     CascadeStats,

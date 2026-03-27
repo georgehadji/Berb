@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from researchclaw.memory.retriever import MemoryRetriever
-from researchclaw.memory.store import MemoryStore
+from berb.memory.retriever import MemoryRetriever
+from berb.memory.store import MemoryStore
 
 logger = logging.getLogger(__name__)
 

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from researchclaw.domains.detector import DomainProfile, get_profile, get_generic_profile
-from researchclaw.domains.prompt_adapter import (
+from berb.domains.detector import DomainProfile, get_profile, get_generic_profile
+from berb.domains.prompt_adapter import (
     GenericPromptAdapter,
     MLPromptAdapter,
     PromptAdapter,
@@ -198,7 +198,7 @@ class TestGetAdapter:
         if profile is None:
             pytest.skip("physics_simulation profile not found")
         adapter = get_adapter(profile)
-        from researchclaw.domains.adapters.physics import PhysicsPromptAdapter
+        from berb.domains.adapters.physics import PhysicsPromptAdapter
         assert isinstance(adapter, PhysicsPromptAdapter)
 
     def test_unknown_domain_gets_generic(self):

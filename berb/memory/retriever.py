@@ -11,8 +11,8 @@ import math
 from datetime import datetime, timezone
 from typing import Any
 
-from researchclaw.memory.decay import time_decay_weight
-from researchclaw.memory.store import MemoryEntry, MemoryStore
+from berb.memory.decay import time_decay_weight
+from berb.memory.store import MemoryEntry, MemoryStore
 
 logger = logging.getLogger(__name__)
 

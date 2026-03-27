@@ -8,7 +8,7 @@ Architecture: Context builder with dependency tracking
 Paradigm: Functional composition
 
 Usage:
-    from researchclaw.pipeline.dependency_context import DependencyContextBuilder
+    from berb.pipeline.dependency_context import DependencyContextBuilder
     
     builder = DependencyContextBuilder()
     builder.add_completed_task("task_1", code=code1, imports=["numpy", "pandas"])

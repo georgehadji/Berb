@@ -337,7 +337,7 @@ class CodeAgent:
         # Domain profile context
         if self._domain_profile is not None:
             try:
-                from researchclaw.domains.prompt_adapter import get_adapter
+                from berb.domains.prompt_adapter import get_adapter
                 adapter = get_adapter(self._domain_profile)
                 blueprint_ctx = adapter.get_blueprint_context()
                 if blueprint_ctx:
@@ -714,7 +714,7 @@ class CodeAgent:
         critical: list[str] = []
         warnings: list[str] = []
 
-        from researchclaw.experiment.validator import (
+        from berb.experiment.validator import (
             check_class_quality,
             check_code_complexity,
             check_api_correctness,
@@ -1439,7 +1439,7 @@ class CodeAgent:
     def _extract_files(self, content: str) -> dict[str, str]:
         """Extract multi-file code blocks from LLM output."""
         # Local import to avoid circular dependency with executor.py
-        from researchclaw.pipeline.executor import _extract_multi_file_blocks
+        from berb.pipeline.executor import _extract_multi_file_blocks
 
         return _extract_multi_file_blocks(content)
 

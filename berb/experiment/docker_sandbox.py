@@ -22,8 +22,8 @@ import threading
 import time
 from pathlib import Path
 
-from researchclaw.config import DockerSandboxConfig
-from researchclaw.experiment.sandbox import (
+from berb.config import DockerSandboxConfig
+from berb.experiment.sandbox import (
     SandboxResult,
     parse_metrics,
     validate_entry_point,

@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.literature.verify import (
+from berb.literature.verify import (
     CitationResult,
     VerificationReport,
     VerifyStatus,
@@ -21,7 +21,7 @@ from researchclaw.literature.verify import (
     verify_by_title_search,
     verify_citations,
 )
-from researchclaw.literature.models import Author, Paper
+from berb.literature.models import Author, Paper
 
 
 SAMPLE_BIB = textwrap.dedent("""\
@@ -584,21 +584,21 @@ class TestCitationResultSerialization:
 
 class TestStage23Integration:
     def test_stage_exists_in_enum(self) -> None:
-        from researchclaw.pipeline.stages import Stage
+        from berb.pipeline.stages import Stage
 
         assert hasattr(Stage, "CITATION_VERIFY")
         assert Stage.CITATION_VERIFY == 23
 
     def test_stage_in_sequence(self) -> None:
-        from researchclaw.pipeline.stages import Stage, STAGE_SEQUENCE, NEXT_STAGE
+        from berb.pipeline.stages import Stage, STAGE_SEQUENCE, NEXT_STAGE
 
         assert Stage.CITATION_VERIFY in STAGE_SEQUENCE
         assert NEXT_STAGE[Stage.EXPORT_PUBLISH] == Stage.CITATION_VERIFY
         assert NEXT_STAGE[Stage.CITATION_VERIFY] is None
 
     def test_contract_exists(self) -> None:
-        from researchclaw.pipeline.contracts import CONTRACTS
-        from researchclaw.pipeline.stages import Stage
+        from berb.pipeline.contracts import CONTRACTS
+        from berb.pipeline.stages import Stage
 
         assert Stage.CITATION_VERIFY in CONTRACTS
         contract = CONTRACTS[Stage.CITATION_VERIFY]
@@ -606,18 +606,18 @@ class TestStage23Integration:
         assert "references_verified.bib" in contract.output_files
 
     def test_executor_registered(self) -> None:
-        from researchclaw.pipeline.executor import _STAGE_EXECUTORS
-        from researchclaw.pipeline.stages import Stage
+        from berb.pipeline.executor import _STAGE_EXECUTORS
+        from berb.pipeline.stages import Stage
 
         assert Stage.CITATION_VERIFY in _STAGE_EXECUTORS
 
     def test_phase_map(self) -> None:
-        from researchclaw.pipeline.stages import PHASE_MAP, Stage
+        from berb.pipeline.stages import PHASE_MAP, Stage
 
         finalization_stages = PHASE_MAP["H: Finalization"]
         assert Stage.CITATION_VERIFY in finalization_stages
 
     def test_total_stages_is_23(self) -> None:
-        from researchclaw.pipeline.stages import STAGE_SEQUENCE
+        from berb.pipeline.stages import STAGE_SEQUENCE
 
         assert len(STAGE_SEQUENCE) == 23

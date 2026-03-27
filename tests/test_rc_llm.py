@@ -9,7 +9,7 @@ from typing import Any, Mapping
 
 import pytest
 
-from researchclaw.llm.client import (
+from berb.llm.client import (
     LLMClient,
     LLMConfig,
     LLMResponse,
@@ -379,7 +379,7 @@ def test_from_rc_config_reads_api_key_from_env_when_missing(
 
 
 def test_acp_large_prompt_uses_file_transport_before_cli_limit():
-    from researchclaw.llm.acp_client import ACPClient, ACPConfig
+    from berb.llm.acp_client import ACPClient, ACPConfig
 
     client = ACPClient(ACPConfig(agent="codex"))
     client._acpx = "acpx"
@@ -402,7 +402,7 @@ def test_acp_large_prompt_uses_file_transport_before_cli_limit():
 
 
 def test_acp_command_line_too_long_falls_back_to_file_transport():
-    from researchclaw.llm.acp_client import ACPClient, ACPConfig
+    from berb.llm.acp_client import ACPClient, ACPConfig
 
     client = ACPClient(ACPConfig(agent="codex"))
     client._acpx = "acpx"
@@ -426,7 +426,7 @@ def test_acp_command_line_too_long_falls_back_to_file_transport():
 
 
 def test_acp_windows_cmd_wrapper_uses_lower_inline_limit(monkeypatch: pytest.MonkeyPatch):
-    from researchclaw.llm.acp_client import ACPClient
+    from berb.llm.acp_client import ACPClient
 
     monkeypatch.setattr("researchclaw.llm.acp_client.sys.platform", "win32")
     limit = ACPClient._cli_prompt_limit(r"C:\Users\test\AppData\Roaming\npm\acpx.CMD")

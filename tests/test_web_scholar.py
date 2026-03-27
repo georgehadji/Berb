@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.web.scholar import GoogleScholarClient, ScholarPaper
+from berb.web.scholar import GoogleScholarClient, ScholarPaper
 
 
 # ---------------------------------------------------------------------------

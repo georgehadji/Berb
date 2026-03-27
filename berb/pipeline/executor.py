@@ -12,13 +12,13 @@ from typing import Any, Callable
 
 import yaml
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.hardware import HardwareProfile, detect_hardware, ensure_torch_available, is_metric_name
-from researchclaw.llm import create_llm_client
-from researchclaw.llm.client import LLMClient
-from researchclaw.prompts import PromptManager
-from researchclaw.pipeline.stages import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.hardware import HardwareProfile, detect_hardware, ensure_torch_available, is_metric_name
+from berb.llm import create_llm_client
+from berb.llm.client import LLMClient
+from berb.prompts import PromptManager
+from berb.pipeline.stages import (
     NEXT_STAGE,
     Stage,
     StageStatus,
@@ -27,8 +27,8 @@ from researchclaw.pipeline.stages import (
     advance,
     gate_required,
 )
-from researchclaw.pipeline.contracts import CONTRACTS, StageContract
-from researchclaw.experiment.validator import (
+from berb.pipeline.contracts import CONTRACTS, StageContract
+from berb.experiment.validator import (
     CodeValidation,
     format_issues_for_llm,
     validate_code,
@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Domain detection (extracted to _domain.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline._domain import (  # noqa: E402
+from berb.pipeline._domain import (  # noqa: E402
     _DOMAIN_KEYWORDS,
     _detect_domain,
     _is_ml_domain,
@@ -49,7 +49,7 @@ from researchclaw.pipeline._domain import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Shared helpers (extracted to _helpers.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline._helpers import (  # noqa: E402
+from berb.pipeline._helpers import (  # noqa: E402
     StageResult,
     _METACLAW_SKILLS_DIR,
     _SANDBOX_SAFE_PACKAGES,
@@ -91,7 +91,7 @@ from researchclaw.pipeline._helpers import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stages 1-2 (extracted to stage_impls/_topic.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._topic import (  # noqa: E402
+from berb.pipeline.stage_impls._topic import (  # noqa: E402
     _execute_topic_init,
     _execute_problem_decompose,
 )
@@ -99,7 +99,7 @@ from researchclaw.pipeline.stage_impls._topic import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stages 3-6 (extracted to stage_impls/_literature.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._literature import (  # noqa: E402
+from berb.pipeline.stage_impls._literature import (  # noqa: E402
     _execute_search_strategy,
     _execute_literature_collect,
     _execute_literature_screen,
@@ -110,7 +110,7 @@ from researchclaw.pipeline.stage_impls._literature import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stages 7-8 (extracted to stage_impls/_synthesis.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._synthesis import (  # noqa: E402
+from berb.pipeline.stage_impls._synthesis import (  # noqa: E402
     _execute_synthesis,
     _execute_hypothesis_gen,
 )
@@ -118,21 +118,21 @@ from researchclaw.pipeline.stage_impls._synthesis import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stage 9 (extracted to stage_impls/_experiment_design.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._experiment_design import (  # noqa: E402
+from berb.pipeline.stage_impls._experiment_design import (  # noqa: E402
     _execute_experiment_design,
 )
 
 # ---------------------------------------------------------------------------
 # Stage 10 (extracted to stage_impls/_code_generation.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._code_generation import (  # noqa: E402
+from berb.pipeline.stage_impls._code_generation import (  # noqa: E402
     _execute_code_generation,
 )
 
 # ---------------------------------------------------------------------------
 # Stages 11-13 (extracted to stage_impls/_execution.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._execution import (  # noqa: E402
+from berb.pipeline.stage_impls._execution import (  # noqa: E402
     _execute_resource_planning,
     _execute_experiment_run,
     _execute_iterative_refine,
@@ -141,7 +141,7 @@ from researchclaw.pipeline.stage_impls._execution import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stages 14-15 (extracted to stage_impls/_analysis.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._analysis import (  # noqa: E402
+from berb.pipeline.stage_impls._analysis import (  # noqa: E402
     _execute_result_analysis,
     _parse_decision,
     _execute_research_decision,
@@ -150,7 +150,7 @@ from researchclaw.pipeline.stage_impls._analysis import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stages 16-17 (extracted to stage_impls/_paper_writing.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._paper_writing import (  # noqa: E402
+from berb.pipeline.stage_impls._paper_writing import (  # noqa: E402
     _execute_paper_outline,
     _execute_paper_draft,
     _collect_raw_experiment_metrics,
@@ -166,7 +166,7 @@ from researchclaw.pipeline.stage_impls._paper_writing import (  # noqa: E402
 # ---------------------------------------------------------------------------
 # Stages 18-23 (extracted to stage_impls/_review_publish.py)
 # ---------------------------------------------------------------------------
-from researchclaw.pipeline.stage_impls._review_publish import (  # noqa: E402
+from berb.pipeline.stage_impls._review_publish import (  # noqa: E402
     _execute_peer_review,
     _execute_paper_revision,
     _execute_quality_gate,
@@ -321,7 +321,7 @@ def execute_stage(
             if mc_prm and getattr(mc_prm, "enabled", False):
                 prm_stages = getattr(mc_prm, "gate_stages", (5, 9, 15, 20))
                 if int(stage) in prm_stages:
-                    from researchclaw.metaclaw_bridge.prm_gate import ResearchPRMGate
+                    from berb.metaclaw_bridge.prm_gate import ResearchPRMGate
 
                     prm_gate = ResearchPRMGate.from_bridge_config(mc_prm)
                     if prm_gate is not None:

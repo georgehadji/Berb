@@ -27,7 +27,7 @@ class _DummyResponse:
 
 class TestRateLimitRetry:
     def test_s2_429_retries_and_succeeds(self) -> None:
-        from researchclaw.literature.semantic_scholar import (
+        from berb.literature.semantic_scholar import (
             _reset_circuit_breaker,
             search_semantic_scholar,
         )
@@ -76,7 +76,7 @@ class TestRateLimitRetry:
         assert len(papers) == 1
 
     def test_s2_persistent_429_exhausts_retries_and_returns_empty(self) -> None:
-        from researchclaw.literature.semantic_scholar import (
+        from berb.literature.semantic_scholar import (
             _MAX_RETRIES,
             _reset_circuit_breaker,
             search_semantic_scholar,
@@ -107,8 +107,8 @@ class TestRateLimitRetry:
 
 class TestDegradationChain:
     def test_search_degrades_to_cache_on_api_failure(self, tmp_path: Path) -> None:
-        from researchclaw.literature.cache import put_cache
-        from researchclaw.literature.search import search_papers
+        from berb.literature.cache import put_cache
+        from berb.literature.search import search_papers
 
         cached = [
             {
@@ -146,7 +146,7 @@ class TestDegradationChain:
         assert any(p.title == "Cached Paper" for p in papers)
 
     def test_search_empty_on_total_failure(self, tmp_path: Path) -> None:
-        from researchclaw.literature.search import search_papers
+        from berb.literature.search import search_papers
 
         with patch(
             "researchclaw.literature.search.search_openalex",
@@ -171,7 +171,7 @@ class TestDegradationChain:
 
 class TestLLMFallback:
     def test_primary_403_forbidden_fallback_succeeds(self) -> None:
-        from researchclaw.llm.client import LLMClient, LLMConfig, LLMResponse
+        from berb.llm.client import LLMClient, LLMConfig, LLMResponse
 
         client = LLMClient(
             LLMConfig(
@@ -202,7 +202,7 @@ class TestLLMFallback:
         assert "gpt-fallback" in call_models
 
     def test_preflight_detects_401(self) -> None:
-        from researchclaw.llm.client import LLMClient, LLMConfig
+        from berb.llm.client import LLMClient, LLMConfig
 
         client = LLMClient(
             LLMConfig(
@@ -228,7 +228,7 @@ class TestLLMFallback:
 class TestNoncriticalStageSkip:
     @staticmethod
     def _make_rc_config(tmp_path: Path):
-        from researchclaw.config import RCConfig
+        from berb.config import RCConfig
 
         data = {
             "project": {"name": "rc-e2e-regression", "mode": "docs-first"},
@@ -247,10 +247,10 @@ class TestNoncriticalStageSkip:
         return RCConfig.from_dict(data, project_root=tmp_path, check_paths=False)
 
     def test_noncritical_stage_failure_is_skipped(self, tmp_path: Path) -> None:
-        from researchclaw.adapters import AdapterBundle
-        from researchclaw.pipeline import runner as rc_runner
-        from researchclaw.pipeline.executor import StageResult
-        from researchclaw.pipeline.stages import STAGE_SEQUENCE, Stage, StageStatus
+        from berb.adapters import AdapterBundle
+        from berb.pipeline import runner as rc_runner
+        from berb.pipeline.executor import StageResult
+        from berb.pipeline.stages import STAGE_SEQUENCE, Stage, StageStatus
 
         run_dir = tmp_path / "run"
         run_dir.mkdir()
@@ -287,10 +287,10 @@ class TestNoncriticalStageSkip:
         )
 
     def test_critical_stage_failure_still_aborts(self, tmp_path: Path) -> None:
-        from researchclaw.adapters import AdapterBundle
-        from researchclaw.pipeline import runner as rc_runner
-        from researchclaw.pipeline.executor import StageResult
-        from researchclaw.pipeline.stages import Stage, StageStatus
+        from berb.adapters import AdapterBundle
+        from berb.pipeline import runner as rc_runner
+        from berb.pipeline.executor import StageResult
+        from berb.pipeline.stages import Stage, StageStatus
 
         run_dir = tmp_path / "run-critical"
         run_dir.mkdir()

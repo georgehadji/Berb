@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from researchclaw.overleaf.conflict import ConflictResolver
+from berb.overleaf.conflict import ConflictResolver
 
 logger = logging.getLogger(__name__)
 

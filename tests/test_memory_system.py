@@ -19,13 +19,13 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.memory.store import MemoryEntry, MemoryStore, VALID_CATEGORIES
-from researchclaw.memory.decay import time_decay_weight, confidence_update
-from researchclaw.memory.embeddings import EmbeddingProvider, _tokenize, _hash_token
-from researchclaw.memory.retriever import MemoryRetriever, cosine_similarity
-from researchclaw.memory.ideation_memory import IdeationMemory
-from researchclaw.memory.experiment_memory import ExperimentMemory
-from researchclaw.memory.writing_memory import WritingMemory
+from berb.memory.store import MemoryEntry, MemoryStore, VALID_CATEGORIES
+from berb.memory.decay import time_decay_weight, confidence_update
+from berb.memory.embeddings import EmbeddingProvider, _tokenize, _hash_token
+from berb.memory.retriever import MemoryRetriever, cosine_similarity
+from berb.memory.ideation_memory import IdeationMemory
+from berb.memory.experiment_memory import ExperimentMemory
+from berb.memory.writing_memory import WritingMemory
 
 
 # ── Fixtures ─────────────────────────────────────────────────────────

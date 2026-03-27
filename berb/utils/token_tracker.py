@@ -17,9 +17,9 @@ Example:
     ... )
     >>> summary = tracker.get_summary()
     >>> print(f"Saved {summary['total_saved_tokens']:,} tokens")
-"""
 
 Author: Georgios-Chrysovalantis Chatzivantsidis
+"""
 
 from __future__ import annotations
 

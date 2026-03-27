@@ -7,7 +7,7 @@ import math
 import pytest
 from pathlib import Path
 
-from researchclaw.experiment.metrics import (
+from berb.experiment.metrics import (
     ExperimentResults,
     MetricType,
     UniversalMetricParser,

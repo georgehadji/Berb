@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.report import generate_report
+from berb.report import generate_report
 
 
 class TestReport:

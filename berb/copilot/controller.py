@@ -6,11 +6,11 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from researchclaw.config import CoPilotConfig
-from researchclaw.copilot.branching import BranchManager
-from researchclaw.copilot.feedback import Feedback, FeedbackHandler
-from researchclaw.copilot.modes import ResearchMode
-from researchclaw.pipeline.stages import GATE_STAGES
+from berb.config import CoPilotConfig
+from berb.copilot.branching import BranchManager
+from berb.copilot.feedback import Feedback, FeedbackHandler
+from berb.copilot.modes import ResearchMode
+from berb.pipeline.stages import GATE_STAGES
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 """Unit tests for dependency context injection."""
 
 import pytest
-from researchclaw.pipeline.dependency_context import (
+from berb.pipeline.dependency_context import (
     CompletedTask,
     DependencyContextBuilder,
     PipelineContextManager,

@@ -55,23 +55,23 @@ class TestBenchmarkKnowledge:
     """Test the benchmark_knowledge.yaml file."""
 
     def test_knowledge_file_exists(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
+        from berb.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
         assert _KNOWLEDGE_PATH.exists(), f"Knowledge file missing: {_KNOWLEDGE_PATH}"
 
     def test_knowledge_loads(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
+        from berb.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
         data = yaml.safe_load(_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
         assert isinstance(data, dict)
         assert "domains" in data
 
     def test_knowledge_has_domains(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
+        from berb.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
         data = yaml.safe_load(_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
         domains = data["domains"]
         assert len(domains) >= 10, f"Expected 10+ domains, got {len(domains)}"
 
     def test_each_domain_has_benchmarks_and_baselines(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
+        from berb.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
         data = yaml.safe_load(_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
         for did, info in data["domains"].items():
             assert "keywords" in info, f"Domain {did} missing keywords"
@@ -81,7 +81,7 @@ class TestBenchmarkKnowledge:
             assert len(info["common_baselines"]) > 0, f"Domain {did} has 0 baselines"
 
     def test_benchmark_entries_have_required_fields(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
+        from berb.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
         data = yaml.safe_load(_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
         for did, info in data["domains"].items():
             for b in info["standard_benchmarks"]:
@@ -90,7 +90,7 @@ class TestBenchmarkKnowledge:
                 assert b["tier"] in (1, 2, 3), f"Invalid tier for {b.get('name')}"
 
     def test_baseline_entries_have_required_fields(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
+        from berb.agents.benchmark_agent.surveyor import _KNOWLEDGE_PATH
         data = yaml.safe_load(_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
         for did, info in data["domains"].items():
             for bl in info["common_baselines"]:
@@ -108,7 +108,7 @@ class TestSurveyor:
     """Test SurveyorAgent domain matching and local search."""
 
     def test_domain_matching_image_classification(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         domains = agent._match_domains(
             "Image Classification with Contrastive Learning"
@@ -116,7 +116,7 @@ class TestSurveyor:
         assert "image_classification" in domains
 
     def test_domain_matching_rl(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         domains = agent._match_domains(
             "Reinforcement Learning for Continuous Control"
@@ -124,7 +124,7 @@ class TestSurveyor:
         assert "reinforcement_learning" in domains
 
     def test_domain_matching_knowledge_distillation(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         domains = agent._match_domains(
             "Knowledge Distillation with Feature Alignment"
@@ -132,7 +132,7 @@ class TestSurveyor:
         assert "knowledge_distillation" in domains
 
     def test_domain_matching_multiple(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         domains = agent._match_domains(
             "Self-Supervised Contrastive Learning for Image Classification"
@@ -140,14 +140,14 @@ class TestSurveyor:
         assert len(domains) >= 2
 
     def test_local_candidates_returns_benchmarks(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         result = agent._get_local_candidates(["image_classification"])
         assert len(result["benchmarks"]) > 0
         assert len(result["baselines"]) > 0
 
     def test_execute_returns_benchmarks(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         result = agent.execute({
             "topic": "Image Classification with Data Augmentation",
@@ -157,7 +157,7 @@ class TestSurveyor:
         assert len(result.data["benchmarks"]) > 0
 
     def test_execute_with_unknown_topic_uses_llm_fallback(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         llm = FakeLLM([json.dumps({
             "benchmarks": [{"name": "CustomDS", "tier": 2}],
             "baselines": [{"name": "CustomBL", "source": "custom", "paper": "X"}],
@@ -172,7 +172,7 @@ class TestSurveyor:
         assert result.data["llm_fallback_used"]
 
     def test_extract_search_keywords(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         kws = SurveyorAgent._extract_search_keywords(
             "Novel Approach for Image Classification using Contrastive Learning"
         )
@@ -182,7 +182,7 @@ class TestSurveyor:
             assert "using" not in kw.lower()
 
     def test_execute_empty_topic_fails(self) -> None:
-        from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
+        from berb.agents.benchmark_agent.surveyor import SurveyorAgent
         agent = SurveyorAgent(FakeLLM(), enable_hf_search=False)
         result = agent.execute({"topic": ""})
         assert not result.success
@@ -221,7 +221,7 @@ class TestSelector:
         ]
 
     def test_filter_excludes_tier3(self, benchmarks: list[dict]) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
         agent = SelectorAgent(FakeLLM(), tier_limit=2)
         filtered = agent._filter_benchmarks(benchmarks)
         names = [b["name"] for b in filtered]
@@ -229,14 +229,14 @@ class TestSelector:
         assert "CIFAR-10" in names
 
     def test_filter_network_none_only_tier1(self, benchmarks: list[dict]) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
         agent = SelectorAgent(FakeLLM(), network_policy="none")
         filtered = agent._filter_benchmarks(benchmarks)
         for b in filtered:
             assert b["tier"] == 1
 
     def test_ranking_prefers_tier1(self, benchmarks: list[dict]) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
         agent = SelectorAgent(FakeLLM())
         filtered = agent._filter_benchmarks(benchmarks)
         ranked = agent._rank_benchmarks(filtered)
@@ -244,7 +244,7 @@ class TestSelector:
         assert ranked[0]["tier"] == 1
 
     def test_ranking_prefers_knowledge_base(self, benchmarks: list[dict]) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
         agent = SelectorAgent(FakeLLM())
         filtered = agent._filter_benchmarks(benchmarks)
         ranked = agent._rank_benchmarks(filtered)
@@ -256,7 +256,7 @@ class TestSelector:
 
     def test_execute_selects_minimum(self, benchmarks: list[dict],
                                      baselines: list[dict]) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
         llm = FakeLLM([json.dumps({
             "primary_benchmark": "CIFAR-10",
             "secondary_benchmarks": ["CIFAR-100"],
@@ -283,7 +283,7 @@ class TestAcquirer:
     """Test AcquirerAgent code generation."""
 
     def test_generate_setup_script_tier1_only(self) -> None:
-        from researchclaw.agents.benchmark_agent.acquirer import AcquirerAgent
+        from berb.agents.benchmark_agent.acquirer import AcquirerAgent
         agent = AcquirerAgent(FakeLLM())
         script = agent._generate_setup_script(
             [{"name": "CIFAR-10", "tier": 1, "api": "torchvision..."}], []
@@ -292,7 +292,7 @@ class TestAcquirer:
         assert script == ""
 
     def test_generate_setup_script_tier2(self) -> None:
-        from researchclaw.agents.benchmark_agent.acquirer import AcquirerAgent
+        from berb.agents.benchmark_agent.acquirer import AcquirerAgent
         agent = AcquirerAgent(FakeLLM())
         script = agent._generate_setup_script(
             [{"name": "IMDB", "tier": 2,
@@ -303,7 +303,7 @@ class TestAcquirer:
         assert "load_dataset" in script
 
     def test_generate_requirements_filters_builtin(self) -> None:
-        from researchclaw.agents.benchmark_agent.acquirer import AcquirerAgent
+        from berb.agents.benchmark_agent.acquirer import AcquirerAgent
         agent = AcquirerAgent(FakeLLM())
         reqs = agent._generate_requirements(["torch", "numpy", "xgboost", "timm"])
         assert "torch" not in reqs
@@ -312,12 +312,12 @@ class TestAcquirer:
         assert "xgboost" in reqs
 
     def test_strip_fences(self) -> None:
-        from researchclaw.agents.benchmark_agent.acquirer import AcquirerAgent
+        from berb.agents.benchmark_agent.acquirer import AcquirerAgent
         code = "```python\nimport torch\n```"
         assert AcquirerAgent._strip_fences(code) == "import torch"
 
     def test_execute_generates_code(self) -> None:
-        from researchclaw.agents.benchmark_agent.acquirer import AcquirerAgent
+        from berb.agents.benchmark_agent.acquirer import AcquirerAgent
         llm = FakeLLM([
             "import torchvision\ndef get_datasets(): pass",
             "import torch.nn as nn\ndef get_baselines(): pass",
@@ -350,32 +350,32 @@ class TestValidator:
     """Test ValidatorAgent code validation."""
 
     def test_syntax_check_valid(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         agent = ValidatorAgent(FakeLLM())
         errors = agent._check_syntax("import torch\nx = 1 + 2", "test")
         assert errors == []
 
     def test_syntax_check_invalid(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         agent = ValidatorAgent(FakeLLM())
         errors = agent._check_syntax("def foo(\n  x = ", "test")
         assert len(errors) > 0
         assert "SyntaxError" in errors[0]
 
     def test_import_check_builtin_ok(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         agent = ValidatorAgent(FakeLLM())
         warnings = agent._check_imports("import torch\nimport numpy", "test", [])
         assert warnings == []
 
     def test_import_check_unknown(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         agent = ValidatorAgent(FakeLLM())
         warnings = agent._check_imports("import some_obscure_lib", "test", [])
         assert len(warnings) > 0
 
     def test_import_check_with_requirements(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         agent = ValidatorAgent(FakeLLM())
         warnings = agent._check_imports(
             "import xgboost", "test", ["xgboost"],
@@ -383,7 +383,7 @@ class TestValidator:
         assert warnings == []
 
     def test_execute_passes_valid_code(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         llm = FakeLLM([json.dumps({
             "passed": True,
             "issues": [],
@@ -405,7 +405,7 @@ class TestValidator:
         assert result.data["passed"]
 
     def test_execute_fails_syntax_error(self) -> None:
-        from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+        from berb.agents.benchmark_agent.validator import ValidatorAgent
         agent = ValidatorAgent(FakeLLM())
         result = agent.execute({
             "acquisition": {
@@ -430,7 +430,7 @@ class TestOrchestrator:
     """Test BenchmarkOrchestrator end-to-end."""
 
     def test_orchestrate_produces_plan(self, tmp_path: Path) -> None:
-        from researchclaw.agents.benchmark_agent.orchestrator import (
+        from berb.agents.benchmark_agent.orchestrator import (
             BenchmarkAgentConfig,
             BenchmarkOrchestrator,
         )
@@ -475,7 +475,7 @@ class TestOrchestrator:
         assert plan.elapsed_sec > 0
 
     def test_orchestrate_saves_artifacts(self, tmp_path: Path) -> None:
-        from researchclaw.agents.benchmark_agent.orchestrator import (
+        from berb.agents.benchmark_agent.orchestrator import (
             BenchmarkAgentConfig,
             BenchmarkOrchestrator,
         )
@@ -510,7 +510,7 @@ class TestOrchestrator:
         assert (stage_dir / "benchmark_plan.json").exists()
 
     def test_plan_to_prompt_block(self) -> None:
-        from researchclaw.agents.benchmark_agent.orchestrator import BenchmarkPlan
+        from berb.agents.benchmark_agent.orchestrator import BenchmarkPlan
         plan = BenchmarkPlan(
             selected_benchmarks=[
                 {"name": "CIFAR-10", "role": "primary", "metrics": ["accuracy"],
@@ -530,7 +530,7 @@ class TestOrchestrator:
         assert "get_baselines" in block
 
     def test_plan_to_dict_serializable(self) -> None:
-        from researchclaw.agents.benchmark_agent.orchestrator import BenchmarkPlan
+        from berb.agents.benchmark_agent.orchestrator import BenchmarkPlan
         plan = BenchmarkPlan(
             selected_benchmarks=[{"name": "test"}],
             data_loader_code="code",
@@ -550,13 +550,13 @@ class TestConfig:
     """Test BenchmarkAgentConfig in config.py."""
 
     def test_default_config_has_benchmark_agent(self) -> None:
-        from researchclaw.config import ExperimentConfig
+        from berb.config import ExperimentConfig
         cfg = ExperimentConfig()
         assert hasattr(cfg, "benchmark_agent")
         assert cfg.benchmark_agent.enabled is True
 
     def test_parse_benchmark_agent_config(self) -> None:
-        from researchclaw.config import _parse_benchmark_agent_config
+        from berb.config import _parse_benchmark_agent_config
         cfg = _parse_benchmark_agent_config({
             "enabled": False,
             "tier_limit": 1,
@@ -567,7 +567,7 @@ class TestConfig:
         assert cfg.min_baselines == 3
 
     def test_parse_benchmark_agent_config_empty(self) -> None:
-        from researchclaw.config import _parse_benchmark_agent_config
+        from berb.config import _parse_benchmark_agent_config
         cfg = _parse_benchmark_agent_config({})
         assert cfg.enabled is True
         assert cfg.tier_limit == 2
@@ -582,22 +582,22 @@ class TestBaseAgent:
     """Test the base agent class."""
 
     def test_parse_json_direct(self) -> None:
-        from researchclaw.agents.base import BaseAgent
+        from berb.agents.base import BaseAgent
         result = BaseAgent._parse_json('{"key": "value"}')
         assert result == {"key": "value"}
 
     def test_parse_json_fenced(self) -> None:
-        from researchclaw.agents.base import BaseAgent
+        from berb.agents.base import BaseAgent
         result = BaseAgent._parse_json('Some text\n```json\n{"key": 1}\n```\nMore text')
         assert result == {"key": 1}
 
     def test_parse_json_embedded(self) -> None:
-        from researchclaw.agents.base import BaseAgent
+        from berb.agents.base import BaseAgent
         result = BaseAgent._parse_json('Here is the result: {"a": 2} end')
         assert result == {"a": 2}
 
     def test_parse_json_invalid(self) -> None:
-        from researchclaw.agents.base import BaseAgent
+        from berb.agents.base import BaseAgent
         result = BaseAgent._parse_json("no json here at all")
         assert result is None
 
@@ -611,7 +611,7 @@ class TestRequiredBaselines:
     """Test that required baselines are injected from knowledge base."""
 
     def test_inject_required_baselines_image_classification(self) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
 
         llm = FakeLLM()
         agent = SelectorAgent(llm, min_baselines=1)
@@ -631,7 +631,7 @@ class TestRequiredBaselines:
         assert sum(1 for b in selected if b["name"] == "EfficientNet-B0") == 1
 
     def test_inject_required_baselines_no_duplicates(self) -> None:
-        from researchclaw.agents.benchmark_agent.selector import SelectorAgent
+        from berb.agents.benchmark_agent.selector import SelectorAgent
 
         llm = FakeLLM()
         agent = SelectorAgent(llm, min_baselines=1)

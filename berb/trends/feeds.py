@@ -71,7 +71,7 @@ class FeedManager:
     ) -> list[dict[str, Any]]:
         """Fetch papers from arXiv API."""
         try:
-            from researchclaw.literature.arxiv_client import search_arxiv
+            from berb.literature.arxiv_client import search_arxiv
         except ImportError:
             logger.debug("arxiv_client not available")
             return []
@@ -103,7 +103,7 @@ class FeedManager:
     ) -> list[dict[str, Any]]:
         """Fetch papers from Semantic Scholar API."""
         try:
-            from researchclaw.literature.semantic_scholar import search_s2
+            from berb.literature.semantic_scholar import search_s2
         except ImportError:
             logger.debug("semantic_scholar client not available")
             return []
@@ -142,7 +142,7 @@ class FeedManager:
     ) -> list[dict[str, Any]]:
         """Fetch papers from OpenAlex API."""
         try:
-            from researchclaw.literature.openalex_client import search_openalex
+            from berb.literature.openalex_client import search_openalex
         except ImportError:
             logger.debug("openalex_client not available")
             return []

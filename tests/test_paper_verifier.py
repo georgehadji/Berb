@@ -7,11 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.pipeline.paper_verifier import (
+from berb.pipeline.paper_verifier import (
     VerificationResult,
     verify_paper,
 )
-from researchclaw.pipeline.verified_registry import VerifiedRegistry
+from berb.pipeline.verified_registry import VerifiedRegistry
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / "artifacts"
 

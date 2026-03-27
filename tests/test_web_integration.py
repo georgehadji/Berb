@@ -6,10 +6,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.web.agent import WebSearchAgent, WebSearchAgentResult
-from researchclaw.web.crawler import CrawlResult
-from researchclaw.web.search import SearchResult, WebSearchResponse
-from researchclaw.web.scholar import ScholarPaper
+from berb.web.agent import WebSearchAgent, WebSearchAgentResult
+from berb.web.crawler import CrawlResult
+from berb.web.search import SearchResult, WebSearchResponse
+from berb.web.scholar import ScholarPaper
 
 
 # ---------------------------------------------------------------------------
@@ -211,14 +211,14 @@ class TestWebSearchAgent:
 
 class TestWebSearchConfig:
     def test_default_config(self):
-        from researchclaw.config import WebSearchConfig
+        from berb.config import WebSearchConfig
         cfg = WebSearchConfig()
         assert cfg.enabled is True
         assert cfg.max_web_results == 10
         assert cfg.enable_scholar is True
 
     def test_config_in_rcconfig(self):
-        from researchclaw.config import RCConfig
+        from berb.config import RCConfig
         import dataclasses
         field_names = [f.name for f in dataclasses.fields(RCConfig)]
         assert "web_search" in field_names

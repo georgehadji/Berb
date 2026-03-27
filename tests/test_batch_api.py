@@ -3,7 +3,7 @@
 import pytest
 import asyncio
 import time
-from researchclaw.llm.batch_api import (
+from berb.llm.batch_api import (
     BatchClient,
     BatchJob,
     BatchRequest,

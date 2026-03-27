@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from researchclaw.llm.eval_dataset import (
+from berb.llm.eval_dataset import (
     EvalDatasetBuilder,
     FailureRecord,
     PipelineEvalIntegration,

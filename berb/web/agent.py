@@ -23,10 +23,10 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from researchclaw.web.crawler import CrawlResult, WebCrawler
-from researchclaw.web.pdf_extractor import PDFContent, PDFExtractor
-from researchclaw.web.scholar import GoogleScholarClient, ScholarPaper
-from researchclaw.web.search import SearchResult, WebSearchClient, WebSearchResponse
+from berb.web.crawler import CrawlResult, WebCrawler
+from berb.web.pdf_extractor import PDFContent, PDFExtractor
+from berb.web.scholar import GoogleScholarClient, ScholarPaper
+from berb.web.search import SearchResult, WebSearchClient, WebSearchResponse
 
 logger = logging.getLogger(__name__)
 

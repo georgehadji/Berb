@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from researchclaw.wizard.templates import TEMPLATES
+from berb.wizard.templates import TEMPLATES
 
 
 class QuickStartWizard:

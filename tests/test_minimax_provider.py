@@ -14,8 +14,8 @@ from typing import Any, Mapping
 
 import pytest
 
-from researchclaw.llm import PROVIDER_PRESETS, create_llm_client
-from researchclaw.llm.client import LLMClient, LLMConfig, LLMResponse
+from berb.llm import PROVIDER_PRESETS, create_llm_client
+from berb.llm.client import LLMClient, LLMConfig, LLMResponse
 
 
 # ---------------------------------------------------------------------------
@@ -289,18 +289,18 @@ class TestMiniMaxCLI:
     """Verify MiniMax is in the CLI interactive provider menu."""
 
     def test_minimax_in_provider_choices(self):
-        from researchclaw.cli import _PROVIDER_CHOICES
+        from berb.cli import _PROVIDER_CHOICES
 
         found = any(v[0] == "minimax" for v in _PROVIDER_CHOICES.values())
         assert found, "minimax not found in _PROVIDER_CHOICES"
 
     def test_minimax_in_provider_urls(self):
-        from researchclaw.cli import _PROVIDER_URLS
+        from berb.cli import _PROVIDER_URLS
 
         assert _PROVIDER_URLS["minimax"] == "https://api.minimax.io/v1"
 
     def test_minimax_in_provider_models(self):
-        from researchclaw.cli import _PROVIDER_MODELS
+        from berb.cli import _PROVIDER_MODELS
 
         primary, fallbacks = _PROVIDER_MODELS["minimax"]
         assert primary == "MiniMax-M2.5"
@@ -316,7 +316,7 @@ class TestMiniMaxFactory:
     """Verify create_llm_client dispatches correctly for MiniMax."""
 
     def test_create_llm_client_returns_llm_client(self):
-        from researchclaw.config import LlmConfig, RCConfig
+        from berb.config import LlmConfig, RCConfig
 
         rc_config = SimpleNamespace(
             llm=SimpleNamespace(

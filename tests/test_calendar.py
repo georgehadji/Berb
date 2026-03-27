@@ -11,9 +11,9 @@ from pathlib import Path
 import pytest
 import yaml
 
-from researchclaw.calendar.deadlines import Conference, ConferenceCalendar
-from researchclaw.calendar.planner import SubmissionPlanner
-from researchclaw.calendar.reminder import Reminder, ReminderCalculator
+from berb.calendar.deadlines import Conference, ConferenceCalendar
+from berb.calendar.planner import SubmissionPlanner
+from berb.calendar.reminder import Reminder, ReminderCalculator
 
 
 # ---------------------------------------------------------------------------

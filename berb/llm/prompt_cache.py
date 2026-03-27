@@ -7,7 +7,7 @@ Architecture: LRU cache with TTL, provider-specific cache control
 Paradigm: Decorator pattern with async support
 
 Usage:
-    from researchclaw.llm.prompt_cache import PromptCache, cached_completion
+    from berb.llm.prompt_cache import PromptCache, cached_completion
     
     cache = PromptCache(ttl_seconds=3600, max_size=1000)
     

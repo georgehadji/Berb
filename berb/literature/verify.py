@@ -31,7 +31,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Sequence
 
-from researchclaw.literature.models import Author, Paper
+from berb.literature.models import Author, Paper
 
 logger = logging.getLogger(__name__)
 
@@ -584,7 +584,7 @@ def verify_by_title_search(
     Uses the unified ``search_papers`` function from our literature module.
     Returns *None* only on total network failure.
     """
-    from researchclaw.literature.search import search_papers
+    from berb.literature.search import search_papers
 
     try:
         results = search_papers(

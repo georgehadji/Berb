@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from researchclaw.skills.loader import load_skills_from_directory
-from researchclaw.skills.matcher import format_skills_for_prompt, match_skills
-from researchclaw.skills.schema import Skill
+from berb.skills.loader import load_skills_from_directory
+from berb.skills.matcher import format_skills_for_prompt, match_skills
+from berb.skills.schema import Skill
 
 logger = logging.getLogger(__name__)
 

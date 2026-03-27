@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.web.crawler import CrawlResult, WebCrawler
-from researchclaw.web import check_url_ssrf
+from berb.web.crawler import CrawlResult, WebCrawler
+from berb.web import check_url_ssrf
 
 
 # ---------------------------------------------------------------------------

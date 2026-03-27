@@ -8,7 +8,3 @@ Author: Georgios-Chrysovalantis Chatzivantsidis
 
 __version__ = "1.0.0"
 __author__ = "Georgios-Chrysovalantis Chatzivantsidis"
-__all__ = ["ResearchPipeline", "BerbConfig", "__version__"]
-
-from .pipeline import ResearchPipeline
-from .config import BerbConfig

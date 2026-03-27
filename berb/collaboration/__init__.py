@@ -5,10 +5,10 @@ Enables multiple AutoResearchClaw instances to share research artifacts
 through a file-system-based shared repository.
 """
 
-from researchclaw.collaboration.repository import ResearchRepository
-from researchclaw.collaboration.publisher import ArtifactPublisher
-from researchclaw.collaboration.subscriber import ArtifactSubscriber
-from researchclaw.collaboration.dedup import deduplicate_artifacts
+from berb.collaboration.repository import ResearchRepository
+from berb.collaboration.publisher import ArtifactPublisher
+from berb.collaboration.subscriber import ArtifactSubscriber
+from berb.collaboration.dedup import deduplicate_artifacts
 
 __all__ = [
     "ResearchRepository",

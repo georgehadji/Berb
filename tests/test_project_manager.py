@@ -8,10 +8,10 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.project.models import Idea, Project
-from researchclaw.project.manager import ProjectManager
-from researchclaw.project.scheduler import ProjectScheduler
-from researchclaw.project.idea_pool import IdeaPool
+from berb.project.models import Idea, Project
+from berb.project.manager import ProjectManager
+from berb.project.scheduler import ProjectScheduler
+from berb.project.idea_pool import IdeaPool
 
 
 # ── fixtures ──────────────────────────────────────────────────────

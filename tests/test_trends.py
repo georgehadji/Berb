@@ -14,12 +14,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.trends.feeds import FeedManager
-from researchclaw.trends.trend_analyzer import TrendAnalyzer, _STOPWORDS
-from researchclaw.trends.opportunity_finder import OpportunityFinder
-from researchclaw.trends.daily_digest import DailyDigest
-from researchclaw.trends.auto_topic import AutoTopicGenerator
-from researchclaw.literature.trends import LiteratureTrendAnalyzer
+from berb.trends.feeds import FeedManager
+from berb.trends.trend_analyzer import TrendAnalyzer, _STOPWORDS
+from berb.trends.opportunity_finder import OpportunityFinder
+from berb.trends.daily_digest import DailyDigest
+from berb.trends.auto_topic import AutoTopicGenerator
+from berb.literature.trends import LiteratureTrendAnalyzer
 
 
 # ---------------------------------------------------------------------------

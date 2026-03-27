@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from researchclaw.domains.detector import (
+from berb.domains.detector import (
     DomainProfile,
     detect_domain,
     detect_domain_id,
@@ -17,7 +17,7 @@ from researchclaw.domains.detector import (
     _keyword_detect,
     _profile_cache,
 )
-from researchclaw.domains.prompt_adapter import (
+from berb.domains.prompt_adapter import (
     MLPromptAdapter,
     PromptBlocks,
     get_adapter,
@@ -132,7 +132,7 @@ class TestNeuroscienceAdapter:
             pytest.skip("neuroscience_computational profile not found")
         adapter = get_adapter(profile)
         assert not isinstance(adapter, MLPromptAdapter)
-        from researchclaw.domains.adapters.neuroscience import (
+        from berb.domains.adapters.neuroscience import (
             NeurosciencePromptAdapter,
         )
         assert isinstance(adapter, NeurosciencePromptAdapter)

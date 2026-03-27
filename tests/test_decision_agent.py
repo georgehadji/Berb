@@ -71,7 +71,7 @@ class TestParseDecisions:
     """Edge cases for JSON parsing in the decision agent."""
 
     def _agent(self):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         return FigureDecisionAgent(_FakeLLM())
 
     def test_valid_json_array(self):
@@ -159,7 +159,7 @@ class TestHeuristicDecide:
     """Test the rule-based fallback decision logic."""
 
     def _agent(self, min_figures=3, max_figures=10):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         return FigureDecisionAgent(
             _FakeLLM(), min_figures=min_figures, max_figures=max_figures
         )
@@ -215,7 +215,7 @@ class TestHeuristicDecide:
 
 class TestInferBackend:
     def test_code_types(self):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         code_types = [
             "bar_comparison", "line_chart", "heatmap", "confusion_matrix",
             "training_curve", "ablation_chart", "scatter_plot",
@@ -224,7 +224,7 @@ class TestInferBackend:
             assert FigureDecisionAgent._infer_backend(t) == "code", f"Failed for {t}"
 
     def test_image_types(self):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         image_types = [
             "architecture_diagram", "method_flowchart", "pipeline_overview",
             "concept_illustration", "system_diagram",
@@ -233,7 +233,7 @@ class TestInferBackend:
             assert FigureDecisionAgent._infer_backend(t) == "image", f"Failed for {t}"
 
     def test_unknown_defaults_to_image(self):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         assert FigureDecisionAgent._infer_backend("unknown_chart_type") == "image"
 
 
@@ -243,7 +243,7 @@ class TestInferBackend:
 
 class TestEnforceBounds:
     def _agent(self, min_figures=3, max_figures=6):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         return FigureDecisionAgent(
             _FakeLLM(), min_figures=min_figures, max_figures=max_figures
         )
@@ -296,7 +296,7 @@ class TestEnforceBounds:
 
 class TestBuildPrompt:
     def _agent(self):
-        from researchclaw.agents.figure_agent.nano_banana import NanoBananaAgent
+        from berb.agents.figure_agent.nano_banana import NanoBananaAgent
         return NanoBananaAgent(
             _FakeLLM(), gemini_api_key="fake-key", use_sdk=False,
         )
@@ -344,7 +344,7 @@ class TestBuildPrompt:
 
 class TestGetTypeGuidelines:
     def test_known_types(self):
-        from researchclaw.agents.figure_agent.nano_banana import NanoBananaAgent
+        from berb.agents.figure_agent.nano_banana import NanoBananaAgent
         known = [
             "architecture_diagram", "method_flowchart", "pipeline_overview",
             "concept_illustration", "system_diagram", "attention_visualization",
@@ -355,7 +355,7 @@ class TestGetTypeGuidelines:
             assert len(g) > 0, f"Empty guidelines for {t}"
 
     def test_unknown_type_falls_back(self):
-        from researchclaw.agents.figure_agent.nano_banana import NanoBananaAgent
+        from berb.agents.figure_agent.nano_banana import NanoBananaAgent
         g = NanoBananaAgent._get_type_guidelines("totally_unknown")
         fallback = NanoBananaAgent._get_type_guidelines("concept_illustration")
         assert g == fallback
@@ -367,7 +367,7 @@ class TestGetTypeGuidelines:
 
 class TestNanoBananaNoKey:
     def test_execute_without_key_fails(self, tmp_path):
-        from researchclaw.agents.figure_agent.nano_banana import NanoBananaAgent
+        from berb.agents.figure_agent.nano_banana import NanoBananaAgent
         # Clear env
         with mock.patch.dict(os.environ, {}, clear=True):
             agent = NanoBananaAgent(
@@ -385,7 +385,7 @@ class TestNanoBananaNoKey:
             assert "API key" in result.error
 
     def test_execute_empty_figures_succeeds(self, tmp_path):
-        from researchclaw.agents.figure_agent.nano_banana import NanoBananaAgent
+        from berb.agents.figure_agent.nano_banana import NanoBananaAgent
         with mock.patch.dict(os.environ, {}, clear=True):
             agent = NanoBananaAgent(
                 _FakeLLM(), gemini_api_key="", use_sdk=False,
@@ -405,7 +405,7 @@ class TestNanoBananaNoKey:
 
 class TestDockerRenderer:
     def _agent(self):
-        from researchclaw.agents.figure_agent.renderer import RendererAgent
+        from berb.agents.figure_agent.renderer import RendererAgent
         return RendererAgent(
             _FakeLLM(),
             timeout_sec=10,
@@ -511,17 +511,17 @@ class TestDockerRenderer:
 
 class TestStripThinkingTags:
     def test_closed_tags_removed(self):
-        from researchclaw.utils.thinking_tags import strip_thinking_tags
+        from berb.utils.thinking_tags import strip_thinking_tags
         text = "Hello <think>internal reasoning</think> World"
         assert strip_thinking_tags(text) == "Hello  World"
 
     def test_no_tags(self):
-        from researchclaw.utils.thinking_tags import strip_thinking_tags
+        from berb.utils.thinking_tags import strip_thinking_tags
         text = "Normal text without tags"
         assert strip_thinking_tags(text) == text
 
     def test_empty_string(self):
-        from researchclaw.utils.thinking_tags import strip_thinking_tags
+        from berb.utils.thinking_tags import strip_thinking_tags
         assert strip_thinking_tags("") == ""
 
     def test_nested_code_preserved(self):
@@ -533,7 +533,7 @@ class TestStripThinkingTags:
 
     def test_unclosed_tag_behavior(self):
         """Document the behavior: unclosed <think> removes everything after it."""
-        from researchclaw.utils.thinking_tags import strip_thinking_tags
+        from berb.utils.thinking_tags import strip_thinking_tags
         text = "Prefix <think>reasoning that never closes"
         result = strip_thinking_tags(text)
         # The unclosed tag strips everything after <think>
@@ -547,7 +547,7 @@ class TestStripThinkingTags:
 
 class TestDecisionAgentExecute:
     def test_llm_decision(self):
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         llm_response = json.dumps([
             {"section": "Method", "figure_type": "architecture_diagram",
              "backend": "image", "description": "Arch", "priority": 1},
@@ -571,7 +571,7 @@ class TestDecisionAgentExecute:
 
     def test_fallback_on_bad_llm(self):
         """When LLM returns garbage, heuristic fallback should kick in."""
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         agent = FigureDecisionAgent(
             _FakeLLM("This is not JSON"),
             min_figures=3,
@@ -586,7 +586,7 @@ class TestDecisionAgentExecute:
 
     def test_fallback_on_no_llm(self):
         """When LLM is None, heuristic fallback should work."""
-        from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
+        from berb.agents.figure_agent.decision import FigureDecisionAgent
         agent = FigureDecisionAgent(None, min_figures=2)
         result = agent.execute({
             "topic": "Test",
@@ -606,7 +606,7 @@ class TestRendererCwd:
 
     def test_local_cwd_is_output_dir(self, tmp_path):
         """Scripts using relative savefig should write to output_dir."""
-        from researchclaw.agents.figure_agent.renderer import RendererAgent
+        from berb.agents.figure_agent.renderer import RendererAgent
         agent = RendererAgent(_FakeLLM(), timeout_sec=10, use_docker=False)
         output_dir = tmp_path / "charts"
 
@@ -633,7 +633,7 @@ class TestChatStripThinking:
 
     def test_strip_thinking_false_by_default(self):
         """Default chat() should NOT strip <think> tags."""
-        from researchclaw.llm.client import LLMClient, LLMConfig, LLMResponse
+        from berb.llm.client import LLMClient, LLMConfig, LLMResponse
 
         config = LLMConfig(
             base_url="http://fake",
@@ -670,7 +670,7 @@ class TestChatStripThinking:
 
     def test_strip_thinking_true_removes_tags(self):
         """chat(strip_thinking=True) should strip <think> tags."""
-        from researchclaw.llm.client import LLMClient, LLMConfig
+        from berb.llm.client import LLMClient, LLMConfig
 
         config = LLMConfig(
             base_url="http://fake",
@@ -716,7 +716,7 @@ class TestLatexDisplayMath:
 
     def test_dollar_dollar_to_equation(self):
         """$$...$$ display math should become \\begin{equation}."""
-        from researchclaw.templates.converter import _convert_block
+        from berb.templates.converter import _convert_block
 
         md = (
             "Some text before.\n"
@@ -734,7 +734,7 @@ class TestLatexDisplayMath:
 
     def test_multiline_dollar_dollar(self):
         """$$...$$ spanning multiple lines should also convert."""
-        from researchclaw.templates.converter import _convert_block
+        from berb.templates.converter import _convert_block
 
         md = (
             "$$\n"
@@ -747,7 +747,7 @@ class TestLatexDisplayMath:
 
     def test_inline_dollar_dollar_not_escaped(self):
         """$$ in inline context should not be escaped to \\$\\$."""
-        from researchclaw.templates.converter import _convert_inline
+        from berb.templates.converter import _convert_inline
 
         text = "The formula $$x+y$$ is important"
         result = _convert_inline(text)
@@ -763,14 +763,14 @@ class TestLatexFigurePlacement:
     """Verify figures use [t] placement specifier."""
 
     def test_figure_uses_top_placement(self):
-        from researchclaw.templates.converter import _render_figure
+        from berb.templates.converter import _render_figure
 
         result = _render_figure("Test Caption", "charts/test.png")
         assert "\\begin{figure}[t]" in result
         assert "[ht]" not in result
 
     def test_figure_has_centering(self):
-        from researchclaw.templates.converter import _render_figure
+        from berb.templates.converter import _render_figure
 
         result = _render_figure("My Figure", "path/to/image.png")
         assert "\\centering" in result
@@ -790,8 +790,8 @@ class TestChatWithPromptStripThinking:
     def test_default_strips_thinking(self):
         """_chat_with_prompt should pass strip_thinking=True by default."""
         from unittest.mock import MagicMock
-        from researchclaw.pipeline.executor import _chat_with_prompt
-        from researchclaw.llm.client import LLMResponse
+        from berb.pipeline.executor import _chat_with_prompt
+        from berb.llm.client import LLMResponse
 
         mock_llm = MagicMock()
         mock_llm.chat.return_value = LLMResponse(
@@ -806,8 +806,8 @@ class TestChatWithPromptStripThinking:
     def test_can_disable_stripping(self):
         """_chat_with_prompt(strip_thinking=False) should forward the flag."""
         from unittest.mock import MagicMock
-        from researchclaw.pipeline.executor import _chat_with_prompt
-        from researchclaw.llm.client import LLMResponse
+        from berb.pipeline.executor import _chat_with_prompt
+        from berb.llm.client import LLMResponse
 
         mock_llm = MagicMock()
         mock_llm.chat.return_value = LLMResponse(

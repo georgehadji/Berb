@@ -16,9 +16,9 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from researchclaw.config import DockerSandboxConfig, ExperimentConfig
-from researchclaw.experiment.docker_sandbox import DockerSandbox
-from researchclaw.experiment.factory import create_sandbox
+from berb.config import DockerSandboxConfig, ExperimentConfig
+from berb.experiment.docker_sandbox import DockerSandbox
+from berb.experiment.factory import create_sandbox
 
 PASS = "\033[92mPASS\033[0m"
 FAIL = "\033[91mFAIL\033[0m"

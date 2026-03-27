@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from researchclaw.project.manager import ProjectManager
+from berb.project.manager import ProjectManager
 
 logger = logging.getLogger(__name__)
 

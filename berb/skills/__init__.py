@@ -5,7 +5,7 @@ that can be automatically matched to pipeline stages and injected
 into LLM prompts.
 """
 
-from researchclaw.skills.schema import Skill
-from researchclaw.skills.registry import SkillRegistry
+from berb.skills.schema import Skill
+from berb.skills.registry import SkillRegistry
 
 __all__ = ["Skill", "SkillRegistry"]

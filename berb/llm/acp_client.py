@@ -21,7 +21,7 @@ import weakref
 from dataclasses import dataclass
 from typing import Any
 
-from researchclaw.llm.client import LLMResponse
+from berb.llm.client import LLMResponse
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +117,7 @@ class ACPClient:
         prompt_text = self._messages_to_prompt(messages, system=system)
         content = self._send_prompt(prompt_text)
         if strip_thinking:
-            from researchclaw.utils.thinking_tags import strip_thinking_tags
+            from berb.utils.thinking_tags import strip_thinking_tags
             content = strip_thinking_tags(content)
         return LLMResponse(
             content=content,

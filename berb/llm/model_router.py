@@ -8,7 +8,7 @@ Architecture: Strategy pattern with quality evaluation
 Paradigm: Functional composition with async support
 
 Usage:
-    from researchclaw.llm.model_cascade import CascadingLLMClient, CascadeConfig
+    from berb.llm.model_cascade import CascadingLLMClient, CascadeConfig
     
     config = CascadeConfig(
         cascade=[

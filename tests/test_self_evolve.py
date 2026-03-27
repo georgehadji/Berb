@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from researchclaw.self_evolve import (
+from berb.self_evolve import (
     SelfEvolveOrchestrator,
     ExperienceCollector,
     ExperienceAnalyzer,

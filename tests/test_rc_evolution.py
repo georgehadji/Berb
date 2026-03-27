@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.evolution import (
+from berb.evolution import (
     EvolutionStore,
     LessonCategory,
     LessonEntry,
@@ -97,7 +97,7 @@ class TestTimeWeight:
 class TestExtractLessons:
     def _make_result(self, stage_num, status, error=None, decision="proceed"):
         from types import SimpleNamespace
-        from researchclaw.pipeline.stages import Stage, StageStatus
+        from berb.pipeline.stages import Stage, StageStatus
 
         stage = Stage(stage_num)
         return SimpleNamespace(
@@ -299,7 +299,7 @@ class TestEvolutionStore:
 
 class TestPromptManagerEvolutionOverlay:
     def test_overlay_appended_to_user_prompt(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         overlay = "## Lessons\n1. Avoid timeout errors."
@@ -314,7 +314,7 @@ class TestPromptManagerEvolutionOverlay:
         assert "Avoid timeout errors" in sp.user
 
     def test_no_overlay_when_empty(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         sp1 = pm.for_stage(

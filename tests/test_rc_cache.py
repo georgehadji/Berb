@@ -5,8 +5,8 @@ from __future__ import annotations
 import importlib
 from unittest.mock import patch
 
-from researchclaw.literature.models import Author, Paper
-from researchclaw.literature.search import search_papers
+from berb.literature.models import Author, Paper
+from berb.literature.search import search_papers
 
 cache_mod = importlib.import_module("researchclaw.literature.cache")
 cache_key = cache_mod.cache_key

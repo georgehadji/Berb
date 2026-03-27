@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 
-from researchclaw.domains.detector import (
+from berb.domains.detector import (
     DomainProfile,
     ExperimentParadigm,
     MetricType,

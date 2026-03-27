@@ -25,8 +25,8 @@ import time
 import uuid
 from pathlib import Path
 
-from researchclaw.config import ColabDriveConfig
-from researchclaw.experiment.sandbox import SandboxResult, parse_metrics
+from berb.config import ColabDriveConfig
+from berb.experiment.sandbox import SandboxResult, parse_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +160,7 @@ class ColabDriveSandbox:
         timeout_sec: int = 300,
     ) -> SandboxResult:
         # BUG-DA8-07: Validate entry_point (path traversal, etc.) like other backends
-        from researchclaw.experiment.sandbox import validate_entry_point
+        from berb.experiment.sandbox import validate_entry_point
         err = validate_entry_point(entry_point)
         if err:
             return SandboxResult(
@@ -194,7 +194,7 @@ class ColabDriveSandbox:
                 elapsed_sec=0.0, metrics={},
             )
         # BUG-DA8-07: Check resolved path doesn't escape staging dir
-        from researchclaw.experiment.sandbox import validate_entry_point_resolved
+        from berb.experiment.sandbox import validate_entry_point_resolved
         err2 = validate_entry_point_resolved(staging, entry_point)
         if err2:
             return SandboxResult(

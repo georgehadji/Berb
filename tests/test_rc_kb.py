@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from researchclaw.knowledge.base import (
+from berb.knowledge.base import (
     KB_CATEGORY_MAP,
     KBEntry,
     _markdown_frontmatter,

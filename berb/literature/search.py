@@ -24,10 +24,10 @@ import time
 import urllib.error
 from typing import cast
 
-from researchclaw.literature.arxiv_client import search_arxiv
-from researchclaw.literature.models import Author, Paper
-from researchclaw.literature.openalex_client import search_openalex
-from researchclaw.literature.semantic_scholar import search_semantic_scholar
+from berb.literature.arxiv_client import search_arxiv
+from berb.literature.models import Author, Paper
+from berb.literature.openalex_client import search_openalex
+from berb.literature.semantic_scholar import search_semantic_scholar
 
 logger = logging.getLogger(__name__)
 

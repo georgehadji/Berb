@@ -6,7 +6,7 @@ This is a re-export of the DeepMindAIClient from deep_query_client.py
 for backwards compatibility and cleaner imports.
 """
 
-from researchclaw.llm.deep_query_client import (
+from berb.llm.deep_query_client import (
     DeepMindAIClient,
     DeepMindAIResult,
     create_deepmind_ai_client,

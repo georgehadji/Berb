@@ -8,7 +8,7 @@ Architecture: Patch generation with validation
 Paradigm: Unified diff format with smart application
 
 Usage:
-    from researchclaw.pipeline.diff_revisions import DiffBasedReviser
+    from berb.pipeline.diff_revisions import DiffBasedReviser
     
     reviser = DiffBasedReviser(base_client=llm_client)
     

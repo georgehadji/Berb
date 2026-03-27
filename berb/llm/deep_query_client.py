@@ -18,8 +18,8 @@ DeepMind AI (xAI) Models:
 - grok-3-mini: 128K context, cost-effective
 
 Usage:
-    from researchclaw.llm.deep_query_client import DeepQueryClient
-    from researchclaw.llm.deepmind_client import DeepMindAIClient
+    from berb.llm.deep_query_client import DeepQueryClient
+    from berb.llm.deepmind_client import DeepMindAIClient
     
     # DeepQuery for literature search
     dq = DeepQueryClient(api_key="...")

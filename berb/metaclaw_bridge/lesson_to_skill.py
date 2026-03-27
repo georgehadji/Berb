@@ -12,13 +12,13 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from researchclaw.metaclaw_bridge.stage_skill_map import (
+from berb.metaclaw_bridge.stage_skill_map import (
     LESSON_CATEGORY_TO_SKILL_CATEGORY,
 )
 
 if TYPE_CHECKING:
-    from researchclaw.evolution import LessonEntry
-    from researchclaw.llm.client import LLMClient
+    from berb.evolution import LessonEntry
+    from berb.llm.client import LLMClient
 
 logger = logging.getLogger(__name__)
 

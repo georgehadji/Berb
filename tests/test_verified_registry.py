@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.pipeline.verified_registry import (
+from berb.pipeline.verified_registry import (
     ConditionResult,
     VerifiedRegistry,
     _is_finite,

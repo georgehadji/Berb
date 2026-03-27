@@ -10,10 +10,10 @@ from typing import Any, cast
 
 import pytest
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.pipeline import executor as rc_executor
-from researchclaw.pipeline.stages import Stage, StageStatus
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.pipeline import executor as rc_executor
+from berb.pipeline.stages import Stage, StageStatus
 
 
 class FakeLLMClient:
@@ -24,7 +24,7 @@ class FakeLLMClient:
     def chat(self, messages: list[dict[str, str]], **kwargs: object):
         _ = kwargs
         self.calls.append(messages)
-        from researchclaw.llm.client import LLMResponse
+        from berb.llm.client import LLMResponse
 
         return LLMResponse(content=self.response_text, model="fake-model")
 
@@ -215,7 +215,7 @@ def test_read_prior_artifact_returns_none_when_not_found(run_dir: Path) -> None:
 
 def test_read_best_analysis_prefers_best_file(run_dir: Path) -> None:
     """BUG-225: _read_best_analysis prefers analysis_best.md at run root."""
-    from researchclaw.pipeline._helpers import _read_best_analysis
+    from berb.pipeline._helpers import _read_best_analysis
 
     # Create degenerate analysis in stage-14 and best at run root
     s14 = run_dir / "stage-14"
@@ -229,7 +229,7 @@ def test_read_best_analysis_prefers_best_file(run_dir: Path) -> None:
 
 def test_read_best_analysis_falls_back_to_prior_artifact(run_dir: Path) -> None:
     """BUG-225: Falls back to _read_prior_artifact when no analysis_best.md."""
-    from researchclaw.pipeline._helpers import _read_best_analysis
+    from berb.pipeline._helpers import _read_best_analysis
 
     s14 = run_dir / "stage-14"
     s14.mkdir(parents=True)
@@ -241,7 +241,7 @@ def test_read_best_analysis_falls_back_to_prior_artifact(run_dir: Path) -> None:
 
 def test_read_best_analysis_returns_empty_when_none(run_dir: Path) -> None:
     """BUG-225: Returns empty string when no analysis exists at all."""
-    from researchclaw.pipeline._helpers import _read_best_analysis
+    from berb.pipeline._helpers import _read_best_analysis
 
     result = _read_best_analysis(run_dir)
     assert result == ""
@@ -570,8 +570,8 @@ def test_stage_executor_mapping_values_are_callable(stage: Stage) -> None:
 
 class TestStageHealth:
     def test_stage_health_json_written(self, tmp_path: Path) -> None:
-        from researchclaw.pipeline.executor import execute_stage
-        from researchclaw.pipeline.stages import Stage
+        from berb.pipeline.executor import execute_stage
+        from berb.pipeline.stages import Stage
 
         config = RCConfig.load(
             Path(__file__).parent.parent / "config.researchclaw.example.yaml",
@@ -592,8 +592,8 @@ class TestStageHealth:
     def test_stage_health_has_required_fields(self, tmp_path: Path) -> None:
         from unittest.mock import MagicMock, patch
 
-        from researchclaw.pipeline.executor import execute_stage
-        from researchclaw.pipeline.stages import Stage
+        from berb.pipeline.executor import execute_stage
+        from berb.pipeline.stages import Stage
 
         config = RCConfig.load(
             Path(__file__).parent.parent / "config.researchclaw.example.yaml",
@@ -630,8 +630,8 @@ class TestStageHealth:
     def test_stage_health_duration_positive(self, tmp_path: Path) -> None:
         from unittest.mock import MagicMock, patch
 
-        from researchclaw.pipeline.executor import execute_stage
-        from researchclaw.pipeline.stages import Stage
+        from berb.pipeline.executor import execute_stage
+        from berb.pipeline.stages import Stage
 
         config = RCConfig.load(
             Path(__file__).parent.parent / "config.researchclaw.example.yaml",
@@ -660,7 +660,7 @@ class TestStageHealth:
             assert data["duration_sec"] >= 0
 
 # Contracts import for Stage 13/22 preservation features.
-from researchclaw.pipeline.contracts import CONTRACTS
+from berb.pipeline.contracts import CONTRACTS
 
 
 class TestIterativeRefine:
@@ -1385,7 +1385,7 @@ class TestParseMetricsFromStdout:
     """Tests for _parse_metrics_from_stdout() helper."""
 
     def test_parses_simple_name_value(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         stdout = "loss: 0.0042\naccuracy: 0.95"
         metrics = _parse_metrics_from_stdout(stdout)
@@ -1393,7 +1393,7 @@ class TestParseMetricsFromStdout:
         assert metrics["accuracy"] == pytest.approx(0.95)
 
     def test_parses_compound_names(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         stdout = "UCB (Stochastic) cumulative_regret: 361.9233\nEXP3 (Adversarial) total_rewards: 13368.4811"
         metrics = _parse_metrics_from_stdout(stdout)
@@ -1401,7 +1401,7 @@ class TestParseMetricsFromStdout:
         assert metrics["UCB (Stochastic) cumulative_regret"] == pytest.approx(361.9233)
 
     def test_ignores_non_numeric_lines(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         stdout = "Running experiment...\nloss: 0.5\nDone."
         metrics = _parse_metrics_from_stdout(stdout)
@@ -1409,19 +1409,19 @@ class TestParseMetricsFromStdout:
         assert metrics["loss"] == pytest.approx(0.5)
 
     def test_empty_stdout_returns_empty_dict(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         assert _parse_metrics_from_stdout("") == {}
 
     def test_handles_negative_values(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         stdout = "UCB (Adversarial) cumulative_regret: -3877.5323"
         metrics = _parse_metrics_from_stdout(stdout)
         assert metrics["UCB (Adversarial) cumulative_regret"] == pytest.approx(-3877.5323)
 
     def test_filters_log_lines(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         stdout = (
             "Running experiments for support set size: 1\n"
@@ -1436,7 +1436,7 @@ class TestParseMetricsFromStdout:
         assert len(metrics) == 2  # log lines should be excluded
 
     def test_filters_long_name_lines(self) -> None:
-        from researchclaw.pipeline.executor import _parse_metrics_from_stdout
+        from berb.pipeline.executor import _parse_metrics_from_stdout
 
         stdout = "this is a very long status message that should not be a metric: 42\n"
         metrics = _parse_metrics_from_stdout(stdout)
@@ -1711,12 +1711,12 @@ class TestWritePaperSections:
 
             def chat(self, messages, **kwargs):
                 self.calls.append(messages)
-                from researchclaw.llm.client import LLMResponse
+                from berb.llm.client import LLMResponse
                 idx = len(self.calls) - 1
                 return LLMResponse(content=parts[min(idx, 2)], model="fake")
 
         llm = MultiCallLLM()
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
 
         draft = rc_executor._write_paper_sections(
@@ -1745,11 +1745,11 @@ class TestWritePaperSections:
                 for m in messages:
                     if m.get("role") == "user":
                         self.user_prompts.append(m["content"])
-                from researchclaw.llm.client import LLMResponse
+                from berb.llm.client import LLMResponse
                 return LLMResponse(content="## Section\nContent here.", model="fake")
 
         llm = ContextTrackingLLM()
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
 
         rc_executor._write_paper_sections(
@@ -1838,7 +1838,7 @@ class TestComputeBudgetBlock:
     """Test compute_budget prompt block injection (R4-1a)."""
 
     def test_compute_budget_block_exists_in_prompt_manager(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         block = pm.block("compute_budget")
@@ -2149,7 +2149,7 @@ class TestTitleGuidelines:
     """Test title_guidelines and abstract_structure blocks (R4-3)."""
 
     def test_title_guidelines_block_exists(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         block = pm.block("title_guidelines")
@@ -2157,7 +2157,7 @@ class TestTitleGuidelines:
         assert "14 words" in block or "15 words" in block or "concrete" in block.lower()
 
     def test_abstract_structure_block_exists(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         block = pm.block("abstract_structure")
@@ -2196,7 +2196,7 @@ class TestConferenceWritingQuality:
     """Test enhanced writing prompts and writing_guide.py (R4-4)."""
 
     def test_writing_guide_format_all(self) -> None:
-        from researchclaw.writing_guide import format_writing_tips
+        from berb.writing_guide import format_writing_tips
 
         result = format_writing_tips()
         assert "Conference Writing Best Practices" in result
@@ -2204,7 +2204,7 @@ class TestConferenceWritingQuality:
         assert "Common Rejections" in result
 
     def test_writing_guide_format_subset(self) -> None:
-        from researchclaw.writing_guide import format_writing_tips
+        from berb.writing_guide import format_writing_tips
 
         result = format_writing_tips(["title", "abstract"])
         assert "Title" in result
@@ -2212,7 +2212,7 @@ class TestConferenceWritingQuality:
         assert "Common Rejections" not in result
 
     def test_paper_draft_system_includes_principles(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         sp = pm.for_stage(
@@ -2316,7 +2316,7 @@ class TestNaNDivergenceDetection:
     """Test NaN/Inf filtering and divergence detection (R5-3)."""
 
     def test_parse_metrics_filters_nan(self) -> None:
-        from researchclaw.experiment.sandbox import parse_metrics
+        from berb.experiment.sandbox import parse_metrics
 
         stdout = "best_loss: 0.5\nbad_metric: nan\ngood_metric: 1.23\n"
         metrics = parse_metrics(stdout)
@@ -2325,7 +2325,7 @@ class TestNaNDivergenceDetection:
         assert "bad_metric" not in metrics  # NaN should be filtered
 
     def test_parse_metrics_filters_inf(self) -> None:
-        from researchclaw.experiment.sandbox import parse_metrics
+        from berb.experiment.sandbox import parse_metrics
 
         stdout = "metric_a: inf\nmetric_b: -inf\nmetric_c: 0.42\n"
         metrics = parse_metrics(stdout)
@@ -2334,21 +2334,21 @@ class TestNaNDivergenceDetection:
         assert "metric_b" not in metrics
 
     def test_detect_nan_divergence_finds_nan(self) -> None:
-        from researchclaw.experiment.sandbox import detect_nan_divergence
+        from berb.experiment.sandbox import detect_nan_divergence
 
         result = detect_nan_divergence("loss: nan\nstep 5 done", "")
         assert result is not None
         assert "NaN" in result or "nan" in result.lower()
 
     def test_detect_nan_divergence_finds_diverging_loss(self) -> None:
-        from researchclaw.experiment.sandbox import detect_nan_divergence
+        from berb.experiment.sandbox import detect_nan_divergence
 
         result = detect_nan_divergence("best_loss: 999.5\n", "")
         assert result is not None
         assert "loss" in result.lower() or "999" in result
 
     def test_detect_nan_divergence_returns_none_for_clean(self) -> None:
-        from researchclaw.experiment.sandbox import detect_nan_divergence
+        from berb.experiment.sandbox import detect_nan_divergence
 
         result = detect_nan_divergence("best_loss: 0.123\naccuracy: 0.95\n", "")
         assert result is None
@@ -2365,7 +2365,7 @@ class TestNaNDivergenceDetection:
         assert "DIVERGING" in issues or "diverging" in issues.lower()
 
     def test_compute_budget_includes_nan_guard(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         block = pm.block("compute_budget")
@@ -2379,7 +2379,7 @@ class TestExperimentHarness:
     """Test the immutable experiment harness (R5-4)."""
 
     def test_harness_should_stop(self) -> None:
-        from researchclaw.experiment.harness_template import ExperimentHarness
+        from berb.experiment.harness_template import ExperimentHarness
 
         h = ExperimentHarness(time_budget=1)
         assert not h.should_stop()  # Just created, not at 80% yet
@@ -2388,7 +2388,7 @@ class TestExperimentHarness:
         assert h.should_stop()  # Should be past 80% of 1s
 
     def test_harness_report_metric(self, capsys: pytest.CaptureFixture[str]) -> None:
-        from researchclaw.experiment.harness_template import ExperimentHarness
+        from berb.experiment.harness_template import ExperimentHarness
 
         h = ExperimentHarness(time_budget=60)
         h.report_metric("best_loss", 0.123)
@@ -2397,7 +2397,7 @@ class TestExperimentHarness:
         assert h._metrics["best_loss"] == 0.123
 
     def test_harness_rejects_nan(self, capsys: pytest.CaptureFixture[str]) -> None:
-        from researchclaw.experiment.harness_template import ExperimentHarness
+        from berb.experiment.harness_template import ExperimentHarness
 
         h = ExperimentHarness(time_budget=60)
         h.report_metric("bad", float("nan"))
@@ -2406,7 +2406,7 @@ class TestExperimentHarness:
         assert "non-finite" in captured.err.lower() or "WARNING" in captured.err
 
     def test_harness_rejects_inf(self, capsys: pytest.CaptureFixture[str]) -> None:
-        from researchclaw.experiment.harness_template import ExperimentHarness
+        from berb.experiment.harness_template import ExperimentHarness
 
         h = ExperimentHarness(time_budget=60)
         h.report_metric("bad", float("inf"))
@@ -2414,7 +2414,7 @@ class TestExperimentHarness:
 
     def test_harness_finalize(self, tmp_path: Path) -> None:
         import os
-        from researchclaw.experiment.harness_template import ExperimentHarness
+        from berb.experiment.harness_template import ExperimentHarness
 
         old_cwd = os.getcwd()
         os.chdir(tmp_path)
@@ -2433,7 +2433,7 @@ class TestExperimentHarness:
             os.chdir(old_cwd)
 
     def test_harness_progress(self) -> None:
-        from researchclaw.experiment.harness_template import ExperimentHarness
+        from berb.experiment.harness_template import ExperimentHarness
 
         h = ExperimentHarness(time_budget=1000)
         assert h.progress < 0.01  # Just started
@@ -2441,8 +2441,8 @@ class TestExperimentHarness:
 
     def test_harness_injected_into_sandbox(self, tmp_path: Path) -> None:
         import sys
-        from researchclaw.config import SandboxConfig
-        from researchclaw.experiment.sandbox import ExperimentSandbox
+        from berb.config import SandboxConfig
+        from berb.experiment.sandbox import ExperimentSandbox
 
         config = SandboxConfig(python_path=sys.executable)
         sandbox = ExperimentSandbox(config, tmp_path / "sandbox")
@@ -2464,8 +2464,8 @@ class TestExperimentHarness:
 
     def test_harness_not_overwritten_by_project(self, tmp_path: Path) -> None:
         import sys
-        from researchclaw.config import SandboxConfig
-        from researchclaw.experiment.sandbox import ExperimentSandbox
+        from berb.config import SandboxConfig
+        from berb.experiment.sandbox import ExperimentSandbox
 
         config = SandboxConfig(python_path=sys.executable)
         sandbox = ExperimentSandbox(config, tmp_path / "sandbox")
@@ -2487,7 +2487,7 @@ class TestExperimentHarness:
         assert "FAKE HARNESS" not in content
 
     def test_prompt_mentions_harness(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         pm = PromptManager()
         block = pm.block("compute_budget")
@@ -2631,7 +2631,7 @@ class TestStdoutFailureDetection:
 
     def test_fail_signal_in_stdout_marks_failed(self, tmp_path: Path) -> None:
         """Exit code 0 + 'FAIL:' in stdout + no metrics → status='failed'."""
-        from researchclaw.pipeline.executor import _execute_experiment_run
+        from berb.pipeline.executor import _execute_experiment_run
 
         # Create necessary structure
         run_dir = tmp_path / "run"
@@ -2692,7 +2692,7 @@ class TestStdoutFailureDetection:
 
     def test_clean_exit_no_fail_signal_marks_completed(self, tmp_path: Path) -> None:
         """Exit code 0 + valid metrics + no FAIL signal → status='completed'."""
-        from researchclaw.pipeline.executor import _execute_experiment_run
+        from berb.pipeline.executor import _execute_experiment_run
 
         run_dir = tmp_path / "run"
         run_dir.mkdir()
@@ -2767,7 +2767,7 @@ class TestConsecutiveEmptyMetrics:
 
     def test_detects_consecutive_empty(self, tmp_path: Path) -> None:
         """Two cycles with empty metrics should return True."""
-        from researchclaw.pipeline.runner import _consecutive_empty_metrics
+        from berb.pipeline.runner import _consecutive_empty_metrics
 
         run_dir = tmp_path / "run"
         # Current cycle (stage-14)
@@ -2789,7 +2789,7 @@ class TestConsecutiveEmptyMetrics:
 
     def test_not_empty_when_metrics_exist(self, tmp_path: Path) -> None:
         """If any cycle has real metrics, return False."""
-        from researchclaw.pipeline.runner import _consecutive_empty_metrics
+        from berb.pipeline.runner import _consecutive_empty_metrics
 
         run_dir = tmp_path / "run"
         s14 = run_dir / "stage-14"
@@ -2809,7 +2809,7 @@ class TestConsecutiveEmptyMetrics:
 
     def test_false_when_no_previous_cycle(self, tmp_path: Path) -> None:
         """First cycle (no v1) should return False."""
-        from researchclaw.pipeline.runner import _consecutive_empty_metrics
+        from berb.pipeline.runner import _consecutive_empty_metrics
 
         run_dir = tmp_path / "run"
         s14 = run_dir / "stage-14"
@@ -2833,7 +2833,7 @@ class TestMultiConditionEnforcement:
 
     def test_code_generation_prompt_has_multi_condition_block(self) -> None:
         """The code_generation prompt should contain multi-condition instructions."""
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "code_generation",
@@ -2848,7 +2848,7 @@ class TestMultiConditionEnforcement:
 
     def test_multi_condition_labels_required(self) -> None:
         """Prompt must mention per-condition labeled output format."""
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "code_generation",
@@ -2865,7 +2865,7 @@ class TestEvidenceBoundedWriting:
 
     def test_paper_draft_has_evidence_bounding_rules(self) -> None:
         """System prompt should contain evidence-bounding rules."""
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "paper_draft",
@@ -2881,7 +2881,7 @@ class TestEvidenceBoundedWriting:
 
     def test_hedging_language_guidance(self) -> None:
         """Should suggest hedged alternatives like 'Toward...' for partial data."""
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "paper_draft",
@@ -3031,7 +3031,7 @@ class TestBreadthFirstPrompt:
     """R8-1: Code generation prompt should require breadth-first condition ordering."""
 
     def test_breadth_first_in_code_generation(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "code_generation",
@@ -3120,7 +3120,7 @@ class TestCodeGenTopicNeutral:
     """R9-1: Code generation prompt should be topic-neutral, not optimization-biased."""
 
     def test_no_gradient_descent_bias(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "code_generation",
@@ -3137,7 +3137,7 @@ class TestCodeGenTopicNeutral:
         assert "e.g., gradient descent" not in sp.user
 
     def test_topic_relevant_guidance(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.for_stage(
             "code_generation",
@@ -3155,7 +3155,7 @@ class TestRefineTopicAlignment:
     """R9-2: Refine prompt should include topic-code alignment check."""
 
     def test_topic_alignment_in_refine_prompt(self) -> None:
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
         pm = PromptManager()
         sp = pm.sub_prompt(
             "iterative_improve",

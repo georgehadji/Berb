@@ -1,7 +1,7 @@
 """Unit tests for output token limits."""
 
 import pytest
-from researchclaw.llm.output_limits import (
+from berb.llm.output_limits import (
     Stage,
     OUTPUT_TOKEN_LIMITS,
     get_stage_token_limit,

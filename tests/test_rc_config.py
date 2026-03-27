@@ -4,7 +4,7 @@ from typing import cast
 
 import pytest
 
-from researchclaw.config import (
+from berb.config import (
     ExperimentConfig,
     RCConfig,
     SandboxConfig,
@@ -276,7 +276,7 @@ def test_experiment_config_defaults_mode_is_simulated():
 
 
 def test_sandbox_config_defaults_match_expected_values():
-    from researchclaw.config import DEFAULT_PYTHON_PATH
+    from berb.config import DEFAULT_PYTHON_PATH
 
     defaults = SandboxConfig()
 

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Any
 
-from researchclaw.calendar.deadlines import Conference
+from berb.calendar.deadlines import Conference
 
 
 @dataclass(frozen=True)

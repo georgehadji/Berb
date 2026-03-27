@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from researchclaw.pipeline.stages import Stage
+from berb.pipeline.stages import Stage
 
 
 @dataclass(frozen=True)

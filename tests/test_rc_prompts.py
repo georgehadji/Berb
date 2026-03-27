@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from researchclaw.prompts import (
+from berb.prompts import (
     PromptManager,
     RenderedPrompt,
     _render,

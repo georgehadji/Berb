@@ -13,15 +13,15 @@ from typing import Any
 
 import yaml
 
-from researchclaw.config import RCConfig
-from researchclaw.hardware import HardwareProfile, is_metric_name
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline.stages import (
+from berb.config import RCConfig
+from berb.hardware import HardwareProfile, is_metric_name
+from berb.llm.client import LLMClient
+from berb.pipeline.stages import (
     NEXT_STAGE,
     Stage,
     StageStatus,
 )
-from researchclaw.prompts import PromptManager
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -723,7 +723,7 @@ def _get_evolution_overlay(run_dir: Path | None, stage_name: str) -> str:
     if run_dir is None:
         return ""
     try:
-        from researchclaw.evolution import EvolutionStore
+        from berb.evolution import EvolutionStore
 
         store = EvolutionStore(run_dir / "evolution")
         return store.build_overlay(
@@ -894,7 +894,7 @@ def _collect_experiment_results(
     latex_lines.append(r"\end{table}")
 
     # R18-1: Extract paired statistical comparisons from stdout
-    from researchclaw.experiment.sandbox import extract_paired_comparisons
+    from berb.experiment.sandbox import extract_paired_comparisons
 
     paired_comparisons: list[dict[str, object]] = []
     for r in runs_data:
@@ -1556,7 +1556,7 @@ def _multi_perspective_generate(
     Each role has its own system/user prompt. Outputs are saved to
     *perspectives_dir* and returned as ``{role_name: response_text}``.
     """
-    from researchclaw.prompts import _render  # noqa: PLC0415
+    from berb.prompts import _render  # noqa: PLC0415
 
     perspectives_dir.mkdir(parents=True, exist_ok=True)
     results: dict[str, str] = {}

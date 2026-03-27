@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import pytest
 
-from researchclaw.experiment.evaluators.convergence import (
+from berb.experiment.evaluators.convergence import (
     ConvergenceReport,
     ConvergenceResult,
     analyze_convergence,

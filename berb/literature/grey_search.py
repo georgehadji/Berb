@@ -15,7 +15,7 @@ Sources:
 - DART-Europe (theses)
 
 Usage:
-    from researchclaw.literature.grey_search import GreyLiteratureSearch
+    from berb.literature.grey_search import GreyLiteratureSearch
     
     search = GreyLiteratureSearch()
     results = await search.search("CRISPR gene editing", domain="biology")

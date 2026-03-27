@@ -8,25 +8,25 @@ import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from researchclaw.agents.code_searcher.agent import CodeSearchAgent, CodeSearchResult
-from researchclaw.agents.code_searcher.cache import SearchCache
-from researchclaw.agents.code_searcher.github_client import (
+from berb.agents.code_searcher.agent import CodeSearchAgent, CodeSearchResult
+from berb.agents.code_searcher.cache import SearchCache
+from berb.agents.code_searcher.github_client import (
     CodeSnippet,
     GitHubClient,
     RepoAnalysis,
     RepoInfo,
 )
-from researchclaw.agents.code_searcher.pattern_extractor import (
+from berb.agents.code_searcher.pattern_extractor import (
     CodePatterns,
     extract_patterns,
     _heuristic_extract,
 )
-from researchclaw.agents.code_searcher.query_gen import (
+from berb.agents.code_searcher.query_gen import (
     generate_search_queries,
     _heuristic_generate,
     _extract_key_phrases,
 )
-from researchclaw.domains.detector import DomainProfile, get_profile
+from berb.domains.detector import DomainProfile, get_profile
 
 
 # ---------------------------------------------------------------------------

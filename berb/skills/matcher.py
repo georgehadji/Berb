@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import re
 
-from researchclaw.skills.schema import STAGE_NAME_TO_NUMBER, Skill
+from berb.skills.schema import STAGE_NAME_TO_NUMBER, Skill
 
 logger = logging.getLogger(__name__)
 

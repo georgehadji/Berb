@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date, timedelta
 from typing import Any
 
-from researchclaw.calendar.deadlines import ConferenceCalendar
+from berb.calendar.deadlines import ConferenceCalendar
 
 
 class SubmissionPlanner:

@@ -4,7 +4,7 @@ import pytest
 import asyncio
 from unittest.mock import AsyncMock, MagicMock
 
-from researchclaw.llm.speculative_gen import (
+from berb.llm.speculative_gen import (
     SpeculativeClient,
     SpeculativeConfig,
     SpeculativeOutcome,

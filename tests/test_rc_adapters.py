@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from researchclaw.adapters import (
+from berb.adapters import (
     AdapterBundle,
     BrowserPage,
     FetchResponse,

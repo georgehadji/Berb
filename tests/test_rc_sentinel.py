@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from researchclaw.pipeline import runner as rc_runner
-from researchclaw.pipeline.stages import Stage
+from berb.pipeline import runner as rc_runner
+from berb.pipeline.stages import Stage
 
 
 # ── Heartbeat writing tests ──
@@ -47,10 +47,10 @@ class TestHeartbeatInPipeline:
         monkeypatch: pytest.MonkeyPatch,
         tmp_path: Path,
     ) -> None:
-        from researchclaw.adapters import AdapterBundle
-        from researchclaw.config import RCConfig
-        from researchclaw.pipeline.executor import StageResult
-        from researchclaw.pipeline.stages import StageStatus
+        from berb.adapters import AdapterBundle
+        from berb.config import RCConfig
+        from berb.pipeline.executor import StageResult
+        from berb.pipeline.stages import StageStatus
 
         data = {
             "project": {"name": "hb-test", "mode": "docs-first"},

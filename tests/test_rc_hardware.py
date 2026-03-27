@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from researchclaw.hardware import (
+from berb.hardware import (
     HardwareProfile,
     _detect_mps,
     _detect_nvidia,

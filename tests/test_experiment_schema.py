@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 import yaml
 
-from researchclaw.domains.experiment_schema import (
+from berb.domains.experiment_schema import (
     Condition,
     ConditionRole,
     EvaluationSpec,

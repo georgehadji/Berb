@@ -24,7 +24,7 @@ class LiteratureTrendAnalyzer:
             return []
 
         try:
-            from researchclaw.literature.search import search_papers
+            from berb.literature.search import search_papers
 
             query = " OR ".join(domains) if domains else "machine learning"
             papers = search_papers(query, limit=max_papers)
@@ -54,7 +54,7 @@ class LiteratureTrendAnalyzer:
         if not papers:
             return {"keywords": [], "total_papers": 0}
 
-        from researchclaw.trends.trend_analyzer import TrendAnalyzer
+        from berb.trends.trend_analyzer import TrendAnalyzer
 
         analyzer = TrendAnalyzer()
         analysis = analyzer.analyze(papers, window_days)
@@ -73,7 +73,7 @@ class LiteratureTrendAnalyzer:
         if not papers:
             return []
 
-        from researchclaw.trends.trend_analyzer import TrendAnalyzer
+        from berb.trends.trend_analyzer import TrendAnalyzer
 
         analyzer = TrendAnalyzer()
         analysis = analyzer.analyze(papers)

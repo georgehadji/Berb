@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from researchclaw.project.models import Idea, Project
+from berb.project.models import Idea, Project
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class IdeaPool:
     def to_project(self, idea_id: str, config_path: str, projects_dir: str | Path) -> Project:
         """Convert an idea into a project skeleton."""
         idea = self.get(idea_id)
-        from researchclaw.project.manager import ProjectManager
+        from berb.project.manager import ProjectManager
 
         manager = ProjectManager(projects_dir)
         project = manager.create(

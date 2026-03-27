@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from researchclaw.pipeline.tdd_generation import (
+from berb.pipeline.tdd_generation import (
     TDDCodeGenerator,
     TDDResult,
     PytestRunner,

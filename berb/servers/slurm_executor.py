@@ -7,7 +7,7 @@ import logging
 import textwrap
 from typing import Any
 
-from researchclaw.servers.registry import ServerEntry
+from berb.servers.registry import ServerEntry
 
 logger = logging.getLogger(__name__)
 

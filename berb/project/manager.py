@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from researchclaw.project.models import Project
+from berb.project.models import Project
 
 logger = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@ Supports three providers:
 
 Usage::
 
-    from researchclaw.experiment.code_agent import create_code_agent
+    from berb.experiment.code_agent import create_code_agent
 
     agent = create_code_agent(config, llm=llm_client, prompts=pm)
     result = agent.generate(exp_plan=plan, topic=topic, ...)
@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
-from researchclaw.config import RCConfig
+from berb.config import RCConfig
 
 logger = logging.getLogger(__name__)
 
@@ -193,7 +193,7 @@ class LlmCodeAgent:
         workdir: Path,
         timeout_sec: int = 600,
     ) -> CodeAgentResult:
-        from researchclaw.pipeline.executor import (
+        from berb.pipeline.executor import (
             _chat_with_prompt,
             _extract_multi_file_blocks,
         )
@@ -274,7 +274,7 @@ class LlmCodeAgent:
         workdir: Path,
         timeout_sec: int = 600,
     ) -> CodeAgentResult:
-        from researchclaw.pipeline.executor import (
+        from berb.pipeline.executor import (
             _chat_with_prompt,
             _extract_code_block,
             _extract_multi_file_blocks,
@@ -337,7 +337,7 @@ class LlmCodeAgent:
         workdir: Path,
         timeout_sec: int = 300,
     ) -> CodeAgentResult:
-        from researchclaw.pipeline.executor import (
+        from berb.pipeline.executor import (
             _chat_with_prompt,
             _extract_code_block,
             _extract_multi_file_blocks,
@@ -739,7 +739,7 @@ def create_code_agent(
     if provider == "llm":
         if llm is None:
             raise RuntimeError("LLM code agent requires an LLM client")
-        from researchclaw.prompts import PromptManager
+        from berb.prompts import PromptManager
 
         return LlmCodeAgent(llm, prompts or PromptManager(), config)  # type: ignore[return-value]
 

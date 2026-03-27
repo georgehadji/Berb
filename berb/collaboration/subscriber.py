@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from researchclaw.collaboration.repository import ResearchRepository
+from berb.collaboration.repository import ResearchRepository
 
 logger = logging.getLogger(__name__)
 

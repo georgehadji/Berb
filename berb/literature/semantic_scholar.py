@@ -27,7 +27,7 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-from researchclaw.literature.models import Author, Paper
+from berb.literature.models import Author, Paper
 
 logger = logging.getLogger(__name__)
 

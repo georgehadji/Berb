@@ -6,9 +6,9 @@ import asyncio
 import logging
 from typing import Any
 
-from researchclaw.dashboard.collector import DashboardCollector, RunSnapshot
-from researchclaw.server.websocket.events import Event, EventType
-from researchclaw.server.websocket.manager import ConnectionManager
+from berb.dashboard.collector import DashboardCollector, RunSnapshot
+from berb.server.websocket.events import Event, EventType
+from berb.server.websocket.manager import ConnectionManager
 
 logger = logging.getLogger(__name__)
 

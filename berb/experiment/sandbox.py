@@ -12,8 +12,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
-from researchclaw.config import SandboxConfig
-from researchclaw.hardware import is_metric_name
+from berb.config import SandboxConfig
+from berb.hardware import is_metric_name
 
 logger = logging.getLogger(__name__)
 

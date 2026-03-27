@@ -5,10 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from researchclaw.config import RCConfig
-    from researchclaw.llm.acp_client import ACPClient
-    from researchclaw.llm.client import LLMClient
-    from researchclaw.llm.smart_client import SmartLLMClient
+    from berb.config import RCConfig
+    from berb.llm.acp_client import ACPClient
+    from berb.llm.client import LLMClient
+    from berb.llm.smart_client import SmartLLMClient
 
 # Provider presets for common LLM services
 PROVIDER_PRESETS = {
@@ -56,16 +56,16 @@ def create_llm_client(config: RCConfig) -> LLMClient | ACPClient | SmartLLMClien
     the base client with SmartLLMClient for intelligent routing and tracking.
     """
     if config.llm.provider == "acp":
-        from researchclaw.llm.acp_client import ACPClient as _ACP
+        from berb.llm.acp_client import ACPClient as _ACP
         base_client = _ACP.from_rc_config(config)
     else:
-        from researchclaw.llm.client import LLMClient as _LLM
+        from berb.llm.client import LLMClient as _LLM
         base_client = _LLM.from_rc_config(config)
     
     # Wrap with SmartLLMClient if NadirClaw or tracking is enabled
     if (hasattr(config, 'nadirclaw') and config.nadirclaw.enabled) or \
        (hasattr(config, 'token_tracking') and config.token_tracking.enabled):
-        from researchclaw.llm.smart_client import SmartLLMClient
+        from berb.llm.smart_client import SmartLLMClient
         return SmartLLMClient(
             config=base_client.config,
             nadirclaw_config=getattr(config, 'nadirclaw', None),

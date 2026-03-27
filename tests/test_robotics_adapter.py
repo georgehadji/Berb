@@ -8,12 +8,12 @@ from __future__ import annotations
 
 import pytest
 
-from researchclaw.domains.detector import (
+from berb.domains.detector import (
     get_profile,
     _keyword_detect,
     _profile_cache,
 )
-from researchclaw.domains.prompt_adapter import (
+from berb.domains.prompt_adapter import (
     MLPromptAdapter,
     GenericPromptAdapter,
     get_adapter,
@@ -79,7 +79,7 @@ class TestRoboticsAdapter:
         adapter = get_adapter(profile)
         assert not isinstance(adapter, MLPromptAdapter)
         # Before this contribution it would fall back to GenericPromptAdapter
-        from researchclaw.domains.adapters.robotics import (
+        from berb.domains.adapters.robotics import (
             RoboticsPromptAdapter,
         )
         assert isinstance(adapter, RoboticsPromptAdapter)
