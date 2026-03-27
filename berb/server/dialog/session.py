@@ -64,7 +64,7 @@ class ChatSession:
 class SessionManager:
     """Manage chat sessions."""
 
-    def __init__(self, persist_dir: str = ".researchclaw/sessions") -> None:
+    def __init__(self, persist_dir: str = ".berb/sessions") -> None:
         self._sessions: dict[str, ChatSession] = {}
         self._persist_dir = Path(persist_dir)
 

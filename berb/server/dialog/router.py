@@ -7,8 +7,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from researchclaw.server.dialog.intents import Intent, classify_intent
-from researchclaw.server.dialog.session import ChatSession, SessionManager
+from berb.server.dialog.intents import Intent, classify_intent
+from berb.server.dialog.session import ChatSession, SessionManager
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ async def _handle_help(text: str, session: ChatSession) -> str:
 
 
 async def _handle_status(text: str, session: ChatSession) -> str:
-    from researchclaw.dashboard.collector import DashboardCollector
+    from berb.dashboard.collector import DashboardCollector
 
     collector = DashboardCollector()
     runs = collector.collect_all()
@@ -84,7 +84,7 @@ async def _handle_start(text: str, session: ChatSession) -> str:
         "POST /api/pipeline/start\n"
         '{"topic": "your research topic", "auto_approve": true}\n'
         "```\n"
-        "Or run from CLI: `researchclaw run -c config.yaml`\n\n"
+        "Or run from CLI: `berb run -c config.yaml`\n\n"
         "Would you like me to help you set up the configuration?"
     )
 
@@ -104,7 +104,7 @@ async def _handle_config(text: str, session: ChatSession) -> str:
     return (
         "You can modify the configuration through:\n"
         "1. Edit `config.yaml` directly\n"
-        "2. Use the wizard: `researchclaw wizard`\n"
+        "2. Use the wizard: `berb wizard`\n"
         "3. Pass overrides when starting: "
         '`POST /api/pipeline/start {"config_overrides": {...}}`\n\n'
         "What setting would you like to change?"
@@ -112,7 +112,7 @@ async def _handle_config(text: str, session: ChatSession) -> str:
 
 
 async def _handle_results(text: str, session: ChatSession) -> str:
-    from researchclaw.dashboard.collector import DashboardCollector
+    from berb.dashboard.collector import DashboardCollector
 
     collector = DashboardCollector()
     runs = collector.collect_all()
@@ -144,7 +144,7 @@ async def _handle_paper(text: str, session: ChatSession) -> str:
 
 async def _handle_general(text: str, session: ChatSession) -> str:
     return (
-        "I'm your ResearchClaw assistant. I can help with:\n"
+        "I'm your Berb assistant. I can help with:\n"
         "- Selecting research topics\n"
         "- Running experiments\n"
         "- Monitoring progress\n"
