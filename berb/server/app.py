@@ -31,12 +31,12 @@ def create_app(
     """Create and configure the FastAPI application.
 
     Args:
-        config: ResearchClaw configuration.
+        config: Berb configuration.
         dashboard_only: If True, only mount dashboard routes.
         monitor_dir: Specific run directory to monitor.
     """
     app = FastAPI(
-        title="ResearchClaw",
+        title="Berb",
         description="Autonomous Research Pipeline — Web Interface",
         version="0.5.0",
     )
@@ -144,6 +144,6 @@ def create_app(
                     monitor_dir=monitor_dir,
                 )
             )
-        logger.info("ResearchClaw Web server started")
+        logger.info("Berb Web server started")
 
     return app
