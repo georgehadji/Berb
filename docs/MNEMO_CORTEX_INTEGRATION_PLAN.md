@@ -738,7 +738,7 @@ curl -X POST http://localhost:50001/preflight \
 
 ## References
 
-- **Mnemo Cortex Repo:** `E:\Documents\Vibe-Coding\Github Projects\Research\AutoResearchClaw-main\AutoResearchClaw-main\mnemo-cortex-master`
+- **Mnemix Repo:** `E:\Documents\Vibe-Coding\Github Projects\Research\AutoResearchClaw-main\AutoResearchClaw-main\mnemix`
 - **Mnemo Cortex GitHub:** https://github.com/GuyMannDude/mnemo-cortex
 - **AutoResearchClaw MetaClaw Integration:** `researchclaw/metaclaw_bridge/`
-- **OpenClaw Adapter Example:** `mnemo-cortex-master/adapters/openclaw/`
+- **OpenClaw Adapter Example:** `mnemix/adapters/openclaw/`
