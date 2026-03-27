@@ -191,7 +191,7 @@ def verify_by_arxiv_id(arxiv_id: str, expected_title: str) -> CitationResult | N
     url = f"{_ARXIV_API}?{params}"
 
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "ResearchClaw/0.1"})
+        req = urllib.request.Request(url, headers={"User-Agent": "Berb/0.1"})
         with urllib.request.urlopen(req, timeout=_ARXIV_TIMEOUT) as resp:
             data = resp.read().decode("utf-8")
     except Exception as exc:
@@ -287,7 +287,7 @@ def _verify_doi_datacite(doi: str, expected_title: str) -> CitationResult | None
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "ResearchClaw/0.1",
+                "User-Agent": "Berb/0.1",
                 "Accept": "application/json",
             },
         )
@@ -367,7 +367,7 @@ def verify_by_doi(doi: str, expected_title: str) -> CitationResult | None:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "ResearchClaw/0.1 (mailto:berb@example.com)",
+                "User-Agent": "Berb/0.1 (mailto:berb@example.com)",
                 "Accept": "application/json",
             },
         )
@@ -467,7 +467,7 @@ def verify_by_openalex(title: str) -> CitationResult | None:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": f"ResearchClaw/0.1 (mailto:{_OPENALEX_EMAIL})",
+                "User-Agent": f"Berb/0.1 (mailto:{_OPENALEX_EMAIL})",
                 "Accept": "application/json",
             },
         )

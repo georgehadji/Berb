@@ -194,9 +194,9 @@ class TestLatexFormatter:
         assert result.count("\\documentclass") == 1
 
     def test_strip_local_comments(self) -> None:
-        content = "Normal line\n% RESEARCHCLAW: internal note\nAnother line\n"
+        content = "Normal line\n% BERB: internal note\nAnother line\n"
         result = LatexFormatter.strip_local_comments(content)
-        assert "RESEARCHCLAW" not in result
+        assert "BERB" not in result
         assert "Normal line" in result
         assert "Another line" in result
 
@@ -212,10 +212,10 @@ class TestLatexFormatter:
 
     def test_format_for_overleaf(self, tmp_path: Path) -> None:
         tex = tmp_path / "paper.tex"
-        tex.write_text("\\documentclass{article}\n% RESEARCHCLAW: test\n\\begin{document}\nHello\n\\end{document}\n")
+        tex.write_text("\\documentclass{article}\n% BERB: test\n\\begin{document}\nHello\n\\end{document}\n")
         formatter = LatexFormatter()
         result = formatter.format_for_overleaf(tex)
-        assert "RESEARCHCLAW" not in result
+        assert "BERB" not in result
         assert "inputenc" in result
 
 

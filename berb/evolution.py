@@ -1,4 +1,4 @@
-"""Self-evolution system for the ResearchClaw pipeline.
+"""Self-evolution system for the Berb pipeline.
 
 Records lessons from each pipeline run (failures, slow stages, quality issues)
 and injects them into future runs as prompt overlays.  Inspired by Sibyl's
@@ -16,7 +16,7 @@ Usage
 -----
 ::
 
-    from researchclaw.evolution import EvolutionStore, extract_lessons
+    from berb.evolution import EvolutionStore, extract_lessons
 
     store = EvolutionStore(Path("evolution"))
     lessons = extract_lessons(results)
@@ -481,7 +481,7 @@ class EvolutionStore:
         """Export lessons to a memory store (duck-typed to avoid circular imports).
 
         The *memory_store* must expose an ``add(content, category, metadata)`` method
-        (compatible with ``researchclaw.memory.store.MemoryStore``).
+        (compatible with ``berb.memory.store.MemoryStore``).
 
         Returns the number of lessons exported.
         """
