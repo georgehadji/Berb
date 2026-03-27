@@ -1,4 +1,4 @@
-"""ResearchClaw MCP Server: expose pipeline capabilities to external agents."""
+"""Berb MCP Server: expose pipeline capabilities to external agents."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from berb.mcp.tools import TOOL_DEFINITIONS, list_tool_names
 logger = logging.getLogger(__name__)
 
 
-class ResearchClawMCPServer:
+class BerbMCPServer:
     """MCP Server that exposes Berb capabilities as tools.
 
     External agents (e.g., Claude, OpenClaw) can connect to this server

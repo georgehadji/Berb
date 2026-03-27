@@ -1,10 +1,10 @@
-"""MCP tool definitions for ResearchClaw capabilities."""
+"""MCP tool definitions for Berb capabilities."""
 
 from __future__ import annotations
 
 from typing import Any
 
-# Tool schemas exposed by the ResearchClaw MCP Server
+# Tool schemas exposed by the Berb MCP Server
 TOOL_DEFINITIONS: list[dict[str, Any]] = [
     {
         "name": "run_pipeline",

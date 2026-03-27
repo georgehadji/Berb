@@ -13,7 +13,7 @@ class QuickStartWizard:
 
     def run_interactive(self, template: str | None = None) -> dict[str, Any]:
         """CLI interactive wizard — returns a config dict."""
-        print("\n=== ResearchClaw Setup Wizard ===\n")
+        print("\n=== Berb Setup Wizard ===\n")
 
         if template:
             return self._apply_template(template)

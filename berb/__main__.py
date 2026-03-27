@@ -1,6 +1,6 @@
-"""Allow running as `python -m researchclaw`."""
+"""Allow running as `python -m berb`."""
 
 import sys
-from researchclaw.cli import main
+from berb.cli import main
 
 sys.exit(main())

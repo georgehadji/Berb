@@ -492,7 +492,7 @@ class DockerSandbox:
             mode = "a" if req_path.exists() else "w"
             with open(req_path, mode, encoding="utf-8") as f:
                 if mode == "a":
-                    f.write("\n# Auto-detected by ResearchClaw\n")
+                    f.write("\n# Auto-detected by Berb\n")
                 for pkg in packages:
                     f.write(pkg + "\n")
             logger.info("requirements.txt updated: %s", packages)
