@@ -10,16 +10,16 @@ import time as _time
 from pathlib import Path
 from typing import Any
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.experiment.validator import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.experiment.validator import (
     CodeValidation,
     format_issues_for_llm,
     validate_code,
 )
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain
-from researchclaw.pipeline._helpers import (
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain
+from berb.pipeline._helpers import (
     StageResult,
     _chat_with_prompt,
     _detect_runtime_issues,
@@ -35,8 +35,8 @@ from researchclaw.pipeline._helpers import (
     _utcnow_iso,
     _write_stage_meta,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -110,8 +110,8 @@ def _execute_experiment_run(
     llm: LLMClient | None = None,
     prompts: PromptManager | None = None,
 ) -> StageResult:
-    from researchclaw.experiment.factory import create_sandbox
-    from researchclaw.experiment.runner import ExperimentRunner
+    from berb.experiment.factory import create_sandbox
+    from berb.experiment.runner import ExperimentRunner
 
     schedule_text = _read_prior_artifact(run_dir, "schedule.json") or "{}"
     # Try multi-file experiment directory first, fall back to single file
@@ -342,8 +342,8 @@ def _execute_iterative_refine(
     llm: LLMClient | None = None,
     prompts: PromptManager | None = None,
 ) -> StageResult:
-    from researchclaw.experiment.factory import create_sandbox
-    from researchclaw.experiment.validator import format_issues_for_llm, validate_code
+    from berb.experiment.factory import create_sandbox
+    from berb.experiment.validator import format_issues_for_llm, validate_code
 
     def _to_float(value: Any) -> float | None:
         try:
@@ -950,7 +950,7 @@ def _execute_iterative_refine(
                 )
                 # If still no metrics after timeout, use partial stdout metrics
                 if not rerun.metrics and rerun.stdout:
-                    from researchclaw.experiment.sandbox import parse_metrics as _parse_sb_metrics
+                    from berb.experiment.sandbox import parse_metrics as _parse_sb_metrics
                     partial = _parse_sb_metrics(rerun.stdout)
                     if partial:
                         iter_record["sandbox"]["metrics"] = partial

@@ -8,11 +8,11 @@ import re
 from pathlib import Path
 from typing import Any
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain, _is_ml_domain
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain, _is_ml_domain
+from berb.pipeline._helpers import (
     StageResult,
     _build_context_preamble,
     _chat_with_prompt,
@@ -25,8 +25,8 @@ from researchclaw.pipeline._helpers import (
     _synthesize_perspectives,
     _utcnow_iso,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -211,7 +211,7 @@ def _execute_result_analysis(
             logger.warning("R13-1: Failed to parse refinement_log.json, using Stage 12 data")
 
     # --- R19-2: Extract PAIRED comparisons from refinement stdout ---
-    from researchclaw.experiment.sandbox import extract_paired_comparisons as _extract_paired
+    from berb.experiment.sandbox import extract_paired_comparisons as _extract_paired
 
     _all_paired: list[dict[str, object]] = []
     # First: from _collect_experiment_results (Stage 12 runs/)
@@ -575,7 +575,7 @@ def _execute_result_analysis(
 
     if llm is not None:
         _pm = prompts or PromptManager()
-        from researchclaw.prompts import DEBATE_ROLES_ANALYSIS  # noqa: PLC0415
+        from berb.prompts import DEBATE_ROLES_ANALYSIS  # noqa: PLC0415
 
         # --- Multi-perspective debate ---
         perspectives_dir = stage_dir / "perspectives"
@@ -634,8 +634,8 @@ Generated: {_utcnow_iso()}
     _figure_plan_saved = False
     if config.experiment.figure_agent.enabled and llm is not None:
         try:
-            from researchclaw.agents.figure_agent import FigureOrchestrator
-            from researchclaw.agents.figure_agent.orchestrator import FigureAgentConfig as _FACfg
+            from berb.agents.figure_agent import FigureOrchestrator
+            from berb.agents.figure_agent.orchestrator import FigureAgentConfig as _FACfg
 
             _fa_cfg = _FACfg(
                 enabled=True,
@@ -705,7 +705,7 @@ Generated: {_utcnow_iso()}
     # Fallback: legacy visualize.py chart generation
     if not _figure_plan_saved:
         try:
-            from researchclaw.experiment.visualize import (
+            from berb.experiment.visualize import (
                 generate_all_charts as _gen_charts_early,
             )
 
@@ -862,7 +862,7 @@ def _execute_research_decision(
             break
     if _exp_sum_path and _exp_sum_path.is_file():
         try:
-            from researchclaw.pipeline.stage_impls._paper_writing import _check_ablation_effectiveness
+            from berb.pipeline.stage_impls._paper_writing import _check_ablation_effectiveness
             _abl_exp = json.loads(_exp_sum_path.read_text(encoding="utf-8"))
             _abl_warnings = _check_ablation_effectiveness(_abl_exp, threshold=0.02)
             if _abl_warnings:

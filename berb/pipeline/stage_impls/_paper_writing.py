@@ -11,11 +11,11 @@ from typing import Any
 
 import yaml
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain, _is_ml_domain
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain, _is_ml_domain
+from berb.pipeline._helpers import (
     StageResult,
     _build_context_preamble,
     _chat_with_prompt,
@@ -31,8 +31,8 @@ from researchclaw.pipeline._helpers import (
     _topic_constraint_block,
     _utcnow_iso,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -578,7 +578,7 @@ def _validate_draft_quality(
     ``revision_directives``.  Optionally writes ``draft_quality.json`` to
     *stage_dir*.
     """
-    from researchclaw.prompts import SECTION_WORD_TARGETS, _SECTION_TARGET_ALIASES
+    from berb.prompts import SECTION_WORD_TARGETS, _SECTION_TARGET_ALIASES
 
     _heading_re = re.compile(r"^(#{1,4})\s+(.+)$", re.MULTILINE)
     matches = list(_heading_re.finditer(draft))
@@ -1284,7 +1284,7 @@ def _execute_paper_draft(
         # Phase 1: Build VerifiedRegistry from experiment data
         if isinstance(exp_summary, dict):
             try:
-                from researchclaw.pipeline.verified_registry import VerifiedRegistry
+                from berb.pipeline.verified_registry import VerifiedRegistry
                 # BUG-222: Use best_only=True to ensure paper tables reflect
                 # only the promoted best iteration, not regressed data
                 _verified_registry = VerifiedRegistry.from_run_dir(
@@ -1704,7 +1704,7 @@ def _execute_paper_draft(
     # Phase 1: Inject pre-built results tables from VerifiedRegistry
     if _verified_registry is not None:
         try:
-            from researchclaw.templates.results_table_builder import (
+            from berb.templates.results_table_builder import (
                 build_results_tables,
                 build_condition_whitelist,
             )
@@ -1891,7 +1891,7 @@ def _execute_paper_draft(
 
     # P3: Pre-verify citations before paper draft — remove hallucinated refs
     if bib_text and bib_text.strip():
-        from researchclaw.literature.verify import (
+        from berb.literature.verify import (
             filter_verified_bibtex,
             verify_citations as _verify_cit,
         )

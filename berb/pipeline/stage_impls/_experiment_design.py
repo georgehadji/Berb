@@ -10,11 +10,11 @@ from typing import Any
 
 import yaml
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain
+from berb.pipeline._helpers import (
     StageResult,
     _build_context_preamble,
     _chat_with_prompt,
@@ -25,8 +25,8 @@ from researchclaw.pipeline._helpers import (
     _safe_json_loads,
     _utcnow_iso,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def _execute_experiment_design(
     # and code generation. For ML domains, existing behavior is unchanged.
     _domain_profile = None
     try:
-        from researchclaw.domains.detector import detect_domain as _detect_domain_adv
+        from berb.domains.detector import detect_domain as _detect_domain_adv
         _domain_profile = _detect_domain_adv(
             topic=config.research.topic,
             hypotheses=hypotheses,
@@ -109,7 +109,7 @@ def _execute_experiment_design(
                 )
         # F-01: Inject framework docs for experiment design
         try:
-            from researchclaw.data import detect_frameworks, load_framework_docs
+            from berb.data import detect_frameworks, load_framework_docs
             _fw_ids = detect_frameworks(config.research.topic, hypotheses)
             if _fw_ids:
                 _fw_docs = load_framework_docs(_fw_ids, max_chars=4000)
@@ -292,8 +292,8 @@ def _execute_experiment_design(
         and llm is not None
     ):
         try:
-            from researchclaw.agents.benchmark_agent import BenchmarkOrchestrator
-            from researchclaw.agents.benchmark_agent.orchestrator import (
+            from berb.agents.benchmark_agent import BenchmarkOrchestrator
+            from berb.agents.benchmark_agent.orchestrator import (
                 BenchmarkAgentConfig as _BACfg,
             )
 

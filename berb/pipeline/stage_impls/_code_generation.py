@@ -8,16 +8,16 @@ import re
 from pathlib import Path
 from typing import Any
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.experiment.validator import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.experiment.validator import (
     CodeValidation,
     format_issues_for_llm,
     validate_code,
 )
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain
-from researchclaw.pipeline._helpers import (
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain
+from berb.pipeline._helpers import (
     StageResult,
     _chat_with_prompt,
     _ensure_sandbox_deps,
@@ -30,8 +30,8 @@ from researchclaw.pipeline._helpers import (
     _safe_json_loads,
     _utcnow_iso,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -198,7 +198,7 @@ def _execute_code_generation(
             import json as _json_bp
             _bp_data = _json_bp.loads(_bp_path.read_text(encoding="utf-8"))
             # Reconstruct the prompt block
-            from researchclaw.agents.benchmark_agent.orchestrator import BenchmarkPlan
+            from berb.agents.benchmark_agent.orchestrator import BenchmarkPlan
             _bp = BenchmarkPlan(
                 selected_benchmarks=_bp_data.get("selected_benchmarks", []),
                 selected_baselines=_bp_data.get("selected_baselines", []),
@@ -249,7 +249,7 @@ def _execute_code_generation(
 
     # --- F-01: Framework API doc injection (auto-detected) ---
     try:
-        from researchclaw.data import detect_frameworks, load_framework_docs
+        from berb.data import detect_frameworks, load_framework_docs
         _hypothesis_text = _read_prior_artifact(run_dir, "hypotheses.md") or ""
         _fw_ids = detect_frameworks(
             config.research.topic, _hypothesis_text, exp_plan or ""
@@ -288,10 +288,10 @@ def _execute_code_generation(
 
     # --- Domain-specific guidance injection for non-ML domains ---
     try:
-        from researchclaw.domains.detector import detect_domain as _dd_s10, is_ml_domain as _is_ml_s10
+        from berb.domains.detector import detect_domain as _dd_s10, is_ml_domain as _is_ml_s10
         _dp = _dd_s10(topic=config.research.topic)
         if not _is_ml_s10(_dp):
-            from researchclaw.domains.prompt_adapter import get_adapter as _ga
+            from berb.domains.prompt_adapter import get_adapter as _ga
             _adapter = _ga(_dp)
             _blocks = _adapter.get_code_generation_blocks({})
             if _blocks.compute_budget:
@@ -327,7 +327,7 @@ def _execute_code_generation(
     # ── Beast Mode: OpenCode external agent (optional) ─────────────────
     _oc_cfg = config.experiment.opencode
     if _oc_cfg.enabled:
-        from researchclaw.pipeline.opencode_bridge import (
+        from berb.pipeline.opencode_bridge import (
             OpenCodeBridge,
             OpenCodeResult,
             count_historical_failures,
@@ -447,12 +447,12 @@ def _execute_code_generation(
 
     if not _beast_mode_used and config.experiment.code_agent.enabled and llm is not None:
         # ── F-02: Advanced Code Agent path ────────────────────────────────
-        from researchclaw.pipeline.code_agent import CodeAgent as _CodeAgent
+        from berb.pipeline.code_agent import CodeAgent as _CodeAgent
 
         _ca_cfg = config.experiment.code_agent
         # Ensure we have a proper config object
         if not hasattr(_ca_cfg, "enabled"):
-            from researchclaw.pipeline.code_agent import (
+            from berb.pipeline.code_agent import (
                 CodeAgentConfig as _CAConfig,
             )
             _ca_cfg = _CAConfig()
@@ -460,7 +460,7 @@ def _execute_code_generation(
         # Sandbox factory (only for sandbox/docker modes)
         _sandbox_factory = None
         if config.experiment.mode in ("sandbox", "docker"):
-            from researchclaw.experiment.factory import (
+            from berb.experiment.factory import (
                 create_sandbox as _csb,
             )
             _sandbox_factory = _csb
@@ -475,8 +475,8 @@ def _execute_code_generation(
         _domain_profile = None
         _code_search_result = None
         try:
-            from researchclaw.domains.detector import detect_domain as _dd
-            from researchclaw.domains.detector import is_ml_domain as _is_ml
+            from berb.domains.detector import detect_domain as _dd
+            from berb.domains.detector import is_ml_domain as _is_ml
             _domain_profile = _dd(topic=config.research.topic)
             logger.info(
                 "CodeAgent: domain=%s (%s)",
@@ -486,7 +486,7 @@ def _execute_code_generation(
             # Run code search for non-ML domains (ML has enough built-in knowledge)
             if not _is_ml(_domain_profile):
                 try:
-                    from researchclaw.agents.code_searcher import CodeSearchAgent
+                    from berb.agents.code_searcher import CodeSearchAgent
                     _cs_agent = CodeSearchAgent(llm=llm)
                     _code_search_result = _cs_agent.search(
                         topic=config.research.topic,
@@ -783,7 +783,7 @@ def _execute_code_generation(
         )
 
     # --- R10-Fix6: Code complexity and quality check ---
-    from researchclaw.experiment.validator import (
+    from berb.experiment.validator import (
         auto_fix_unbound_locals,
         check_code_complexity,
         deep_validate_files,

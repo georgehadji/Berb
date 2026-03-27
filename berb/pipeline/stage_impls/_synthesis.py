@@ -7,10 +7,10 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.llm.client import LLMClient
+from berb.pipeline._helpers import (
     StageResult,
     _default_hypotheses,
     _get_evolution_overlay,
@@ -20,8 +20,8 @@ from researchclaw.pipeline._helpers import (
     _synthesize_perspectives,
     _utcnow_iso,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +99,7 @@ def _execute_hypothesis_gen(
     synthesis = _read_prior_artifact(run_dir, "synthesis.md") or ""
     if llm is not None:
         _pm = prompts or PromptManager()
-        from researchclaw.prompts import DEBATE_ROLES_HYPOTHESIS  # noqa: PLC0415
+        from berb.prompts import DEBATE_ROLES_HYPOTHESIS  # noqa: PLC0415
 
         # --- Multi-perspective debate ---
         perspectives_dir = stage_dir / "perspectives"
@@ -124,7 +124,7 @@ def _execute_hypothesis_gen(
     # --- Novelty check (non-blocking) ---
     novelty_artifacts: tuple[str, ...] = ()
     try:
-        from researchclaw.literature.novelty import check_novelty  # noqa: PLC0415
+        from berb.literature.novelty import check_novelty  # noqa: PLC0415
 
         candidates_text = _read_prior_artifact(run_dir, "candidates.jsonl") or ""
         papers_seen = _parse_jsonl_rows(candidates_text) if candidates_text else []

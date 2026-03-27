@@ -33,7 +33,7 @@ class LatexFormatter:
         lines = content.splitlines(keepends=True)
         return "".join(
             line for line in lines
-            if not line.strip().startswith("% RESEARCHCLAW:")
+            if not line.strip().startswith("% BERB:")
         )
 
     @staticmethod

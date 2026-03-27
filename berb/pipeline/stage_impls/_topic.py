@@ -7,20 +7,20 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.hardware import detect_hardware, ensure_torch_available
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.hardware import detect_hardware, ensure_torch_available
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain
+from berb.pipeline._helpers import (
     StageResult,
     _get_evolution_overlay,
     _read_prior_artifact,
     _safe_json_loads,
     _utcnow_iso,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 

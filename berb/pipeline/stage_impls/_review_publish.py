@@ -12,11 +12,11 @@ from typing import Any
 
 import yaml  # noqa: F401 — available for downstream use
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._domain import _detect_domain  # noqa: F401
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.llm.client import LLMClient
+from berb.pipeline._domain import _detect_domain  # noqa: F401
+from berb.pipeline._helpers import (
     StageResult,
     _build_context_preamble,
     _chat_with_prompt,
@@ -34,8 +34,8 @@ from researchclaw.pipeline._helpers import (
     _utcnow_iso,
     reconcile_figure_refs,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -48,12 +48,12 @@ logger = logging.getLogger(__name__)
 
 
 def _get_collect_raw_experiment_metrics():
-    from researchclaw.pipeline.stage_impls._paper_writing import _collect_raw_experiment_metrics
+    from berb.pipeline.stage_impls._paper_writing import _collect_raw_experiment_metrics
     return _collect_raw_experiment_metrics
 
 
 def _get_review_compiled_pdf():
-    from researchclaw.pipeline.stage_impls._paper_writing import _review_compiled_pdf
+    from berb.pipeline.stage_impls._paper_writing import _review_compiled_pdf
     return _review_compiled_pdf
 
 
@@ -562,7 +562,7 @@ def _execute_quality_gate(
         except (json.JSONDecodeError, OSError):
             pass
     try:
-        from researchclaw.pipeline.verified_registry import VerifiedRegistry as _VR20
+        from berb.pipeline.verified_registry import VerifiedRegistry as _VR20
         _vr20 = _VR20.from_run_dir(run_dir, metric_direction=config.experiment.metric_direction, best_only=True) if isinstance(_exp_summary, dict) else None
         if _vr20:
             _fabrication_info["verified_values_count"] = len(_vr20.values)
@@ -1175,7 +1175,7 @@ def _load_seminal_papers_by_key() -> dict[str, dict]:
     Returns empty dict on any failure (missing file, bad YAML, etc.).
     """
     try:
-        from researchclaw.data import _load_all as _load_seminal_all
+        from berb.data import _load_all as _load_seminal_all
         all_papers = _load_seminal_all()
         return {p["cite_key"]: p for p in all_papers if "cite_key" in p}
     except Exception:  # noqa: BLE001
@@ -1295,7 +1295,7 @@ def _resolve_missing_citations(
 
     # --- Layer 2: API search with title-similarity validation ---
     try:
-        from researchclaw.literature.search import search_papers
+        from berb.literature.search import search_papers
     except ImportError:
         logger.debug("BUG-176: literature.search not available, skipping resolution")
         return resolved, new_entries
@@ -2009,7 +2009,7 @@ def _execute_export_publish(
 
     # Conference template: generate .tex file
     try:
-        from researchclaw.templates import get_template, markdown_to_latex
+        from berb.templates import get_template, markdown_to_latex
 
         tpl = get_template(config.export.target_conference)
         # Use the latex-citation-processed version if available
@@ -2043,9 +2043,9 @@ def _execute_export_publish(
         # --- Phase 1 anti-fabrication: verify paper against VerifiedRegistry ---
         _vresult = None  # BUG-DA8-04: Initialize before try to avoid fragile dir() check
         try:
-            from researchclaw.pipeline.paper_verifier import verify_paper as _verify_paper
+            from berb.pipeline.paper_verifier import verify_paper as _verify_paper
             # BUG-222: Use best_only=True to validate against promoted best data only
-            from researchclaw.pipeline.verified_registry import (
+            from berb.pipeline.verified_registry import (
                 VerifiedRegistry as _VR22,
             )
             _vr22 = _VR22.from_run_dir(
@@ -2203,7 +2203,7 @@ def _execute_export_publish(
                     break
 
             # Generate structured charts from visualize.py
-            from researchclaw.experiment.visualize import generate_all_charts
+            from berb.experiment.visualize import generate_all_charts
             _metric_dir = getattr(config.experiment, "metric_direction", "minimize")
             _viz_charts = generate_all_charts(
                 run_dir,
@@ -2229,7 +2229,7 @@ def _execute_export_publish(
         try:
             tex_path = stage_dir / "paper.tex"
             if tex_path.exists():
-                from researchclaw.templates.compiler import remove_missing_figures
+                from berb.templates.compiler import remove_missing_figures
                 _tex_text = tex_path.read_text(encoding="utf-8")
                 _fixed_tex, _removed_figs = remove_missing_figures(_tex_text, stage_dir)
                 if _removed_figs:
@@ -2243,7 +2243,7 @@ def _execute_export_publish(
 
         # Compile verification
         try:
-            from researchclaw.templates.compiler import compile_latex
+            from berb.templates.compiler import compile_latex
             _compile_result = compile_latex(stage_dir / "paper.tex", max_attempts=2)
             if _compile_result.success:
                 logger.info("Stage 22: LaTeX compilation verification PASSED")
@@ -2277,7 +2277,7 @@ def _execute_export_publish(
                         logger.debug("Stage 22: PDF review skipped: %s", _pdf_exc)
                 # Post-compilation quality checks
                 try:
-                    from researchclaw.templates.compiler import check_compiled_quality
+                    from berb.templates.compiler import check_compiled_quality
                     _qc = check_compiled_quality(stage_dir / "paper.tex")
                     if _qc.warnings_summary:
                         logger.warning(
@@ -2598,7 +2598,7 @@ def _execute_citation_verify(
     llm: LLMClient | None = None,
     prompts: PromptManager | None = None,
 ) -> StageResult:
-    from researchclaw.literature.verify import (
+    from berb.literature.verify import (
         VerifyStatus,
         annotate_paper_hallucinations,
         filter_verified_bibtex,
@@ -2639,7 +2639,7 @@ def _execute_citation_verify(
 
     s2_api_key = getattr(config.llm, "s2_api_key", "") or ""
 
-    from researchclaw.literature.verify import parse_bibtex_entries
+    from berb.literature.verify import parse_bibtex_entries
     _n_entries = len(parse_bibtex_entries(bib_text))
     logger.info(
         "[citation-verify] Verifying %d references "

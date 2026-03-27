@@ -10,10 +10,10 @@ from typing import Any
 
 import yaml
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import RCConfig
-from researchclaw.llm.client import LLMClient
-from researchclaw.pipeline._helpers import (
+from berb.adapters import AdapterBundle
+from berb.config import RCConfig
+from berb.llm.client import LLMClient
+from berb.pipeline._helpers import (
     StageResult,
     _build_fallback_queries,
     _chat_with_prompt,
@@ -27,8 +27,8 @@ from researchclaw.pipeline._helpers import (
     _utcnow_iso,
     _write_jsonl,
 )
-from researchclaw.pipeline.stages import Stage, StageStatus
-from researchclaw.prompts import PromptManager
+from berb.pipeline.stages import Stage, StageStatus
+from berb.prompts import PromptManager
 
 logger = logging.getLogger(__name__)
 
@@ -339,7 +339,7 @@ def _execute_literature_collect(
     real_search_succeeded = False
 
     try:
-        from researchclaw.literature.search import (
+        from berb.literature.search import (
             search_papers_multi_query,
             papers_to_bibtex,
         )
@@ -380,7 +380,7 @@ def _execute_literature_collect(
 
     # --- Inject foundational/seminal papers ---
     try:
-        from researchclaw.data import load_seminal_papers
+        from berb.data import load_seminal_papers
         seminal = load_seminal_papers(topic)
         if seminal:
             _existing_titles = {c.get("title", "").lower() for c in candidates}
@@ -426,7 +426,7 @@ def _execute_literature_collect(
     web_context_parts: list[str] = []
     if config.web_search.enabled:
         try:
-            from researchclaw.web.agent import WebSearchAgent
+            from berb.web.agent import WebSearchAgent
             import os
 
             tavily_key = config.web_search.tavily_api_key or os.environ.get(
