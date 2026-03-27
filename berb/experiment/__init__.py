@@ -25,6 +25,18 @@ from berb.experiment.auto_debugger import (
     DebugResult,
     auto_debug,
 )
+from berb.experiment.self_correcting import (
+    SelfCorrectingExecutor,
+    SimulationStatus,
+    SimulationResult,
+    InputClarifierAgent,
+    CodeBuilderAgent,
+    SimulationExecutorAgent,
+    ErrorDiagnosisAgent,
+    InputRewriterAgent,
+    MechanicalInsightAgent,
+    run_self_correcting_simulation,
+)
 
 __all__ = [
     "ExperimentSandbox",
@@ -46,4 +58,14 @@ __all__ = [
     "FixSuggestion",
     "DebugResult",
     "auto_debug",
+    "SelfCorrectingExecutor",
+    "SimulationStatus",
+    "SimulationResult",
+    "InputClarifierAgent",
+    "CodeBuilderAgent",
+    "SimulationExecutorAgent",
+    "ErrorDiagnosisAgent",
+    "InputRewriterAgent",
+    "MechanicalInsightAgent",
+    "run_self_correcting_simulation",
 ]
