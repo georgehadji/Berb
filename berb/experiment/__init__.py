@@ -7,6 +7,15 @@ from berb.experiment.sandbox import (
     SandboxResult,
     parse_metrics,
 )
+from berb.experiment.progress import (
+    ExperimentProgressManager,
+    ExperimentProgressConfig,
+    ExperimentStage,
+    StageConfig,
+    StageResult,
+    ExperimentReport,
+    run_structured_experiment,
+)
 
 __all__ = [
     "ExperimentSandbox",
@@ -14,4 +23,11 @@ __all__ = [
     "SandboxResult",
     "create_sandbox",
     "parse_metrics",
+    "ExperimentProgressManager",
+    "ExperimentProgressConfig",
+    "ExperimentStage",
+    "StageConfig",
+    "StageResult",
+    "ExperimentReport",
+    "run_structured_experiment",
 ]

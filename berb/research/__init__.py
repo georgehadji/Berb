@@ -12,6 +12,14 @@ from .tree_search import (
     DecisionPoint,
     explore_research_space,
 )
+from .idea_scorer import (
+    IdeaQualityScorer,
+    ScoringConfig,
+    ResearchIdea,
+    ScoredIdea,
+    NoveltyLevel,
+    score_and_rank_ideas,
+)
 
 __all__ = [
     "ParallelizedTreeSearch",
@@ -21,4 +29,10 @@ __all__ = [
     "BranchStatus",
     "DecisionPoint",
     "explore_research_space",
+    "IdeaQualityScorer",
+    "ScoringConfig",
+    "ResearchIdea",
+    "ScoredIdea",
+    "NoveltyLevel",
+    "score_and_rank_ideas",
 ]
