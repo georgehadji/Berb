@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 # Template for the Colab worker notebook
 COLAB_WORKER_TEMPLATE = '''\
-# === ResearchClaw Colab Worker ===
+# === Berb Colab Worker ===
 # Run this cell in Google Colab with GPU enabled.
 # It polls Google Drive for experiment tasks and executes them.
 

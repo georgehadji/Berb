@@ -82,7 +82,7 @@ class ACPClient:
 
     @classmethod
     def from_rc_config(cls, rc_config: Any) -> ACPClient:
-        """Build from a ResearchClaw ``RCConfig``."""
+        """Build from a Berb ``RCConfig``."""
         acp = rc_config.llm.acp
         return cls(ACPConfig(
             agent=acp.agent,

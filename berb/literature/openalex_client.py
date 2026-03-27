@@ -134,7 +134,7 @@ def _request_with_retry(
                 url,
                 headers={
                     "Accept": "application/json",
-                    "User-Agent": f"ResearchClaw/1.0 (mailto:{email})",
+                    "User-Agent": f"Berb/1.0 (mailto:{email})",
                 },
             )
             with urllib.request.urlopen(req, timeout=_TIMEOUT_SEC) as resp:

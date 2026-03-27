@@ -1,6 +1,6 @@
 """Markdown-to-LaTeX converter with conference template support.
 
-Converts a ResearchClaw paper (Markdown with embedded LaTeX math) into a
+Converts a Berb paper (Markdown with embedded LaTeX math) into a
 complete ``.tex`` file using a :class:`ConferenceTemplate` for preamble,
 author block, bibliography style, and document structure.
 
