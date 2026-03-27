@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from researchclaw.metaclaw_bridge.skill_feedback import (
+from berb.metaclaw_bridge.skill_feedback import (
     SkillEffectivenessRecord,
     SkillFeedbackStore,
     record_stage_skills,

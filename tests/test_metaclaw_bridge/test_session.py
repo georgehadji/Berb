@@ -1,6 +1,6 @@
 """Tests for MetaClaw session management module."""
 
-from researchclaw.metaclaw_bridge.session import MetaClawSession
+from berb.metaclaw_bridge.session import MetaClawSession
 
 
 def test_session_creation():

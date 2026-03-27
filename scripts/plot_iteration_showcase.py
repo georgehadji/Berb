@@ -1,6 +1,6 @@
 """Generate promotional figure: Pipeline iterative improvement showcase.
 
-Shows two experiment cases side-by-side demonstrating how the AutoResearchClaw
+Shows two experiment cases side-by-side demonstrating how the AutoBerb
 pipeline progressively improves experimental methods through self-iteration.
 """
 
@@ -193,7 +193,7 @@ fig.legend(handles=legend_elements, loc="lower center", ncol=3,
 
 # ── Suptitle ─────────────────────────────────────────────────────────────────
 fig.suptitle(
-    "AutoResearchClaw: Autonomous Self-Iterating Experiment Optimization",
+    "AutoBerb: Autonomous Self-Iterating Experiment Optimization",
     fontsize=15, fontweight="bold", y=1.02,
 )
 

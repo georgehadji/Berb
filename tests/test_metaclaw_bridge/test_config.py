@@ -1,6 +1,6 @@
 """Tests for MetaClaw bridge configuration parsing."""
 
-from researchclaw.config import RCConfig
+from berb.config import RCConfig
 
 
 def _minimal_config_data(**overrides):

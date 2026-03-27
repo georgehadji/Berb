@@ -52,7 +52,7 @@ def main() -> None:
     run_id = f"e2e-real-{int(time.time())}"
 
     print(f"=" * 70)
-    print(f"ResearchClaw E2E Test — Real LLM API")
+    print(f"Berb E2E Test — Real LLM API")
     print(f"Topic: {config.research.topic}")
     print(f"Run ID: {run_id}")
     print(f"Output: {run_dir}")

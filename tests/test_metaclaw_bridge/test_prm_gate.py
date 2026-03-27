@@ -2,7 +2,7 @@
 
 from unittest.mock import patch, MagicMock
 
-from researchclaw.metaclaw_bridge.prm_gate import (
+from berb.metaclaw_bridge.prm_gate import (
     ResearchPRMGate,
     _GATE_INSTRUCTIONS,
 )
@@ -53,7 +53,7 @@ def test_from_bridge_config_enabled():
     assert gate.votes == 3
 
 
-@patch("researchclaw.metaclaw_bridge.prm_gate._single_judge_call")
+@patch("berb.metaclaw_bridge.prm_gate._single_judge_call")
 def test_evaluate_stage_majority_pass(mock_call):
     """Should return 1.0 when majority votes pass."""
     mock_call.side_effect = [1.0, 1.0, -1.0]
@@ -66,7 +66,7 @@ def test_evaluate_stage_majority_pass(mock_call):
     assert score == 1.0
 
 
-@patch("researchclaw.metaclaw_bridge.prm_gate._single_judge_call")
+@patch("berb.metaclaw_bridge.prm_gate._single_judge_call")
 def test_evaluate_stage_majority_fail(mock_call):
     """Should return -1.0 when majority votes fail."""
     mock_call.side_effect = [-1.0, -1.0, 1.0]
@@ -79,7 +79,7 @@ def test_evaluate_stage_majority_fail(mock_call):
     assert score == -1.0
 
 
-@patch("researchclaw.metaclaw_bridge.prm_gate._single_judge_call")
+@patch("berb.metaclaw_bridge.prm_gate._single_judge_call")
 def test_evaluate_stage_all_failed(mock_call):
     """Should return 0.0 when all judge calls fail."""
     mock_call.side_effect = [None, None, None]

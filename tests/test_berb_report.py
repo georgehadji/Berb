@@ -33,7 +33,7 @@ class TestReport:
             )
         )
         report = generate_report(tmp_path)
-        assert "# ResearchClaw Run Report" in report
+        assert "# Berb Run Report" in report
         assert "rc-test-123" in report
         assert "✅" in report
 

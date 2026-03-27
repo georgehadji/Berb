@@ -43,7 +43,7 @@ def test_main_with_no_args_returns_zero_and_prints_help(
     code = rc_cli.main([])
     assert code == 0
     captured = capsys.readouterr()
-    assert "ResearchClaw" in captured.out
+    assert "Berb" in captured.out
     assert "usage:" in captured.out
 
 

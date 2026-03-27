@@ -7,7 +7,7 @@ import asyncio
 import pytest
 
 from berb.mcp.tools import TOOL_DEFINITIONS, get_tool_schema, list_tool_names
-from berb.mcp.server import ResearchClawMCPServer
+from berb.mcp.server import BerbMCPServer
 from berb.mcp.client import MCPClient
 from berb.mcp.registry import MCPServerRegistry
 from berb.mcp.transport import SSETransport
@@ -63,41 +63,41 @@ class TestMCPTools:
 
 class TestMCPServer:
     def test_get_tools(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         tools = server.get_tools()
         assert len(tools) >= 6
         names = [t["name"] for t in tools]
         assert "run_pipeline" in names
 
     def test_handle_unknown_tool(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("nonexistent", {}))
         assert result["success"] is False
         assert "Unknown tool" in result["error"]
 
     def test_handle_run_pipeline(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("run_pipeline", {"topic": "GNN"}))
         assert result["success"] is True
         assert "GNN" in result["message"]
 
     def test_handle_get_status_missing_run(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("get_pipeline_status", {"run_id": "nonexistent"}))
         assert result["success"] is False
 
     def test_handle_search_literature(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("search_literature", {"query": "transformers"}))
         assert result["success"] is True
 
     def test_handle_review_paper(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("review_paper", {"paper_path": "/tmp/paper.md"}))
         assert result["success"] is True
 
     def test_start_stop(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         assert not server.is_running
 
         async def _run() -> None:
@@ -109,12 +109,12 @@ class TestMCPServer:
         asyncio.run(_run())
 
     def test_handle_get_results_missing(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("get_experiment_results", {"run_id": "missing"}))
         assert result["success"] is False
 
     def test_handle_get_paper_missing(self) -> None:
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         result = asyncio.run(server.handle_tool_call("get_paper", {"run_id": "missing"}))
         assert result["success"] is False
 
