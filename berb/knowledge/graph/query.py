@@ -6,9 +6,9 @@ import logging
 from collections import Counter, defaultdict
 from typing import Any
 
-from researchclaw.knowledge.graph.builder import KnowledgeGraphBuilder
-from researchclaw.knowledge.graph.entities import EntityType
-from researchclaw.knowledge.graph.relations import RelationType
+from berb.knowledge.graph.builder import KnowledgeGraphBuilder
+from berb.knowledge.graph.entities import EntityType
+from berb.knowledge.graph.relations import RelationType
 
 logger = logging.getLogger(__name__)
 

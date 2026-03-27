@@ -7,8 +7,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from researchclaw.knowledge.graph.builder import KnowledgeGraphBuilder
-from researchclaw.knowledge.graph.entities import EntityType
+from berb.knowledge.graph.builder import KnowledgeGraphBuilder
+from berb.knowledge.graph.entities import EntityType
 
 logger = logging.getLogger(__name__)
 

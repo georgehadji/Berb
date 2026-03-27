@@ -4,20 +4,20 @@
 >
 > **使用方式：** 打开 Claude Code，输入：
 > ```
-> 请读取 researchclaw/feedback/FEEDBACK_ANALYSIS_PROMPT.md，然后按照指示处理 feedback_inbox/ 目录下的所有测试反馈。
+> 请读取 berb/feedback/FEEDBACK_ANALYSIS_PROMPT.md，然后按照指示处理 feedback_inbox/ 目录下的所有测试反馈。
 > ```
 
 ---
 
 ## 你的角色
 
-你是 AutoResearchClaw 项目的高级 QA 工程师和代码架构师。你需要分析来自不同学科领域测试者的反馈，与当前 Pipeline 代码进行对比，生成一份结构化的 **Bug 修复文档**。
+你是 AutoBerb 项目的高级 QA 工程师和代码架构师。你需要分析来自不同学科领域测试者的反馈，与当前 Pipeline 代码进行对比，生成一份结构化的 **Bug 修复文档**。
 
 ---
 
 ## 背景
 
-AutoResearchClaw 是一个 23 阶段的全自动学术研究 Pipeline（从选题到论文生成）。我们招募了来自不同学科的测试者运行 Pipeline，他们提交了运行反馈和交付物。你需要帮我把这些反馈转化为可执行的 Bug 修复方案。
+AutoBerb 是一个 23 阶段的全自动学术研究 Pipeline（从选题到论文生成）。我们招募了来自不同学科的测试者运行 Pipeline，他们提交了运行反馈和交付物。你需要帮我把这些反馈转化为可执行的 Bug 修复方案。
 
 ### ⚠️ 关键认知：测试者使用的可能是旧版本
 
@@ -81,16 +81,16 @@ feedback_inbox/
 
 在分析之前，你需要了解当前代码的最新状态。请阅读以下关键文件：
 
-- `researchclaw/pipeline/stages.py` — 23 阶段定义和状态机
-- `researchclaw/pipeline/executor.py` — 核心执行逻辑（重点关注各阶段的 execute 函数）
-- `researchclaw/pipeline/runner.py` — Pipeline 运行入口
-- `researchclaw/config.py` — 配置结构
-- `researchclaw/llm/client.py` — LLM 调用逻辑
-- `researchclaw/literature/search.py` — 文献搜索
-- `researchclaw/experiment/docker_sandbox.py` — Docker 沙箱执行
-- `researchclaw/pipeline/code_agent.py` — 代码生成 Agent
-- `researchclaw/templates/converter.py` — LaTeX 转换
-- `researchclaw/prompts.py` — Prompt 模板
+- `berb/pipeline/stages.py` — 23 阶段定义和状态机
+- `berb/pipeline/executor.py` — 核心执行逻辑（重点关注各阶段的 execute 函数）
+- `berb/pipeline/runner.py` — Pipeline 运行入口
+- `berb/config.py` — 配置结构
+- `berb/llm/client.py` — LLM 调用逻辑
+- `berb/literature/search.py` — 文献搜索
+- `berb/experiment/docker_sandbox.py` — Docker 沙箱执行
+- `berb/pipeline/code_agent.py` — 代码生成 Agent
+- `berb/templates/converter.py` — LaTeX 转换
+- `berb/prompts.py` — Prompt 模板
 
 **不需要逐行阅读，但要对整体架构和各模块职责有清晰认识。**
 
@@ -136,7 +136,7 @@ feedback_inbox/
 ## 输出文档格式
 
 ```markdown
-# Bug Fix Document — AutoResearchClaw Pipeline
+# Bug Fix Document — AutoBerb Pipeline
 
 > 生成日期：YYYY-MM-DD
 > 反馈来源：N 位测试者
@@ -179,7 +179,7 @@ xxx
 xxx（具体到文件名、函数名、行号、逻辑问题）
 
 **涉及文件：**
-- `researchclaw/xxx/yyy.py`
+- `berb/xxx/yyy.py`
 
 **修复方案：**
 xxx（具体的修改步骤，另一台机器上的 agent 能直接按此执行）

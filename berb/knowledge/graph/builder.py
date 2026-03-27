@@ -7,8 +7,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from researchclaw.knowledge.graph.entities import Entity, EntityType
-from researchclaw.knowledge.graph.relations import Relation, RelationType
+from berb.knowledge.graph.entities import Entity, EntityType
+from berb.knowledge.graph.relations import Relation, RelationType
 
 logger = logging.getLogger(__name__)
 
