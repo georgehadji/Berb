@@ -15,8 +15,6 @@ berb setup                     # interactive config
 berb run --topic "..." --auto-approve
 berb run --topic "..." --from-stage PAPER_OUTLINE
 berb doctor                    # health check
-berb benchmarks --list
-berb benchmarks --run <name>
 
 # Tests
 pytest tests/                              # all tests
@@ -64,7 +62,7 @@ Stage definitions live in `berb/pipeline/stages.py`; implementations in `berb/pi
 
 ### Configuration
 
-Primary config is `config.berb.example.yaml` (copy to `config.berb.yaml`). Key sections:
+Run `berb setup` (or `berb init`) to generate `config.arc.yaml` from the example template. The CLI auto-detects `config.arc.yaml` or `config.yaml`; pass `--config <path>` to override. Key sections:
 - `llm.provider` / `llm.primary_model` — LLM backend selection
 - `experiment.mode` — `sandbox | docker | ssh_remote | colab_drive`
 - `metaclaw_bridge.enabled` — Enable/disable MetaClaw integration
