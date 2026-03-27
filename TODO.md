@@ -18,7 +18,9 @@
 | **Model Providers (P+xAI)** | 3 | 13 | 25+ | ~22-28h | +67% literature | ✅ Complete |
 | **Cross-Project Learning** | 1 | 1 | 5 | ~4h | Provably improves | ✅ Implemented |
 | **Branding Cleanup** | 1 | 1 | 200+ | ~2h | Clean identity | ✅ Complete |
-| **TOTAL** | **15** | **65** | **232+** | **~254-297h** | **Market leader** | **~98% Complete** |
+| **Competitive Benchmarking** | 1 | 3 | 12 | ~6h | Verifiable claims | ✅ Implemented |
+| **Plugin Marketplace** | 1 | 4 | 15+ | ~8h | Ecosystem | ✅ Implemented |
+| **TOTAL** | **17** | **69** | **284+** | **~270-313h** | **Market leader** | **~99% Complete** |
 
 ---
 
@@ -51,6 +53,8 @@
 | **Cross-Project Learning** | `berb/learning/` | ✅ Complete | Transfer learning system |
 | **Self-Evolution** | `berb/evolution.py` | ✅ Complete | Self-improvement system |
 | **Grey Literature** | `berb/literature/grey_search.py` | ✅ Complete | 6 grey literature sources |
+| **Benchmarking Engine** | `berb/benchmarks/` | ✅ Complete | 12 standardized benchmarks |
+| **Plugin Marketplace** | `berb/plugins/` | ✅ Complete | Plugin system with 3 examples |
 
 **Documentation:**
 - `docs/MNEMO_CORTEX_INTEGRATION_PLAN.md` - Full Mnemo plan
@@ -103,7 +107,33 @@
 
 ## 📈 Remaining Work (P2/P3 - Optional Enhancements)
 
-### P2: Competitive Benchmarking Engine
+### ✅ P2: Competitive Benchmarking Engine - COMPLETE
+
+**Status:** ✅ Implemented in `berb/benchmarks/`
+
+**Features:**
+- 12 standardized benchmarks across 6 categories
+- Success criteria evaluation
+- Cost and time budget tracking
+- Quality metrics collection
+- JSON result export and Markdown reports
+- CLI: `berb benchmarks --list|--run|--suite`
+
+---
+
+### ✅ P2: Plugin Marketplace Architecture - COMPLETE
+
+**Status:** ✅ Implemented in `berb/plugins/`
+
+**Features:**
+- PluginManager with discovery and lifecycle management
+- 15+ hook types for full pipeline integration
+- PluginManifest schema and validation
+- 3 example plugins (Security Scanner, Citation Manager, Django Template)
+
+---
+
+### ⏳ P2: Enhanced Cross-Project Learning
 
 **Goal:** Create verifiable performance claims with data
 
