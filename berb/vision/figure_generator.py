@@ -8,15 +8,20 @@ Features:
 - Code generation for matplotlib/tikz
 - Nano Banana integration for image generation
 - Iterative refinement with critic feedback
+- VLM-based figure quality critique (AI Scientist P4-OPT-003)
 
 Author: Georgios-Chrysovalantis Chatzivantsidis
 
 Usage:
-    from berb.vision.figure_generator import FigureGenerator
+    from berb.vision.figure_generator import FigureGenerator, FigureCritic
     
     gen = FigureGenerator()
     code = await gen.sketch_to_code("my_sketch.png")
     figure = await gen.generate_from_description("bar chart comparing X and Y")
+    
+    # Critique generated figures
+    critic = FigureCritic()
+    critique = await critic.analyze_figure("figure.png", paper_context="...")
 """
 
 from __future__ import annotations
@@ -451,3 +456,328 @@ class FigureGenerator:
         # For now, return original code
         logger.info(f"Refining code with feedback: {feedback}")
         return code
+
+
+class FigureCritic:
+    """Vision-based figure critique using VLM (AI Scientist P4-OPT-003).
+    
+    Analyzes rendered figures for:
+    - Clarity and readability
+    - Label accuracy
+    - Color scheme effectiveness
+    - Data-ink ratio
+    - Consistency with paper claims
+    
+    Based on AI Scientist (Nature 2026) - Section 3.4: Visualization & VLM Feedback
+    """
+    
+    def __init__(
+        self,
+        vision_api_key: str | None = None,
+        vision_provider: str = "gemini",
+    ) -> None:
+        """Initialize figure critic.
+        
+        Args:
+            vision_api_key: API key for vision model
+            vision_provider: Vision model provider (gemini, openai)
+        """
+        self._vision = VisionModelClient(vision_api_key, vision_provider)
+        self._critique_history: list[dict] = []
+    
+    async def analyze_figure(
+        self,
+        figure_path: str | Path,
+        paper_context: str | None = None,
+        figure_caption: str | None = None,
+    ) -> FigureCritique:
+        """Analyze a rendered figure using VLM.
+        
+        Args:
+            figure_path: Path to rendered figure image
+            paper_context: Optional paper text for consistency check
+            figure_caption: Optional figure caption
+            
+        Returns:
+            FigureCritique with scores and feedback
+        """
+        figure_path = Path(figure_path)
+        if not figure_path.exists():
+            logger.error(f"Figure not found: {figure_path}")
+            return FigureCritique(overall_score=0.0, error="Figure not found")
+        
+        # Build critique prompt
+        prompt = self._build_critique_prompt(
+            paper_context=paper_context,
+            figure_caption=figure_caption,
+        )
+        
+        # Analyze with VLM
+        response = await self._vision.analyze_image(figure_path, prompt)
+        
+        # Parse critique from response
+        critique = self._parse_critique_response(response)
+        critique.figure_path = str(figure_path)
+        
+        # Store in history
+        self._critique_history.append(critique.to_dict())
+        
+        logger.info(
+            f"Figure critique complete: {critique.overall_score:.1f}/10 "
+            f"({len(critique.issues)} issues found)"
+        )
+        
+        return critique
+    
+    def _build_critique_prompt(
+        self,
+        paper_context: str | None,
+        figure_caption: str | None,
+    ) -> str:
+        """Build VLM prompt for figure critique."""
+        base_prompt = """You are an expert scientific reviewer evaluating figures for a top-tier conference (Nature/Science/NeurIPS/ICML).
+
+Analyze this figure comprehensively across these dimensions:
+
+1. CLARITY & READABILITY (1-10)
+   - Is the figure easy to understand at a glance?
+   - Are text elements legible (font size, contrast)?
+   - Is the layout logical and well-organized?
+
+2. LABEL ACCURACY (1-10)
+   - Are axes labeled correctly with units?
+   - Do legend entries match the data shown?
+   - Are all symbols/shapes explained?
+
+3. COLOR SCHEME EFFECTIVENESS (1-10)
+   - Is the color palette appropriate for the data type?
+   - Is it colorblind-friendly?
+   - Does it use color purposefully (not decoratively)?
+
+4. DATA-INK RATIO (1-10)
+   - Is there any unnecessary chartjunk?
+   - Are gridlines, borders minimal?
+   - Does every element serve a purpose?
+
+5. CONSISTENCY WITH CLAIMS (1-10)
+   - Does the figure support the stated claims?
+   - Are error bars shown where appropriate?
+   - Is the visual encoding accurate (no misleading scales)?
+
+OUTPUT FORMAT (JSON):
+{
+    "scores": {
+        "clarity": <1-10>,
+        "label_accuracy": <1-10>,
+        "color_scheme": <1-10>,
+        "data_ink_ratio": <1-10>,
+        "claim_consistency": <1-10>
+    },
+    "overall_score": <float 1-10>,
+    "strengths": ["strength 1", "strength 2", ...],
+    "issues": [
+        {
+            "type": "clarity|labels|color|data_ink|consistency",
+            "severity": "critical|major|minor",
+            "description": "Issue description",
+            "suggestion": "How to fix"
+        }
+    ],
+    "recommendations": ["recommendation 1", ...],
+    "accessibility_concerns": ["concern 1", ...],
+    "detailed_feedback": "<2-3 paragraphs>"
+}
+"""
+        
+        if figure_caption:
+            base_prompt += f"\nFIGURE CAPTION:\n{figure_caption}\n"
+        
+        if paper_context:
+            # Truncate context if too long
+            if len(paper_context) > 2000:
+                paper_context = paper_context[:2000] + "..."
+            base_prompt += f"\nPAPER CONTEXT:\n{paper_context}\n"
+        
+        return base_prompt
+    
+    def _parse_critique_response(self, response: str) -> FigureCritique:
+        """Parse VLM response into FigureCritique."""
+        import json
+        import re
+        
+        # Try to extract JSON from response
+        try:
+            # Find JSON block
+            start = response.find('{')
+            end = response.rfind('}') + 1
+            if start >= 0 and end > start:
+                data = json.loads(response[start:end])
+            else:
+                # Fallback: create structured critique from text
+                data = self._create_fallback_critique(response)
+        except (json.JSONDecodeError, Exception) as e:
+            logger.warning(f"Failed to parse critique JSON: {e}")
+            data = self._create_fallback_critique(response)
+        
+        # Calculate overall score
+        scores = data.get("scores", {})
+        if scores:
+            overall = sum(scores.values()) / len(scores)
+        else:
+            overall = 5.0
+        
+        return FigureCritique(
+            overall_score=round(overall, 2),
+            clarity_score=scores.get("clarity", 5),
+            label_accuracy_score=scores.get("label_accuracy", 5),
+            color_scheme_score=scores.get("color_scheme", 5),
+            data_ink_ratio_score=scores.get("data_ink_ratio", 5),
+            claim_consistency_score=scores.get("claim_consistency", 5),
+            strengths=data.get("strengths", []),
+            issues=data.get("issues", []),
+            recommendations=data.get("recommendations", []),
+            accessibility_concerns=data.get("accessibility_concerns", []),
+            detailed_feedback=data.get("detailed_feedback", ""),
+        )
+    
+    def _create_fallback_critique(self, response: str) -> dict:
+        """Create fallback critique when JSON parsing fails."""
+        return {
+            "scores": {
+                "clarity": 6,
+                "label_accuracy": 6,
+                "color_scheme": 6,
+                "data_ink_ratio": 6,
+                "claim_consistency": 6,
+            },
+            "overall_score": 6.0,
+            "strengths": ["Figure appears to show relevant data"],
+            "issues": [{"type": "general", "severity": "minor", "description": "Could not parse detailed critique", "suggestion": "Review figure manually"}],
+            "recommendations": ["Manual review recommended"],
+            "detailed_feedback": response[:500],
+        }
+    
+    async def suggest_improvements(
+        self,
+        critique: FigureCritique,
+        current_code: str,
+    ) -> str:
+        """Generate code improvements based on critique.
+        
+        Args:
+            critique: Figure critique results
+            current_code: Current matplotlib/tikz code
+            
+        Returns:
+            Suggested code modifications
+        """
+        # Build improvement prompt
+        prompt = f"""Based on this figure critique, suggest specific code improvements:
+
+CRITIQUE SUMMARY:
+- Overall Score: {critique.overall_score:.1f}/10
+- Issues: {len(critique.issues)}
+
+ISSUES:
+"""
+        for issue in critique.issues:
+            prompt += f"- [{issue.get('severity', 'minor').upper()}] {issue.get('description', '')}\n"
+            prompt += f"  Suggestion: {issue.get('suggestion', '')}\n"
+        
+        prompt += f"""
+CURRENT CODE:
+```python
+{current_code[:2000]}  # Truncate if too long
+```
+
+Provide specific code changes to address the issues. Focus on:
+1. Critical and major issues first
+2. Accessibility improvements
+3. Clarity enhancements
+
+Output format:
+```python
+# IMPROVEMENT 1: [Description]
+# Before: [original code line]
+# After: [improved code line]
+
+# IMPROVEMENT 2: ...
+```
+"""
+        
+        # Call LLM for suggestions
+        # In production:
+        # response = await self._llm_client.chat(
+        #     messages=[{"role": "user", "content": prompt}]
+        # )
+        # return response.content
+        
+        # Placeholder
+        return f"# Improvements based on critique (placeholder)\n# {len(critique.issues)} issues to address\n"
+    
+    def get_critique_statistics(self) -> dict:
+        """Get statistics from critique history."""
+        if not self._critique_history:
+            return {"error": "No critiques performed"}
+        
+        scores = []
+        issue_types = {}
+        
+        for critique in self._critique_history:
+            if "overall_score" in critique:
+                scores.append(critique["overall_score"])
+            
+            for issue in critique.get("issues", []):
+                issue_type = issue.get("type", "unknown")
+                issue_types[issue_type] = issue_types.get(issue_type, 0) + 1
+        
+        return {
+            "total_critiques": len(self._critique_history),
+            "avg_overall_score": sum(scores) / len(scores) if scores else 0,
+            "min_score": min(scores) if scores else 0,
+            "max_score": max(scores) if scores else 0,
+            "issue_distribution": issue_types,
+        }
+
+
+@dataclass
+class FigureCritique:
+    """Results of VLM-based figure critique."""
+    
+    overall_score: float
+    figure_path: str = ""
+    clarity_score: float = 5.0
+    label_accuracy_score: float = 5.0
+    color_scheme_score: float = 5.0
+    data_ink_ratio_score: float = 5.0
+    claim_consistency_score: float = 5.0
+    strengths: list[str] = field(default_factory=list)
+    issues: list[dict] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
+    accessibility_concerns: list[str] = field(default_factory=list)
+    detailed_feedback: str = ""
+    error: str = ""
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary."""
+        return {
+            "overall_score": self.overall_score,
+            "figure_path": self.figure_path,
+            "clarity_score": self.clarity_score,
+            "label_accuracy_score": self.label_accuracy_score,
+            "color_scheme_score": self.color_scheme_score,
+            "data_ink_ratio_score": self.data_ink_ratio_score,
+            "claim_consistency_score": self.claim_consistency_score,
+            "strengths": self.strengths,
+            "issues": self.issues,
+            "recommendations": self.recommendations,
+            "accessibility_concerns": self.accessibility_concerns,
+            "detailed_feedback": self.detailed_feedback,
+        }
+    
+    @property
+    def is_acceptable(self) -> bool:
+        """Check if figure meets minimum quality threshold."""
+        return self.overall_score >= 7.0 and not any(
+            i.get("severity") == "critical" for i in self.issues
+        )

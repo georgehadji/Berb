@@ -9,6 +9,8 @@ from .figure_generator import (
     FigureSpec,
     FigureCodeGenerator,
     VisionModelClient,
+    FigureCritic,
+    FigureCritique,
 )
 
 __all__ = [
@@ -16,4 +18,6 @@ __all__ = [
     "FigureSpec",
     "FigureCodeGenerator",
     "VisionModelClient",
+    "FigureCritic",
+    "FigureCritique",
 ]
