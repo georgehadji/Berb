@@ -19,14 +19,14 @@ async def transcribe_audio(
 ) -> dict[str, Any]:
     """Transcribe uploaded audio using Whisper API."""
     try:
-        from researchclaw.voice.transcriber import VoiceTranscriber
+        from berb.voice.transcriber import VoiceTranscriber
     except ImportError:
         raise HTTPException(
             status_code=501,
-            detail="Voice dependencies not installed. Run: pip install researchclaw[voice]",
+            detail="Voice dependencies not installed. Run: pip install berb[voice]",
         )
 
-    from researchclaw.server.app import _app_state
+    from berb.server.app import _app_state
 
     config = _app_state.get("config")
     if not config or not config.server.voice_enabled:

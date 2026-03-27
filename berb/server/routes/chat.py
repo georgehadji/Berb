@@ -7,8 +7,8 @@ import uuid
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from researchclaw.server.websocket.events import Event, EventType
-from researchclaw.server.websocket.manager import ConnectionManager
+from berb.server.websocket.events import Event, EventType
+from berb.server.websocket.manager import ConnectionManager
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ async def chat_websocket(websocket: WebSocket) -> None:
         while True:
             raw = await websocket.receive_text()
             try:
-                from researchclaw.server.dialog.router import route_message
+                from berb.server.dialog.router import route_message
 
                 response = await route_message(raw, client_id)
                 await manager.send_to(

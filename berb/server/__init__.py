@@ -1,1 +1,1 @@
-"""ResearchClaw Web server package."""
+"""Berb Web server package."""

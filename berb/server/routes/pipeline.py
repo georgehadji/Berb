@@ -53,7 +53,7 @@ _run_task: asyncio.Task[Any] | None = None
 
 def _get_app_state() -> dict[str, Any]:
     """Get shared application state (set by app.py)."""
-    from researchclaw.server.app import _app_state
+    from berb.server.app import _app_state
     return _app_state
 
 
@@ -92,8 +92,8 @@ async def start_pipeline(req: PipelineStartRequest) -> PipelineStartResponse:
     async def _run_in_background() -> None:
         global _active_run
         try:
-            from researchclaw.adapters import AdapterBundle
-            from researchclaw.pipeline.runner import execute_pipeline
+            from berb.adapters import AdapterBundle
+            from berb.pipeline.runner import execute_pipeline
 
             kb_root = Path(config.knowledge_base.root) if config.knowledge_base.root else None
             if kb_root:
@@ -157,7 +157,7 @@ async def pipeline_status() -> dict[str, Any]:
 @router.get("/pipeline/stages")
 async def pipeline_stages() -> dict[str, Any]:
     """Get the 23-stage pipeline definition."""
-    from researchclaw.pipeline.stages import Stage
+    from berb.pipeline.stages import Stage
 
     stages = []
     for s in Stage:
