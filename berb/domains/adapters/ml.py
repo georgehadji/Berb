@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from researchclaw.domains.prompt_adapter import PromptAdapter, PromptBlocks
+from berb.domains.prompt_adapter import PromptAdapter, PromptBlocks
 
 
 class MLPromptAdapter(PromptAdapter):
