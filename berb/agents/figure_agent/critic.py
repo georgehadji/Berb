@@ -15,7 +15,7 @@ import logging
 import re
 from typing import Any
 
-from researchclaw.agents.base import BaseAgent, AgentStepResult
+from berb.agents.base import BaseAgent, AgentStepResult
 
 logger = logging.getLogger(__name__)
 

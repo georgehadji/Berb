@@ -32,8 +32,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from researchclaw.agents.base import BaseAgent, AgentStepResult
-from researchclaw.utils.sanitize import sanitize_figure_id
+from berb.agents.base import BaseAgent, AgentStepResult
+from berb.utils.sanitize import sanitize_figure_id
 
 logger = logging.getLogger(__name__)
 

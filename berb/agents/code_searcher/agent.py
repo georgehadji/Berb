@@ -15,16 +15,16 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from researchclaw.agents.code_searcher.cache import SearchCache
-from researchclaw.agents.code_searcher.github_client import (
+from berb.agents.code_searcher.cache import SearchCache
+from berb.agents.code_searcher.github_client import (
     CodeSnippet,
     GitHubClient,
     RepoAnalysis,
     RepoInfo,
 )
-from researchclaw.agents.code_searcher.pattern_extractor import CodePatterns, extract_patterns
-from researchclaw.agents.code_searcher.query_gen import generate_search_queries
-from researchclaw.domains.detector import DomainProfile
+from berb.agents.code_searcher.pattern_extractor import CodePatterns, extract_patterns
+from berb.agents.code_searcher.query_gen import generate_search_queries
+from berb.domains.detector import DomainProfile
 
 logger = logging.getLogger(__name__)
 

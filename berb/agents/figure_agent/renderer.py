@@ -22,8 +22,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from researchclaw.agents.base import BaseAgent, AgentStepResult
-from researchclaw.utils.sanitize import sanitize_figure_id
+from berb.agents.base import BaseAgent, AgentStepResult
+from berb.utils.sanitize import sanitize_figure_id
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ _MIN_FILE_SIZE = 1024  # 1 KB
 
 # Docker image for sandboxed visualization rendering.
 # The experiment image already has matplotlib, numpy, seaborn pre-installed.
-_VIZ_DOCKER_IMAGE = "researchclaw/experiment:latest"
+_VIZ_DOCKER_IMAGE = "berb/experiment:latest"
 
 
 def _docker_available() -> bool:

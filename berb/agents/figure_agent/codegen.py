@@ -18,10 +18,10 @@ import re
 from pathlib import Path
 from typing import Any
 
-from researchclaw.agents.base import BaseAgent, AgentStepResult
-from researchclaw.agents.figure_agent.style_config import get_style_preamble
-from researchclaw.utils.sanitize import sanitize_figure_id
-from researchclaw.utils.thinking_tags import strip_thinking_tags
+from berb.agents.base import BaseAgent, AgentStepResult
+from berb.agents.figure_agent.style_config import get_style_preamble
+from berb.utils.sanitize import sanitize_figure_id
+from berb.utils.thinking_tags import strip_thinking_tags
 
 logger = logging.getLogger(__name__)
 
@@ -525,7 +525,7 @@ class CodeGenAgent(BaseAgent):
         else:
             data_source = {}
 
-        from researchclaw.agents.figure_agent.style_config import FIGURE_WIDTH, DEFAULT_FIGURE_HEIGHT
+        from berb.agents.figure_agent.style_config import FIGURE_WIDTH, DEFAULT_FIGURE_HEIGHT
         width = FIGURE_WIDTH.get(width_key, FIGURE_WIDTH["single_column"])
         height = DEFAULT_FIGURE_HEIGHT
 

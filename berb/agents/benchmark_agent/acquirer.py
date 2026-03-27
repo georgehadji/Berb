@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from researchclaw.agents.base import AgentStepResult, BaseAgent
+from berb.agents.base import AgentStepResult, BaseAgent
 
 logger = logging.getLogger(__name__)
 

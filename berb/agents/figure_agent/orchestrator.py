@@ -18,14 +18,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from researchclaw.agents.base import AgentOrchestrator
-from researchclaw.agents.figure_agent.codegen import CodeGenAgent
-from researchclaw.agents.figure_agent.critic import CriticAgent
-from researchclaw.agents.figure_agent.decision import FigureDecisionAgent
-from researchclaw.agents.figure_agent.integrator import IntegratorAgent
-from researchclaw.agents.figure_agent.nano_banana import NanoBananaAgent
-from researchclaw.agents.figure_agent.planner import PlannerAgent
-from researchclaw.agents.figure_agent.renderer import RendererAgent
+from berb.agents.base import AgentOrchestrator
+from berb.agents.figure_agent.codegen import CodeGenAgent
+from berb.agents.figure_agent.critic import CriticAgent
+from berb.agents.figure_agent.decision import FigureDecisionAgent
+from berb.agents.figure_agent.integrator import IntegratorAgent
+from berb.agents.figure_agent.nano_banana import NanoBananaAgent
+from berb.agents.figure_agent.planner import PlannerAgent
+from berb.agents.figure_agent.renderer import RendererAgent
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class FigureAgentConfig:
     # Renderer security
     render_timeout_sec: int = 30
     use_docker: bool | None = None  # None = auto-detect
-    docker_image: str = "researchclaw/experiment:latest"
+    docker_image: str = "berb/experiment:latest"
     # Code generation
     output_format: str = "python"  # "python" or "latex"
     # Nano Banana (Gemini image generation)

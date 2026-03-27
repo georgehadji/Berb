@@ -15,11 +15,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from researchclaw.agents.base import AgentOrchestrator
-from researchclaw.agents.benchmark_agent.acquirer import AcquirerAgent
-from researchclaw.agents.benchmark_agent.selector import SelectorAgent
-from researchclaw.agents.benchmark_agent.surveyor import SurveyorAgent
-from researchclaw.agents.benchmark_agent.validator import ValidatorAgent
+from berb.agents.base import AgentOrchestrator
+from berb.agents.benchmark_agent.acquirer import AcquirerAgent
+from berb.agents.benchmark_agent.selector import SelectorAgent
+from berb.agents.benchmark_agent.surveyor import SurveyorAgent
+from berb.agents.benchmark_agent.validator import ValidatorAgent
 
 logger = logging.getLogger(__name__)
 

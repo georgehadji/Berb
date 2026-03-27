@@ -18,7 +18,7 @@ from typing import ContextManager, cast
 
 import yaml
 
-from researchclaw.config import RCConfig, validate_config
+from berb.config import RCConfig, validate_config
 
 logger = logging.getLogger(__name__)
 
@@ -532,7 +532,7 @@ def check_acp_agent(agent_command: str) -> CheckResult:
 
 def check_docker_runtime(config: RCConfig) -> CheckResult:
     """Check Docker daemon, image availability, and optional NVIDIA runtime."""
-    from researchclaw.experiment.docker_sandbox import DockerSandbox
+    from berb.experiment.docker_sandbox import DockerSandbox
 
     if not DockerSandbox.check_docker_available():
         return CheckResult(
@@ -548,7 +548,7 @@ def check_docker_runtime(config: RCConfig) -> CheckResult:
             name="docker_runtime",
             status="fail",
             detail=f"Docker image '{docker_cfg.image}' not found locally",
-            fix=f"docker build -t {docker_cfg.image} researchclaw/docker/",
+            fix=f"docker build -t {docker_cfg.image} berb/docker/",
         )
 
     detail = f"Docker OK, image={docker_cfg.image}"
@@ -630,7 +630,7 @@ def print_doctor_report(report: DoctorReport) -> None:
             icon.encode(encoding)
     except UnicodeEncodeError:
         icon_by_status = {"pass": "[OK]", "fail": "[FAIL]", "warn": "[WARN]"}
-    print(f"ResearchClaw Doctor Report ({report.timestamp})")
+    print(f"Berb Doctor Report ({report.timestamp})")
     for check in report.checks:
         icon = icon_by_status.get(check.status, "-")
         print(f"{icon} {check.name}: {check.detail}")

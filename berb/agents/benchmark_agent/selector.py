@@ -12,7 +12,7 @@ from typing import Any
 
 import yaml
 
-from researchclaw.agents.base import AgentStepResult, BaseAgent
+from berb.agents.base import AgentStepResult, BaseAgent
 
 logger = logging.getLogger(__name__)
 

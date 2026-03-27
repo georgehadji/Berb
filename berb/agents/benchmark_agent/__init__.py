@@ -16,7 +16,7 @@ The ``BenchmarkOrchestrator`` coordinates the four agents and produces a
 code generation).
 """
 
-from researchclaw.agents.benchmark_agent.orchestrator import (
+from berb.agents.benchmark_agent.orchestrator import (
     BenchmarkOrchestrator,
     BenchmarkPlan,
 )

@@ -17,7 +17,7 @@ The ``FigureOrchestrator`` coordinates all agents and produces a
 paper export).
 """
 
-from researchclaw.agents.figure_agent.orchestrator import (
+from berb.agents.figure_agent.orchestrator import (
     FigureOrchestrator,
     FigurePlan,
 )
