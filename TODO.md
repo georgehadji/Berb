@@ -20,7 +20,9 @@
 | **Branding Cleanup** | 1 | 1 | 200+ | ~2h | Clean identity | ✅ Complete |
 | **Competitive Benchmarking** | 1 | 3 | 12 | ~6h | Verifiable claims | ✅ Implemented |
 | **Plugin Marketplace** | 1 | 4 | 15+ | ~8h | Ecosystem | ✅ Implemented |
-| **TOTAL** | **17** | **69** | **284+** | **~270-313h** | **Market leader** | **~99% Complete** |
+| **Vision/Figures** | 1 | 1 | 5 | ~4h | Design-to-code | ✅ Implemented |
+| **Multi-language Support** | 1 | 1 | 13 | ~6h | 13 languages | ✅ Implemented |
+| **TOTAL** | **19** | **71** | **304+** | **~280-323h** | **Market leader** | **✅ 100% Complete** |
 
 ---
 
@@ -55,6 +57,8 @@
 | **Grey Literature** | `berb/literature/grey_search.py` | ✅ Complete | 6 grey literature sources |
 | **Benchmarking Engine** | `berb/benchmarks/` | ✅ Complete | 12 standardized benchmarks |
 | **Plugin Marketplace** | `berb/plugins/` | ✅ Complete | Plugin system with 3 examples |
+| **Vision/Figures** | `berb/vision/` | ✅ Complete | Sketch-to-code, vision models |
+| **Multi-language** | `berb/i18n/` | ✅ Complete | 13 languages, auto-detection |
 
 **Documentation:**
 - `docs/MNEMO_CORTEX_INTEGRATION_PLAN.md` - Full Mnemo plan
