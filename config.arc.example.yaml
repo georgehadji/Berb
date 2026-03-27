@@ -1,0 +1,266 @@
+# AutoResearchClaw - Example Configuration with Cost Optimization
+# 
+# This example configuration demonstrates how to enable:
+# - Token consumption tracking (RTK integration)
+# - NadirClaw LLM cost routing (40-70% savings)
+# - Mnemo Cortex memory integration
+# - Reasoner reasoning engine
+# - SearXNG metasearch
+#
+# Copy this file to config.arc.yaml and customize for your needs.
+# Run `researchclaw init` for interactive setup.
+
+# =============================================================================
+# Project Configuration
+# =============================================================================
+
+project:
+  name: "my-research"
+  mode: "full-auto"  # docs-first | semi-auto | full-auto
+
+research:
+  topic: "Your research topic here"
+  domains:
+    - "machine-learning"
+  daily_paper_count: 10
+  quality_threshold: 4.0
+
+runtime:
+  timezone: "America/New_York"
+  max_parallel_tasks: 3
+  approval_timeout_hours: 12
+  retry_limit: 2
+
+# =============================================================================
+# Token Tracking & Cost Optimization (NEW!)
+# =============================================================================
+
+token_tracking:
+  enabled: true
+  project_scope: true
+  budget_limit_usd: 100.0
+  alert_thresholds: [50, 80, 100]  # Percentage alerts
+  db_path: ""  # Empty = platform-specific default
+
+# =============================================================================
+# NadirClaw LLM Cost Router (NEW!)
+# =============================================================================
+
+nadirclaw:
+  enabled: true
+  
+  # Model tiers (cheapest to most expensive)
+  simple_model: "gemini/gemini-2.5-flash"      # ~$0.0002/1K tokens
+  mid_model: "openai/gpt-4o-mini"              # ~$0.015/1K tokens
+  complex_model: "anthropic/claude-sonnet-4-5-20250929"  # ~$0.03/1K tokens
+  
+  # Tier thresholds (0-1 scale)
+  # simple: score < 0.3, mid: 0.3-0.7, complex: > 0.7
+  tier_thresholds: [0.3, 0.7]
+  
+  # Caching for identical prompts
+  cache_enabled: true
+  cache_ttl: 3600  # 1 hour
+  cache_max_size: 1000
+  
+  # Context optimization modes: off | safe | aggressive
+  # safe: 30-50% token savings (lossless)
+  # aggressive: 50-70% savings (may lose some info)
+  context_optimize_mode: "safe"
+  
+  # Budget management
+  budget_daily_usd: 10.0
+  budget_monthly_usd: 200.0
+
+# =============================================================================
+# LLM Configuration
+# =============================================================================
+
+llm:
+  provider: "openrouter"  # openai | openrouter | deepseek | anthropic | acp
+  base_url: "https://openrouter.ai/api/v1"
+  api_key_env: "OPENROUTER_API_KEY"
+  api_key: ""
+  primary_model: "gpt-4o"
+  fallback_models:
+    - "gpt-4.1"
+    - "gpt-4o-mini"
+
+# =============================================================================
+# Mnemo Cortex Memory Integration (NEW!)
+# =============================================================================
+
+mnemo_bridge:
+  enabled: false  # Set to true after installing Mnemo Cortex
+  server_url: "http://localhost:50001"
+  agent_id: "autoresearch"
+  auth_token: ""
+  timeout_sec: 30
+  
+  # Context injection settings
+  context_injection:
+    enabled: true
+    max_chunks: 5
+    min_relevance: 0.5
+  
+  # Preflight validation for critical stages
+  preflight:
+    enabled: true
+    stages: [4, 9, 18, 23]  # Literature, Experiment, Review, Citation
+    persona: "strict"
+
+# =============================================================================
+# Reasoner Reasoning Engine (NEW!)
+# =============================================================================
+
+reasoner_bridge:
+  enabled: false  # Set to true after integration
+  method: "multi-perspective"  # multi-perspective | debate | jury | iterative
+  
+  # Multi-perspective settings
+  multi_perspective:
+    perspectives: ["constructive", "destructive", "systemic", "minimalist"]
+    parallel: true
+    top_k: 2  # Keep top 2 hypotheses
+  
+  # Stress testing for experiment design
+  stress_testing:
+    enabled: true
+    scenarios: ["optimal", "constraint_violation", "adversarial"]
+    min_survival_rate: 0.5  # Block designs below this
+  
+  # Context vetting for literature
+  context_vetting:
+    enabled: true
+    max_severity: "medium"  # Filter out high-severity issues
+
+# =============================================================================
+# SearXNG Metasearch (NEW!)
+# =============================================================================
+
+searxng:
+  enabled: false  # Set to true after deploying SearXNG
+  base_url: "http://localhost:8888"
+  timeout_sec: 30
+  max_pages: 5
+  
+  # Academic engines to use
+  engines:
+    - "google scholar"
+    - "arxiv"
+    - "crossref"
+    - "pubmed"
+    - "base"
+    - "core"
+  
+  # Caching for search results
+  cache:
+    enabled: true
+    ttl_hours: 24
+
+# =============================================================================
+# Experiment Configuration
+# =============================================================================
+
+experiment:
+  mode: "sandbox"  # sandbox | docker | simulated | ssh_remote
+  time_budget_sec: 300
+  max_iterations: 10
+  metric_key: "primary_metric"
+  metric_direction: "minimize"
+  
+  sandbox:
+    python_path: ".venv/Scripts/python.exe"  # Windows
+    # python_path: ".venv/bin/python3"  # macOS/Linux
+    gpu_required: false
+    max_memory_mb: 4096
+
+# =============================================================================
+# Security Configuration
+# =============================================================================
+
+security:
+  hitl_required_stages: [5, 9, 20]  # Gate stages
+  allow_publish_without_approval: false
+  redact_sensitive_logs: true
+
+# =============================================================================
+# Notifications
+# =============================================================================
+
+notifications:
+  channel: "console"
+  target: ""
+  on_stage_start: true
+  on_stage_fail: true
+  on_gate_required: true
+
+# =============================================================================
+# Knowledge Base
+# =============================================================================
+
+knowledge_base:
+  backend: "markdown"
+  root: "docs/kb"
+
+# =============================================================================
+# MetaClaw Integration (Existing)
+# =============================================================================
+
+metaclaw_bridge:
+  enabled: false
+  proxy_url: "http://localhost:30000"
+  skills_dir: "~/.metaclaw/skills"
+  fallback_url: ""
+  fallback_api_key: ""
+  
+  prm:
+    enabled: false
+  
+  lesson_to_skill:
+    enabled: true
+    min_severity: "error"
+    max_skills_per_run: 3
+
+# =============================================================================
+# Export Configuration
+# =============================================================================
+
+export:
+  target_conference: "neurips_2025"  # neurips | icml | iclr
+  authors: "Anonymous"
+  bib_file: "references"
+
+# =============================================================================
+# Prompts Configuration
+# =============================================================================
+
+prompts:
+  custom_file: ""  # Path to custom prompts YAML (empty = use defaults)
+
+# =============================================================================
+# Quick Start Guide
+# =============================================================================
+#
+# 1. Basic Setup (no integrations):
+#    researchclaw setup
+#    researchclaw init
+#    researchclaw run --topic "Your topic" --auto-approve
+#
+# 2. With NadirClaw (recommended for cost savings):
+#    - Set nadirclaw.enabled: true
+#    - Configure your API keys
+#    - Expected savings: 40-70% on LLM costs
+#
+# 3. With Token Tracking:
+#    - Set token_tracking.enabled: true
+#    - View stats: researchclaw token-stats
+#    - Set budget alerts
+#
+# 4. Full Integration (all features):
+#    - Install Mnemo Cortex: pip install mnemo-cortex
+#    - Deploy SearXNG: docker-compose up -d
+#    - Enable all bridges in this config
+#    - Expected savings: 60-75% total
+#
+# =============================================================================
