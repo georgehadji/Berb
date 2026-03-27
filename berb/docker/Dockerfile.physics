@@ -1,5 +1,5 @@
-# ResearchClaw Physics sandbox — CPU-focused, numerical computing.
-# Build: docker build -f Dockerfile.physics -t researchclaw/sandbox-physics:latest researchclaw/docker/
+# Berb Physics sandbox — CPU-focused, numerical computing.
+# Build: docker build -f Dockerfile.physics -t berb/sandbox-physics:latest berb/docker/
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1

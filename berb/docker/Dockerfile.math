@@ -1,5 +1,5 @@
-# ResearchClaw Math sandbox — numerical methods, optimization.
-# Build: docker build -f Dockerfile.math -t researchclaw/sandbox-math:latest researchclaw/docker/
+# Berb Math sandbox — numerical methods, optimization.
+# Build: docker build -f Dockerfile.math -t berb/sandbox-math:latest berb/docker/
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1

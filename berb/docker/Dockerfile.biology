@@ -1,5 +1,5 @@
-# ResearchClaw Biology sandbox — bioinformatics, single-cell analysis.
-# Build: docker build -f Dockerfile.biology -t researchclaw/sandbox-biology:latest researchclaw/docker/
+# Berb Biology sandbox — bioinformatics, single-cell analysis.
+# Build: docker build -f Dockerfile.biology -t berb/sandbox-biology:latest berb/docker/
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1

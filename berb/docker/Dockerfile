@@ -1,5 +1,5 @@
-# ResearchClaw experiment sandbox — GPU-enabled, isolated environment.
-# Build: docker build -t researchclaw/experiment:latest researchclaw/docker/
+# Berb experiment sandbox — GPU-enabled, isolated environment.
+# Build: docker build -t berb/experiment:latest berb/docker/
 FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive

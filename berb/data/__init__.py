@@ -1,4 +1,4 @@
-"""Static data assets for the ResearchClaw pipeline."""
+"""Static data assets for the Berb pipeline."""
 
 from __future__ import annotations
 

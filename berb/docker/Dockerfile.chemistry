@@ -1,5 +1,5 @@
-# ResearchClaw Chemistry sandbox — quantum chemistry, molecular property.
-# Build: docker build -f Dockerfile.chemistry -t researchclaw/sandbox-chemistry:latest researchclaw/docker/
+# Berb Chemistry sandbox — quantum chemistry, molecular property.
+# Build: docker build -f Dockerfile.chemistry -t berb/sandbox-chemistry:latest berb/docker/
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1

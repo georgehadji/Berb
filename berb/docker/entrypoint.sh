@@ -1,5 +1,5 @@
 #!/bin/bash
-# ResearchClaw experiment entrypoint — unified three-phase execution.
+# Berb experiment entrypoint — unified three-phase execution.
 #
 # Phase 0: pip install from requirements.txt (if present)
 # Phase 1: Run setup.py for dataset downloads / preparation (if present)

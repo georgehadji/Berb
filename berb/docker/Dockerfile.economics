@@ -1,5 +1,5 @@
-# ResearchClaw Economics sandbox — econometrics, regression analysis.
-# Build: docker build -f Dockerfile.economics -t researchclaw/sandbox-economics:latest researchclaw/docker/
+# Berb Economics sandbox — econometrics, regression analysis.
+# Build: docker build -f Dockerfile.economics -t berb/sandbox-economics:latest berb/docker/
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1
