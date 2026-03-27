@@ -1,4 +1,4 @@
-"""MetaClaw integration bridge for AutoResearchClaw.
+"""MetaClaw integration bridge for Berb.
 
 Provides skill injection, evolution bridging, PRM quality gates,
 and session lifecycle management via the MetaClaw proxy.

@@ -428,7 +428,7 @@ def test_acp_command_line_too_long_falls_back_to_file_transport():
 def test_acp_windows_cmd_wrapper_uses_lower_inline_limit(monkeypatch: pytest.MonkeyPatch):
     from berb.llm.acp_client import ACPClient
 
-    monkeypatch.setattr("researchclaw.llm.acp_client.sys.platform", "win32")
+    monkeypatch.setattr("berb.llm.acp_client.sys.platform", "win32")
     limit = ACPClient._cli_prompt_limit(r"C:\Users\test\AppData\Roaming\npm\acpx.CMD")
     assert limit == ACPClient._MAX_CMD_WRAPPER_PROMPT_BYTES
 

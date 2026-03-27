@@ -41,7 +41,7 @@ CachePut = Callable[[str, str, int, list[dict[str, object]]], None]
 
 
 def _cache_api() -> tuple[CacheGet, CachePut]:
-    cache_mod = importlib.import_module("researchclaw.literature.cache")
+    cache_mod = importlib.import_module("berb.literature.cache")
     return cast(CacheGet, cache_mod.get_cached), cast(CachePut, cache_mod.put_cache)
 
 

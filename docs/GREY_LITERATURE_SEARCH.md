@@ -218,7 +218,7 @@ class GreyLiteratureQualityVerifier:
 **Goal:** Add bioRxiv, medRxiv, SSRN integration
 
 **Tasks:**
-- [ ] **P1.1.1** Create `researchclaw/literature/grey_literature/` module
+- [ ] **P1.1.1** Create `berb/literature/grey_literature/` module
   - [ ] `__init__.py` — Grey literature aggregator
   - [ ] `base.py` — Base grey literature client
   - [ ] `quality.py` — Quality verification
@@ -239,7 +239,7 @@ class GreyLiteratureQualityVerifier:
   - [ ] Expected: 800k+ social science preprints
 
 - [ ] **P1.1.5** Integrate with literature search
-  - [ ] Modify `researchclaw/literature/search.py`
+  - [ ] Modify `berb/literature/search.py`
   - [ ] Add grey literature as optional sources
   - [ ] Quality filtering (min score 0.70)
 
@@ -551,7 +551,7 @@ Stage 3: SEARCH_STRATEGY
 ## Next Steps
 
 1. **Approve Phase 1** — Critical preprint servers (bioRxiv, medRxiv, SSRN)
-2. **Create grey literature module** — `researchclaw/literature/grey_literature/`
+2. **Create grey literature module** — `berb/literature/grey_literature/`
 3. **Implement quality verification** — Multi-layer quality gate
 4. **Test with real searches** — Compare with/without grey literature
 5. **Iterate based on feedback** — Adjust quality thresholds

@@ -1,4 +1,4 @@
-"""Tests for researchclaw.web.pdf_extractor — PDFExtractor."""
+"""Tests for berb.web.pdf_extractor — PDFExtractor."""
 
 from __future__ import annotations
 
@@ -89,7 +89,7 @@ We evaluate on several benchmarks.
         sections = PDFExtractor._detect_sections(text)
         assert sections == []
 
-    @patch("researchclaw.web.pdf_extractor.urlopen")
+    @patch("berb.web.pdf_extractor.urlopen")
     def test_extract_from_url_failure(self, mock_urlopen):
         mock_urlopen.side_effect = Exception("404 Not Found")
         extractor = PDFExtractor()

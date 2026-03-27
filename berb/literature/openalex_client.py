@@ -33,7 +33,7 @@ from berb.literature.models import Author, Paper
 logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://api.openalex.org/works"
-_POLITE_EMAIL = "researchclaw@users.noreply.github.com"
+_POLITE_EMAIL = "berb@users.noreply.github.com"
 _MAX_PER_REQUEST = 50
 _MAX_RETRIES = 3
 _MAX_WAIT_SEC = 60

@@ -123,7 +123,7 @@ Phase 1 of the AutoResearchClaw cost optimization initiative is **complete**. Al
 ### New Files (12)
 
 ```
-researchclaw/
+berb/
 ├── utils/
 │   └── token_tracker.py              # 450 lines
 ├── llm/
@@ -147,13 +147,13 @@ docs/
 └── PHASE1_COMPLETE.md                # This file
 
 config.arc.example.yaml               # 266 lines
-researchclaw/config.py                # +60 lines (modified)
+berb/config.py                # +60 lines (modified)
 ```
 
 ### Modified Files (2)
 
-- `researchclaw/config.py` (+60 lines)
-- `researchclaw/llm/__init__.py` (+40 lines)
+- `berb/config.py` (+60 lines)
+- `berb/llm/__init__.py` (+40 lines)
 
 ---
 

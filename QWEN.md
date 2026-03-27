@@ -56,22 +56,22 @@ AutoResearchClaw provides comprehensive management capabilities:
 ```bash
 # Install & Setup
 pip install -e .
-researchclaw setup          # Interactive setup (installs OpenCode, checks Docker/LaTeX)
-researchclaw init           # Creates config.arc.yaml interactively
+berb setup          # Interactive setup (installs OpenCode, checks Docker/LaTeX)
+berb init           # Creates config.arc.yaml interactively
 
 # Run Pipeline
-researchclaw run --topic "Your research idea" --auto-approve
+berb run --topic "Your research idea" --auto-approve
 
 # Development
 pytest tests/               # Run 1823+ tests
-researchclaw doctor         # Validate environment
+berb doctor         # Validate environment
 ```
 
 ## Project Structure
 
 ```
 AutoResearchClaw-main/
-├── researchclaw/           # Core Python package
+├── berb/           # Core Python package
 │   ├── pipeline/           # 23-stage pipeline orchestration
 │   │   ├── runner.py       # Main pipeline runner
 │   │   ├── stages.py       # Stage definitions & state machine
@@ -115,7 +115,7 @@ AutoResearchClaw-main/
 │   ├── showcase/           # Generated paper showcase
 │   └── README_*.md         # Translations (CN/JA/KO/FR/DE/ES/PT/RU/AR)
 ├── scripts/                # Utility scripts
-├── config.researchclaw.example.yaml  # Config template
+├── config.berb.example.yaml  # Config template
 ├── prompts.default.yaml    # Default LLM prompts
 ├── pyproject.toml          # Python package configuration
 └── QWEN.md                 # This file
@@ -223,7 +223,7 @@ External AI coding agent for complex experiments:
 - Auto-triggered based on complexity score (threshold: 0.2)
 - Generates multi-file projects with custom architectures
 - Supports training loops, ablation studies, custom models
-- Install: `npm i -g opencode-ai@latest` or `researchclaw setup`
+- Install: `npm i -g opencode-ai@latest` or `berb setup`
 
 ### MetaClaw Integration
 Cross-run learning system:
@@ -258,23 +258,23 @@ source .venv/bin/activate  # macOS/Linux
 pip install -e .
 
 # Optional: Install OpenCode Beast Mode
-researchclaw setup
+berb setup
 ```
 
 ### Running the Pipeline
 
 ```bash
 # Basic run
-researchclaw run --topic "Your research idea" --auto-approve
+berb run --topic "Your research idea" --auto-approve
 
 # With custom config
-researchclaw run --config config.arc.yaml --topic "..." --auto-approve
+berb run --config config.arc.yaml --topic "..." --auto-approve
 
 # Resume from checkpoint
-researchclaw run --resume --config config.arc.yaml
+berb run --resume --config config.arc.yaml
 
 # Validate environment first
-researchclaw doctor
+berb doctor
 ```
 
 ### Running Tests
@@ -322,8 +322,8 @@ artifacts/rc-YYYYMMDD-HHMMSS-<hash>/deliverables/
 - **Fixtures**: Shared fixtures in `tests/conftest.py`
 
 ### Configuration Convention
-- `config.researchclaw.example.yaml` - Tracked template (no secrets)
-- `config.arc.yaml` - Local config (gitignored, created by `researchclaw init`)
+- `config.berb.example.yaml` - Tracked template (no secrets)
+- `config.arc.yaml` - Local config (gitignored, created by `berb init`)
 - `config.yaml` - Fallback local config (gitignored)
 
 ### Git Workflow
@@ -387,7 +387,7 @@ Three human-in-the-loop gates (configurable):
 
 | Issue | Solution |
 |-------|----------|
-| `researchclaw: command not found` | Ensure virtual environment is activated |
+| `berb: command not found` | Ensure virtual environment is activated |
 | LLM API errors | Check `api_key_env` variable is set |
 | Experiment timeouts | Increase `time_budget_sec` or reduce experiment scale |
 | Docker permission denied | Add user to `docker` group or run as root |
@@ -397,12 +397,12 @@ Three human-in-the-loop gates (configurable):
 ```bash
 # Enable verbose logging
 export RESEARCHCLAW_DEBUG=1
-researchclaw run --topic "..." --auto-approve
+berb run --topic "..." --auto-approve
 ```
 
 ### Health Check
 ```bash
-researchclaw doctor
+berb doctor
 ```
 
 ## Integration Points
@@ -421,10 +421,10 @@ openclaw_bridge:
 ```
 
 ### MCP Server
-Model Context Protocol server for Claude Desktop integration (see `researchclaw/mcp/`).
+Model Context Protocol server for Claude Desktop integration (see `berb/mcp/`).
 
 ### Overleaf Integration
-Direct Overleaf publishing support (see `researchclaw/overleaf/`).
+Direct Overleaf publishing support (see `berb/overleaf/`).
 
 ## Performance Benchmarks
 

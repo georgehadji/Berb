@@ -542,7 +542,7 @@ class TestAcpWeakrefCleanup:
 
     def test_atexit_registered_once(self):
         """atexit.register is called exactly once across multiple instances."""
-        with mock.patch("researchclaw.llm.acp_client.atexit") as mock_atexit:
+        with mock.patch("berb.llm.acp_client.atexit") as mock_atexit:
             from berb.llm.acp_client import ACPClient, ACPConfig
             ACPClient._atexit_registered = False
             ACPClient(ACPConfig(agent="claude"))

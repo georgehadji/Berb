@@ -125,13 +125,13 @@ source .venv/bin/activate       # macOS / Linux
 pip install -e .
 
 # 4. 動作確認
-researchclaw --help
+berb --help
 ```
 
 ### ⚙️ 設定
 
 ```bash
-cp config.researchclaw.example.yaml config.yaml
+cp config.berb.example.yaml config.yaml
 ```
 
 `config.yaml` を編集してください — 主要なフィールドは以下の通りです：
@@ -203,13 +203,13 @@ export S2_API_KEY="your-s2-key"
 source .venv/bin/activate
 export OPENAI_API_KEY="sk-xxxx"       # または ANTHROPIC_API_KEY
 
-researchclaw run --config config.yaml --auto-approve
+berb run --config config.yaml --auto-approve
 ```
 
 ### 特定のトピックを指定する場合
 
 ```bash
-researchclaw run \
+berb run \
   --config config.yaml \
   --topic "Investigating the effect of curriculum learning on image classification with adaptive difficulty scheduling" \
   --auto-approve
@@ -238,7 +238,7 @@ Pipeline complete — deliverables at: artifacts/rc-20260315-XXXXXX-YYYY/deliver
 パイプラインはチェックポイントをサポートしています — 再開するだけです：
 
 ```bash
-researchclaw run --config config.yaml --resume
+berb run --config config.yaml --resume
 ```
 
 ---
@@ -493,7 +493,7 @@ researchclaw run --config config.yaml --resume
 チェックポイントから再開してください：
 
 ```bash
-researchclaw run --config config.yaml --resume
+berb run --config config.yaml --resume
 ```
 
 ### Q4: 英語以外の研究トピックを使用できますか？
@@ -514,7 +514,7 @@ NVIDIA GPUとDocker + NVIDIA Container Toolkitがある場合：
 
 ```bash
 # 1. 実験用イメージをビルド
-docker build -t researchclaw/experiment:latest researchclaw/docker/
+docker build -t berb/experiment:latest berb/docker/
 
 # 2. config.yamlを更新：
 #   experiment:
@@ -525,7 +525,7 @@ docker build -t researchclaw/experiment:latest researchclaw/docker/
 #       network_policy: "setup_only"  # 推奨デフォルト
 
 # 3. 実行
-researchclaw run --config config.yaml --auto-approve
+berb run --config config.yaml --auto-approve
 ```
 
 Dockerモードは3フェーズの実行モデルを使用します：pip install（ネットワーク有効）→ setup.py（ネットワーク有効）→ 実験（ネットワーク無効）。イメージにはプリキャッシュされたデータセット（CIFAR-10/100、MNIST、FashionMNIST、STL-10、SVHN）が含まれているため、標準的なベンチマークはネットワークアクセスなしで動作します。

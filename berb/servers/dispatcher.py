@@ -72,7 +72,7 @@ class TaskDispatcher:
 
         server = self.registry.get(info["server"])
         task = info["task"]
-        remote_dir = f"/tmp/researchclaw_{task_id}"
+        remote_dir = f"/tmp/berb_{task_id}"
 
         try:
             if server.server_type == "slurm":

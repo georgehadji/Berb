@@ -1,4 +1,4 @@
-"""Tests for researchclaw.web.crawler — WebCrawler."""
+"""Tests for berb.web.crawler — WebCrawler."""
 
 from __future__ import annotations
 
@@ -84,7 +84,7 @@ class TestHtmlToMarkdown:
 
 
 class TestCrawlUrllibFallback:
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_urllib_success(self, mock_urlopen):
         mock_resp = MagicMock()
         mock_resp.read.return_value = b"<html><title>Test</title><body><p>Content here</p></body></html>"
@@ -99,7 +99,7 @@ class TestCrawlUrllibFallback:
         assert result.title == "Test"
         assert "Content here" in result.markdown
 
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_urllib_truncation(self, mock_urlopen):
         mock_resp = MagicMock()
         long_content = "<p>" + "x" * 60000 + "</p>"
@@ -120,7 +120,7 @@ class TestCrawlUrllibFallback:
 
 
 class TestCrawlSync:
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_sync_falls_back_to_urllib(self, mock_urlopen):
         """crawl_sync tries crawl4ai, then falls back to urllib."""
         mock_resp = MagicMock()
@@ -141,7 +141,7 @@ class TestCrawlSync:
 
 
 class TestCrawlAsync:
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_async_urllib_fallback(self, mock_urlopen):
         """When crawl4ai's browser isn't set up, async crawl falls back to urllib."""
         mock_resp = MagicMock()
@@ -212,7 +212,7 @@ class TestCheckUrlSsrf:
 
 
 class TestCrawlerSsrfIntegration:
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_sync_rejects_private_url(self, mock_urlopen):
         crawler = WebCrawler()
         result = crawler.crawl_sync("http://127.0.0.1:8080")
@@ -220,7 +220,7 @@ class TestCrawlerSsrfIntegration:
         assert result.error
         mock_urlopen.assert_not_called()
 
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_sync_rejects_file_scheme(self, mock_urlopen):
         crawler = WebCrawler()
         result = crawler.crawl_sync("file:///etc/passwd")
@@ -228,7 +228,7 @@ class TestCrawlerSsrfIntegration:
         assert "scheme" in result.error.lower()
         mock_urlopen.assert_not_called()
 
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.crawler.urlopen")
     def test_crawl_async_rejects_private_url(self, mock_urlopen):
         crawler = WebCrawler()
         result = asyncio.run(crawler.crawl("http://10.0.0.1:9200"))

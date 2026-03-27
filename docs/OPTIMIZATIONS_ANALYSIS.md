@@ -35,7 +35,7 @@ Analyzed 12 cutting-edge cost & performance optimizations from AI Orchestrator v
 
 **Implementation:**
 ```python
-# researchclaw/llm/cached_client.py
+# berb/llm/cached_client.py
 
 class CachedLLMClient:
     """LLM client with provider-level prompt caching."""
@@ -86,9 +86,9 @@ class CachedLLMClient:
 ```
 
 **Integration Points:**
-- `researchclaw/pipeline/runner.py` — Cache warming before stage execution
-- `researchclaw/llm/client.py` — Add cache_control support
-- `researchclaw/llm/smart_client.py` — Integrate with SmartLLMClient
+- `berb/pipeline/runner.py` — Cache warming before stage execution
+- `berb/llm/client.py` — Add cache_control support
+- `berb/llm/smart_client.py` — Integrate with SmartLLMClient
 
 **Expected Savings:**
 - **Input tokens:** -82% (24,000 → 4,200 tokens per project)
@@ -106,7 +106,7 @@ class CachedLLMClient:
 
 **Implementation:**
 ```python
-# researchclaw/llm/batch_client.py
+# berb/llm/batch_client.py
 
 class BatchOptimizedClient:
     """Route non-critical calls to Batch API for 50% discount."""
@@ -157,8 +157,8 @@ class BatchOptimizedClient:
 ```
 
 **Integration Points:**
-- `researchclaw/pipeline/stages.py` — Mark stages as critical/non-critical
-- `researchclaw/llm/smart_client.py` — Add batch routing logic
+- `berb/pipeline/stages.py` — Mark stages as critical/non-critical
+- `berb/llm/smart_client.py` — Add batch routing logic
 
 **Expected Savings:**
 - **Non-critical phases:** -50% cost
@@ -176,7 +176,7 @@ class BatchOptimizedClient:
 
 **Implementation:**
 ```python
-# researchclaw/llm/output_limits.py
+# berb/llm/output_limits.py
 
 OUTPUT_TOKEN_LIMITS = {
     # Phase A: Scoping
@@ -226,8 +226,8 @@ async def call(self, stage: Stage, prompt: str, **kwargs) -> Response:
 ```
 
 **Integration Points:**
-- `researchclaw/pipeline/runner.py` — Apply limits per stage
-- `researchclaw/llm/client.py` — Enforce limits
+- `berb/pipeline/runner.py` — Apply limits per stage
+- `berb/llm/client.py` — Enforce limits
 
 **Expected Savings:**
 - **Output tokens:** -15-25%
@@ -247,7 +247,7 @@ async def call(self, stage: Stage, prompt: str, **kwargs) -> Response:
 
 **Implementation:**
 ```python
-# researchclaw/llm/cascading_client.py
+# berb/llm/cascading_client.py
 
 class CascadingLLMClient:
     """Try cheap model first, escalate only if quality insufficient."""
@@ -307,8 +307,8 @@ class CascadingLLMClient:
 ```
 
 **Integration Points:**
-- `researchclaw/llm/smart_client.py` — Add cascading logic
-- `researchclaw/pipeline/runner.py` — Configure cascade per stage
+- `berb/llm/smart_client.py` — Add cascading logic
+- `berb/pipeline/runner.py` — Configure cascade per stage
 
 **Expected Savings:**
 - **Per task:** -40-60% when cheap model succeeds
@@ -326,7 +326,7 @@ class CascadingLLMClient:
 
 **Implementation:**
 ```python
-# researchclaw/llm/speculative_client.py
+# berb/llm/speculative_client.py
 
 class SpeculativeLLMClient:
     """Race cheap vs premium — use cheap if good enough, else premium."""
@@ -368,8 +368,8 @@ class SpeculativeLLMClient:
 ```
 
 **Integration Points:**
-- `researchclaw/llm/smart_client.py` — Add speculative logic
-- `researchclaw/pipeline/runner.py` — Mark critical stages
+- `berb/llm/smart_client.py` — Add speculative logic
+- `berb/pipeline/runner.py` — Mark critical stages
 
 **Expected Savings:**
 - **Premium cost:** -30-40% (when cheap model suffices ~60% of time)
@@ -387,7 +387,7 @@ class SpeculativeLLMClient:
 
 **Implementation:**
 ```python
-# researchclaw/llm/streaming_client.py
+# berb/llm/streaming_client.py
 
 class StreamingLLMClient:
     """Stream generation, start validation as chunks arrive."""
@@ -434,8 +434,8 @@ class StreamingLLMClient:
 ```
 
 **Integration Points:**
-- `researchclaw/llm/client.py` — Add streaming support
-- `researchclaw/pipeline/runner.py` — Enable for long generations
+- `berb/llm/client.py` — Add streaming support
+- `berb/pipeline/runner.py` — Enable for long generations
 
 **Expected Savings:**
 - **Wasted tokens:** -10-15%
@@ -455,7 +455,7 @@ class StreamingLLMClient:
 
 **Implementation:**
 ```python
-# researchclaw/eval/dataset_builder.py
+# berb/eval/dataset_builder.py
 
 class EvalDatasetBuilder:
     """Auto-build evaluation dataset from production failures."""
@@ -479,7 +479,7 @@ class EvalDatasetBuilder:
             "model": model,
         }
         
-        dataset_path = Path(".researchclaw/eval_dataset.jsonl")
+        dataset_path = Path(".berb/eval_dataset.jsonl")
         dataset_path.parent.mkdir(parents=True, exist_ok=True)
         
         with dataset_path.open("a") as f:
@@ -489,7 +489,7 @@ class EvalDatasetBuilder:
     
     async def load_regression_tests(self, stage: Stage) -> list[dict]:
         """Load test cases for regression testing."""
-        dataset_path = Path(".researchclaw/eval_dataset.jsonl")
+        dataset_path = Path(".berb/eval_dataset.jsonl")
         
         if not dataset_path.exists():
             return []
@@ -505,8 +505,8 @@ class EvalDatasetBuilder:
 ```
 
 **Integration Points:**
-- `researchclaw/pipeline/runner.py` — Record failures
-- `researchclaw/eval/` — New evaluation module
+- `berb/pipeline/runner.py` — Record failures
+- `berb/eval/` — New evaluation module
 
 **Expected Benefits:**
 - **Quality improvement:** Continuous regression testing
@@ -524,7 +524,7 @@ class EvalDatasetBuilder:
 
 **Implementation:**
 ```python
-# researchclaw/pipeline/structured_outputs.py
+# berb/pipeline/structured_outputs.py
 
 from pydantic import BaseModel, Field
 
@@ -575,8 +575,8 @@ async def execute_stage_2(self, context: dict) -> DecompositionOutput:
 ```
 
 **Integration Points:**
-- `researchclaw/pipeline/stage_impls/` — Add structured outputs per stage
-- `researchclaw/llm/client.py` — Add tool_use support
+- `berb/pipeline/stage_impls/` — Add structured outputs per stage
+- `berb/llm/client.py` — Add tool_use support
 
 **Expected Benefits:**
 - **Parse failures:** Eliminated (was ~5-10% failure rate)
@@ -594,7 +594,7 @@ async def execute_stage_2(self, context: dict) -> DecompositionOutput:
 
 **Implementation:**
 ```python
-# researchclaw/llm/temperature_strategy.py
+# berb/llm/temperature_strategy.py
 
 TEMPERATURE_STRATEGY = {
     "topic_init": {"initial": 0.0, "retry_1": 0.2, "retry_2": 0.4},
@@ -625,8 +625,8 @@ async def call_with_adaptive_temp(
 ```
 
 **Integration Points:**
-- `researchclaw/llm/client.py` — Add adaptive temperature
-- `researchclaw/pipeline/runner.py` — Track retry count
+- `berb/llm/client.py` — Add adaptive temperature
+- `berb/pipeline/runner.py` — Track retry count
 
 **Expected Savings:**
 - **Retry count:** -30%
@@ -644,7 +644,7 @@ async def call_with_adaptive_temp(
 
 **Implementation:**
 ```python
-# researchclaw/pipeline/dependency_context.py
+# berb/pipeline/dependency_context.py
 
 class DependencyContextInjector:
     """Inject completed task outputs as context for dependent tasks."""
@@ -679,8 +679,8 @@ class DependencyContextInjector:
 ```
 
 **Integration Points:**
-- `researchclaw/pipeline/runner.py` — Track completed tasks
-- `researchclaw/pipeline/code_agent.py` — Inject dependency context
+- `berb/pipeline/runner.py` — Track completed tasks
+- `berb/pipeline/code_agent.py` — Inject dependency context
 
 **Expected Benefits:**
 - **Repair cycles:** -30-50%
@@ -714,7 +714,7 @@ class DependencyContextInjector:
 
 **Applicability:** ⚠️ **ALREADY PARTIALLY IMPLEMENTED**
 
-**Current State:** Docker sandbox exists (`researchclaw/docker/`).
+**Current State:** Docker sandbox exists (`berb/docker/`).
 
 **Enhancement:** Add network isolation, memory limits, CPU limits as shown in Optimizations.md.
 

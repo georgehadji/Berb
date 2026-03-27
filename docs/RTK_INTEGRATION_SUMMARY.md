@@ -116,7 +116,7 @@ AutoResearchClaw currently:
 **Goal:** Basic token tracking working
 
 **Deliverables:**
-- `researchclaw/utils/token_tracker.py` - TokenTracker class
+- `berb/utils/token_tracker.py` - TokenTracker class
 - Integration with LLM calls
 - Config schema updates
 - Unit tests
@@ -134,7 +134,7 @@ AutoResearchClaw currently:
 **Goal:** Reduce token consumption for CLI operations
 
 **Deliverables:**
-- `researchclaw/experiment/output_filter.py` - Filter engine
+- `berb/experiment/output_filter.py` - Filter engine
 - Integration with sandbox execution
 - RTK CLI wrapper
 - Integration tests
@@ -216,7 +216,7 @@ tracking:
 ## Code Example
 
 ```python
-from researchclaw.utils.token_tracker import TokenTracker
+from berb.utils.token_tracker import TokenTracker
 
 # Initialize tracker
 tracker = TokenTracker(project_path="/path/to/project")

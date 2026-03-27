@@ -269,7 +269,7 @@ class TestVerifyByTitleSearch:
             source="semantic_scholar",
         )
         with patch(
-            "researchclaw.literature.search.search_papers",
+            "berb.literature.search.search_papers",
             return_value=[mock_paper],
         ):
             result = verify_by_title_search("Attention Is All You Need")
@@ -279,7 +279,7 @@ class TestVerifyByTitleSearch:
         assert result.matched_paper is not None
 
     def test_no_results_hallucinated(self) -> None:
-        with patch("researchclaw.literature.search.search_papers", return_value=[]):
+        with patch("berb.literature.search.search_papers", return_value=[]):
             result = verify_by_title_search("A Completely Made Up Paper")
 
         assert result is not None
@@ -293,7 +293,7 @@ class TestVerifyByTitleSearch:
             source="arxiv",
         )
         with patch(
-            "researchclaw.literature.search.search_papers",
+            "berb.literature.search.search_papers",
             return_value=[mock_paper],
         ):
             result = verify_by_title_search("A Completely Made Up Paper About Nothing")
@@ -309,7 +309,7 @@ class TestVerifyByTitleSearch:
             source="semantic_scholar",
         )
         with patch(
-            "researchclaw.literature.search.search_papers",
+            "berb.literature.search.search_papers",
             return_value=[mock_paper],
         ):
             result = verify_by_title_search("Attention Neural Networks Survey Overview")
@@ -319,7 +319,7 @@ class TestVerifyByTitleSearch:
 
     def test_network_failure_returns_none(self) -> None:
         with patch(
-            "researchclaw.literature.search.search_papers",
+            "berb.literature.search.search_papers",
             side_effect=OSError("network down"),
         ):
             result = verify_by_title_search("Any Paper")
@@ -352,9 +352,9 @@ class TestVerifyCitations:
             raise OSError("unexpected URL")
 
         with (
-            patch("researchclaw.literature.verify.time.sleep"),
+            patch("berb.literature.verify.time.sleep"),
             patch("urllib.request.urlopen", side_effect=mock_urlopen),
-            patch("researchclaw.literature.search.search_papers", return_value=[]),
+            patch("berb.literature.search.search_papers", return_value=[]),
         ):
             report = verify_citations(SAMPLE_BIB, inter_verify_delay=0)
 

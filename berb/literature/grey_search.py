@@ -1,4 +1,4 @@
-"""Grey Literature Search for AutoResearchClaw.
+"""Grey Literature Search for Berb.
 
 This module provides access to grey literature sources including preprints,
 theses, clinical trials, and technical reports, achieving +100% literature

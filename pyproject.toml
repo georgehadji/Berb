@@ -58,7 +58,6 @@ dev = ["pytest>=7.0", "pytest-asyncio>=0.21", "pytest-cov>=4.0", "httpx>=0.24"]
 
 [project.scripts]
 berb = "berb.cli:main"
-researchclaw = "berb.cli:main"  # Backwards compatibility
 
 [project.urls]
 Homepage = "https://github.com/georgehadji/berb"

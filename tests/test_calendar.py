@@ -1,4 +1,4 @@
-"""Tests for researchclaw.calendar — Conference Deadline Calendar (Agent D4).
+"""Tests for berb.calendar — Conference Deadline Calendar (Agent D4).
 
 15+ tests covering deadlines, planner, and reminder modules.
 """

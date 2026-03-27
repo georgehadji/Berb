@@ -21,9 +21,9 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from researchclaw.llm.client import LLMClient, LLMConfig
-from researchclaw.pipeline.code_agent import CodeAgent, CodeAgentConfig
-from researchclaw.prompts import PromptManager
+from berb.llm.client import LLMClient, LLMConfig
+from berb.pipeline.code_agent import CodeAgent, CodeAgentConfig
+from berb.prompts import PromptManager
 
 # ---------------------------------------------------------------------------
 # Test cases — progressively harder experiment scenarios

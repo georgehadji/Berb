@@ -68,7 +68,7 @@
 
 ### OBS-R5-04: CodeSearcher query_gen.py TypeError (18:20 UTC)
 - **严重度**: 🟡 中 — 不阻塞但影响代码质量
-- **描述**: `researchclaw/agents/code_searcher/query_gen.py:149` 调用 `llm.chat()` 时传入不支持的 `user` 关键字参数
+- **描述**: `berb/agents/code_searcher/query_gen.py:149` 调用 `llm.chat()` 时传入不支持的 `user` 关键字参数
   ```
   TypeError: LLMClient.chat() got an unexpected keyword argument 'user'
   ```
@@ -210,7 +210,7 @@
 
 ### R5-BUG-01: CodeSearcher query_gen.py — LLMClient.chat() 签名不匹配 ✅ 已修复
 - **严重度**: 🟡 中 — 不阻塞 pipeline 但降低代码质量
-- **文件**: `researchclaw/agents/code_searcher/query_gen.py:149`
+- **文件**: `berb/agents/code_searcher/query_gen.py:149`
 - **描述**:
   - `llm.chat()` 被调用为 `llm.chat(system=..., user=..., max_tokens=...)`
   - 实际签名是 `chat(messages: list[dict], *, system=, max_tokens=)`
@@ -304,7 +304,7 @@ R5 是目前最成功的测试轮次：
   Fatal error occurred, no output PDF file produced!
   ```
 - **根因**: `\usepackage[T1]{fontenc}` 激活了 T1 编码，但未加载可缩放字体（lmodern）
-- **修复**: 在 `researchclaw/templates/conference.py` 的 NEURIPS_2024、NEURIPS_2025、GENERIC 三个模板中
+- **修复**: 在 `berb/templates/conference.py` 的 NEURIPS_2024、NEURIPS_2025、GENERIC 三个模板中
   在 `fontenc` 之后添加 `\usepackage{lmodern}`
 
 ### R5-BUG-02: numpy 2.x API 不兼容 ✅ FIXED

@@ -100,11 +100,11 @@ Research Intelligence Platform
 
 | Old Name | New Name |
 |----------|----------|
-| `researchclaw` | `berb` |
+| `berb` | `berb` |
 | `AutoResearchClaw` | `Berb` |
-| `researchclaw.llm` | `berb.llm` |
-| `researchclaw.pipeline` | `berb.pipeline` |
-| `researchclaw.literature` | `berb.literature` |
+| `berb.llm` | `berb.llm` |
+| `berb.pipeline` | `berb.pipeline` |
+| `berb.literature` | `berb.literature` |
 
 ---
 
@@ -178,9 +178,9 @@ Research Intelligence Platform
 
 | Old Pattern | New Pattern |
 |-------------|-------------|
-| `researchclaw/` | `berb/` |
+| `berb/` | `berb/` |
 | `test_rc_*.py` | `test_berb_*.py` |
-| `.researchclaw/` | `.berb/` |
+| `.berb/` | `.berb/` |
 | `config.rc.yaml` | `config.berb.yaml` |
 
 ---

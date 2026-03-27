@@ -9,7 +9,7 @@ Paradigm: Observer pattern for failure tracking
 Usage:
     from berb.llm.eval_dataset import EvalDatasetBuilder
     
-    builder = EvalDatasetBuilder(dataset_path=".researchclaw/eval_dataset.jsonl")
+    builder = EvalDatasetBuilder(dataset_path=".berb/eval_dataset.jsonl")
     
     # Record a failure
     await builder.record_failure(
@@ -58,7 +58,7 @@ class EvalDatasetBuilder:
     
     def __init__(
         self,
-        dataset_path: str | Path = ".researchclaw/eval_dataset.jsonl",
+        dataset_path: str | Path = ".berb/eval_dataset.jsonl",
         auto_create: bool = True,
     ):
         """Initialize dataset builder.

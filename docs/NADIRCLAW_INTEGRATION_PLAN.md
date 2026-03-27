@@ -107,7 +107,7 @@ AutoResearchClaw Pipeline
 
 **Implementation:**
 ```python
-# researchclaw/llm/nadirclaw_router.py
+# berb/llm/nadirclaw_router.py
 
 import numpy as np
 from typing import Dict, Any, Optional, Tuple
@@ -269,7 +269,7 @@ volumes:
 
 **Usage in AutoResearchClaw:**
 ```python
-# researchclaw/llm/nadirclaw_proxy.py
+# berb/llm/nadirclaw_proxy.py
 
 import httpx
 
@@ -320,7 +320,7 @@ class NadirClawProxy:
 **Use NadirClaw's context optimization to reduce input tokens:**
 
 ```python
-# researchclaw/llm/context_optimizer.py
+# berb/llm/context_optimizer.py
 
 from nadirclaw.optimize import (
     optimize_messages,
@@ -399,7 +399,7 @@ class AutoResearchClawContextOptimizer:
 **Goal:** NadirClaw routing working for LLM calls
 
 **Tasks:**
-- [ ] **P0** Create `researchclaw/llm/nadirclaw_router.py`
+- [ ] **P0** Create `berb/llm/nadirclaw_router.py`
   - [ ] NadirClawRouter class
   - [ ] `select_model()` method
   - [ ] `optimize_context()` method
@@ -407,7 +407,7 @@ class AutoResearchClawContextOptimizer:
   - [ ] Tier-based model selection
 
 - [ ] **P0** Integrate with LLM providers
-  - [ ] Wrap `researchclaw/llm/base.py`
+  - [ ] Wrap `berb/llm/base.py`
   - [ ] Add model selection before each call
   - [ ] Track routing decisions
   - [ ] Log cost savings
@@ -440,7 +440,7 @@ class AutoResearchClawContextOptimizer:
 **Goal:** Reduce input token consumption
 
 **Tasks:**
-- [ ] **P1** Create `researchclaw/llm/context_optimizer.py`
+- [ ] **P1** Create `berb/llm/context_optimizer.py`
   - [ ] Stage-specific optimization
   - [ ] System prompt deduplication
   - [ ] JSON/schema compaction
@@ -614,9 +614,9 @@ nadirclaw:
 ### Example 1: Route LLM Call with NadirClaw
 
 ```python
-# researchclaw/llm/base.py
+# berb/llm/base.py
 
-from researchclaw.llm.nadirclaw_router import NadirClawRouter
+from berb.llm.nadirclaw_router import NadirClawRouter
 
 class BaseLLMProvider:
     def __init__(self, config: RCConfig):
@@ -681,9 +681,9 @@ class BaseLLMProvider:
 ### Example 2: Cost Tracking Dashboard
 
 ```python
-# researchclaw/dashboard/widgets.py
+# berb/dashboard/widgets.py
 
-from researchclaw.llm.nadirclaw_router import NadirClawRouter
+from berb.llm.nadirclaw_router import NadirClawRouter
 from nadirclaw.savings import generate_savings_report
 
 def render_cost_widget(router: NadirClawRouter) -> str:
@@ -742,7 +742,7 @@ def render_cost_widget(router: NadirClawRouter) -> str:
 # tests/test_nadirclaw_router.py
 
 import pytest
-from researchclaw.llm.nadirclaw_router import NadirClawRouter
+from berb.llm.nadirclaw_router import NadirClawRouter
 
 @pytest.fixture
 def router():

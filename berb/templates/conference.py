@@ -101,7 +101,7 @@ class ConferenceTemplate:
     def get_style_files(self) -> list[Path]:
         """Return paths to bundled ``.sty`` and ``.bst`` files for this template.
 
-        Files are stored under ``researchclaw/templates/styles/<name>/``.
+        Files are stored under ``berb/templates/styles/<name>/``.
         Returns only files that exist on disk.
         """
         style_dir = _STYLES_DIR / self.name

@@ -1,4 +1,4 @@
-"""Tests for researchclaw.prompts — PromptManager and template rendering."""
+"""Tests for berb.prompts — PromptManager and template rendering."""
 
 from __future__ import annotations
 

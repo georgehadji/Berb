@@ -167,13 +167,13 @@ class TestServerMonitor:
 
     def test_check_status_unreachable(self, registry: ServerRegistry) -> None:
         monitor = ServerMonitor(registry)
-        with patch("researchclaw.servers.monitor._ssh_command", side_effect=RuntimeError("unreachable")):
+        with patch("berb.servers.monitor._ssh_command", side_effect=RuntimeError("unreachable")):
             status = asyncio.run(monitor.check_status(_make_server()))
         assert status["reachable"] is False
 
     def test_check_all(self, registry: ServerRegistry) -> None:
         monitor = ServerMonitor(registry)
-        with patch("researchclaw.servers.monitor._ssh_command", side_effect=RuntimeError("unreachable")):
+        with patch("berb.servers.monitor._ssh_command", side_effect=RuntimeError("unreachable")):
             results = asyncio.run(monitor.check_all())
         assert len(results) == 3
         for name, status in results.items():

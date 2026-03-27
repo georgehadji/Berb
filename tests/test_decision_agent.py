@@ -410,7 +410,7 @@ class TestDockerRenderer:
             _FakeLLM(),
             timeout_sec=10,
             use_docker=True,
-            docker_image="researchclaw/experiment:latest",
+            docker_image="berb/experiment:latest",
         )
 
     def test_docker_command_construction(self, tmp_path):

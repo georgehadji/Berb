@@ -1,5 +1,5 @@
 # pyright: reportPrivateUsage=false, reportUnknownParameterType=false
-"""Unit tests for researchclaw.literature module.
+"""Unit tests for berb.literature module.
 
 All network-dependent tests mock HTTP responses via monkeypatch.
 """
@@ -220,7 +220,7 @@ class TestSemanticScholar:
         mock_resp.__exit__ = MagicMock(return_value=False)
 
         monkeypatch.setattr(
-            "researchclaw.literature.semantic_scholar.urllib.request.urlopen",
+            "berb.literature.semantic_scholar.urllib.request.urlopen",
             lambda *a, **kw: mock_resp,
         )
 
@@ -238,12 +238,12 @@ class TestSemanticScholar:
         import urllib.error
 
         monkeypatch.setattr(
-            "researchclaw.literature.semantic_scholar.urllib.request.urlopen",
+            "berb.literature.semantic_scholar.urllib.request.urlopen",
             lambda *a, **kw: (_ for _ in ()).throw(urllib.error.URLError("timeout")),
         )
         # Patch sleep to speed up test
         monkeypatch.setattr(
-            "researchclaw.literature.semantic_scholar.time.sleep", lambda _: None
+            "berb.literature.semantic_scholar.time.sleep", lambda _: None
         )
         papers = search_semantic_scholar("test", limit=5)
         assert papers == []
@@ -309,10 +309,10 @@ class TestArxiv:
         # Use MagicMock so all attributes (Search, SortOrder, etc.) auto-resolve.
         _fake_arxiv = MagicMock()
         monkeypatch.setattr(
-            "researchclaw.literature.arxiv_client.arxiv", _fake_arxiv,
+            "berb.literature.arxiv_client.arxiv", _fake_arxiv,
         )
         monkeypatch.setattr(
-            "researchclaw.literature.arxiv_client._get_client",
+            "berb.literature.arxiv_client._get_client",
             lambda: mock_client,
         )
         from berb.literature.arxiv_client import _reset_circuit_breaker
@@ -344,14 +344,14 @@ class TestArxiv:
         _fake_arxiv.SortOrder = MagicMock()
         _fake_arxiv.Search = MagicMock()
         monkeypatch.setattr(
-            "researchclaw.literature.arxiv_client.arxiv", _fake_arxiv,
+            "berb.literature.arxiv_client.arxiv", _fake_arxiv,
         )
 
         mock_client = MagicMock()
         mock_client.results.side_effect = _FakeHTTPError("Simulated arXiv HTTP error")
 
         monkeypatch.setattr(
-            "researchclaw.literature.arxiv_client._get_client",
+            "berb.literature.arxiv_client._get_client",
             lambda: mock_client,
         )
         from berb.literature.arxiv_client import _reset_circuit_breaker
@@ -448,14 +448,14 @@ class TestSearchPapers:
             citation_count=50,
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_semantic_scholar",
+            "berb.literature.search.search_semantic_scholar",
             lambda *a, **kw: [s2_paper],
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_arxiv",
+            "berb.literature.search.search_arxiv",
             lambda *a, **kw: [arxiv_paper],
         )
-        monkeypatch.setattr("researchclaw.literature.search.time.sleep", lambda _: None)
+        monkeypatch.setattr("berb.literature.search.time.sleep", lambda _: None)
 
         papers = search_papers("test", sources=["semantic_scholar", "arxiv"])
         assert len(papers) == 2
@@ -478,18 +478,18 @@ class TestSearchPapers:
             doi="10.1/ax", arxiv_id="2401.99991",
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_openalex",
+            "berb.literature.search.search_openalex",
             lambda *a, **kw: [],
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_semantic_scholar",
+            "berb.literature.search.search_semantic_scholar",
             lambda *a, **kw: (_ for _ in ()).throw(RuntimeError("S2 down")),
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_arxiv",
+            "berb.literature.search.search_arxiv",
             lambda *a, **kw: [arxiv_paper],
         )
-        monkeypatch.setattr("researchclaw.literature.search.time.sleep", lambda _: None)
+        monkeypatch.setattr("berb.literature.search.time.sleep", lambda _: None)
 
         papers = search_papers("test")
         assert len(papers) >= 1
@@ -498,7 +498,7 @@ class TestSearchPapers:
     def test_search_papers_unknown_source(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setattr("researchclaw.literature.search.time.sleep", lambda _: None)
+        monkeypatch.setattr("berb.literature.search.time.sleep", lambda _: None)
         papers = search_papers("test", sources=["unknown_source"])
         assert papers == []
 
@@ -518,10 +518,10 @@ class TestSearchPapers:
             ]
 
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_papers",
+            "berb.literature.search.search_papers",
             mock_search,
         )
-        monkeypatch.setattr("researchclaw.literature.search.time.sleep", lambda _: None)
+        monkeypatch.setattr("berb.literature.search.time.sleep", lambda _: None)
 
         papers = search_papers_multi_query(["q1", "q2", "q3"])
         assert call_count == 3
@@ -633,14 +633,14 @@ class TestArxivCircuitBreaker:
         _fake_arxiv.SortOrder = MagicMock()
         _fake_arxiv.Search = MagicMock()
         monkeypatch.setattr(
-            "researchclaw.literature.arxiv_client.arxiv", _fake_arxiv,
+            "berb.literature.arxiv_client.arxiv", _fake_arxiv,
         )
 
         mock_client = MagicMock()
         mock_client.results.side_effect = _FakeHTTPError("Simulated 429")
 
         monkeypatch.setattr(
-            "researchclaw.literature.arxiv_client._get_client",
+            "berb.literature.arxiv_client._get_client",
             lambda: mock_client,
         )
         from berb.literature.arxiv_client import _reset_circuit_breaker
@@ -701,7 +701,7 @@ class TestOpenAlex:
         mock_resp.__exit__ = MagicMock(return_value=False)
 
         monkeypatch.setattr(
-            "researchclaw.literature.openalex_client.urllib.request.urlopen",
+            "berb.literature.openalex_client.urllib.request.urlopen",
             lambda *a, **kw: mock_resp,
         )
 
@@ -733,11 +733,11 @@ class TestOpenAlex:
         from berb.literature.openalex_client import search_openalex
 
         monkeypatch.setattr(
-            "researchclaw.literature.openalex_client.urllib.request.urlopen",
+            "berb.literature.openalex_client.urllib.request.urlopen",
             lambda *a, **kw: (_ for _ in ()).throw(urllib.error.URLError("timeout")),
         )
         monkeypatch.setattr(
-            "researchclaw.literature.openalex_client.time.sleep", lambda _: None,
+            "berb.literature.openalex_client.time.sleep", lambda _: None,
         )
 
         papers = search_openalex("test", limit=5)
@@ -764,18 +764,18 @@ class TestMultiSourceFallback:
         )
 
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_openalex",
+            "berb.literature.search.search_openalex",
             lambda *a, **kw: (_ for _ in ()).throw(RuntimeError("OpenAlex down")),
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_semantic_scholar",
+            "berb.literature.search.search_semantic_scholar",
             lambda *a, **kw: [s2_paper],
         )
         monkeypatch.setattr(
-            "researchclaw.literature.search.search_arxiv",
+            "berb.literature.search.search_arxiv",
             lambda *a, **kw: [arxiv_paper],
         )
-        monkeypatch.setattr("researchclaw.literature.search.time.sleep", lambda _: None)
+        monkeypatch.setattr("berb.literature.search.time.sleep", lambda _: None)
 
         papers = search_papers("test")
         assert len(papers) >= 1

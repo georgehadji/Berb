@@ -1,6 +1,6 @@
 """Token consumption tracking and analytics system.
 
-This module provides comprehensive tracking of token usage across AutoResearchClaw,
+This module provides comprehensive tracking of token usage across Berb,
 recording input/output tokens, execution times, and providing aggregation APIs
 for daily/weekly/monthly statistics.
 
@@ -126,9 +126,9 @@ class TokenTracker:
     - Budget alerts
     
     Database Location:
-        - Windows: %APPDATA%\\researchclaw\\tracking.db
-        - macOS: ~/Library/Application Support/researchclaw/tracking.db
-        - Linux: ~/.local/share/researchclaw/tracking.db
+        - Windows: %APPDATA%\\berb\\tracking.db
+        - macOS: ~/Library/Application Support/berb/tracking.db
+        - Linux: ~/.local/share/berb/tracking.db
     
     Example:
         >>> tracker = TokenTracker(project_path=Path.cwd())
@@ -169,7 +169,7 @@ class TokenTracker:
         else:  # Linux
             base = Path.home() / ".local" / "share"
         
-        db_dir = base / "researchclaw"
+        db_dir = base / "berb"
         db_dir.mkdir(parents=True, exist_ok=True)
         return db_dir / "tracking.db"
     

@@ -1,4 +1,4 @@
-"""Convert AutoResearchClaw failure lessons into MetaClaw skills.
+"""Convert Berb failure lessons into MetaClaw skills.
 
 Analyses high-severity lessons from the evolution store and uses an LLM
 to generate actionable MetaClaw skill files that prevent future recurrence.

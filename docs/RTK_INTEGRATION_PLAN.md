@@ -30,7 +30,7 @@
 
 | Component | File | Purpose | AutoResearchClaw Integration Point |
 |-----------|------|---------|-----------------------------------|
-| **Tracker** | `tracking.rs` | SQLite-based token tracking | Add to `researchclaw/utils/` |
+| **Tracker** | `tracking.rs` | SQLite-based token tracking | Add to `berb/utils/` |
 | **Filter Engine** | `filter.rs` | Language-aware code filtering | Use for experiment output compression |
 | **Gain Reporter** | `gain.rs` | Token savings analytics | Integrate with dashboard |
 | **Command Modules** | `src/*_cmd.rs` | Optimized command implementations | Reuse patterns for AutoResearchClaw CLI |
@@ -91,7 +91,7 @@ AutoResearchClaw Pipeline
 
 **Implementation:**
 ```python
-# researchclaw/utils/token_tracker.py
+# berb/utils/token_tracker.py
 
 import subprocess
 from pathlib import Path
@@ -308,7 +308,7 @@ class RTKTracker:
 **Use RTK's filtering for experiment outputs:**
 
 ```python
-# researchclaw/experiment/output_filter.py
+# berb/experiment/output_filter.py
 
 from enum import Enum
 from typing import Literal
@@ -457,7 +457,7 @@ class ExperimentOutputFilter:
 **Use RTK binary directly for command optimization:**
 
 ```python
-# researchclaw/utils/rtk_cli.py
+# berb/utils/rtk_cli.py
 
 import subprocess
 from pathlib import Path
@@ -572,7 +572,7 @@ class RTKCLI:
 **Goal:** Basic token tracking working
 
 **Tasks:**
-- [ ] **P0** Create `researchclaw/utils/token_tracker.py`
+- [ ] **P0** Create `berb/utils/token_tracker.py`
   - [ ] TokenTracker class with SQLite backend
   - [ ] `track()` method for recording usage
   - [ ] `get_summary()` for analytics
@@ -580,7 +580,7 @@ class RTKCLI:
   - [ ] Project-scoped tracking
 
 - [ ] **P0** Integrate with LLM calls
-  - [ ] Track tokens in `researchclaw/llm/base.py`
+  - [ ] Track tokens in `berb/llm/base.py`
   - [ ] Record input/output for each call
   - [ ] Calculate estimated costs
   - [ ] Add to stage execution results
@@ -598,7 +598,7 @@ class RTKCLI:
   - [ ] Test summary queries
 
 - [ ] **P1** Create token dashboard widget
-  - [ ] Display in researchclaw dashboard
+  - [ ] Display in berb dashboard
   - [ ] Show daily/weekly trends
   - [ ] Display cost savings
   - [ ] Budget alerts
@@ -610,20 +610,20 @@ class RTKCLI:
 **Goal:** Reduce token consumption for CLI operations
 
 **Tasks:**
-- [ ] **P1** Create `researchclaw/experiment/output_filter.py`
+- [ ] **P1** Create `berb/experiment/output_filter.py`
   - [ ] FilterLevel enum (none/minimal/aggressive)
   - [ ] Language-aware filtering
   - [ ] Test output summarization
   - [ ] Code signature extraction
 
 - [ ] **P1** Integrate with experiment execution
-  - [ ] Apply filtering in `researchclaw/experiment/sandbox.py`
+  - [ ] Apply filtering in `berb/experiment/sandbox.py`
   - [ ] Filter stdout/stderr
   - [ ] Preserve error messages
   - [ ] Keep summary statistics
 
 - [ ] **P1** Add RTK CLI wrapper
-  - [ ] Create `researchclaw/utils/rtk_cli.py`
+  - [ ] Create `berb/utils/rtk_cli.py`
   - [ ] Wrap common commands (git, pytest, etc.)
   - [ ] Use RTK binary if available
   - [ ] Fallback to internal filtering
@@ -760,9 +760,9 @@ tracking:
 ### Example 1: Track LLM Token Usage
 
 ```python
-# researchclaw/llm/base.py
+# berb/llm/base.py
 
-from researchclaw.utils.token_tracker import TokenTracker
+from berb.utils.token_tracker import TokenTracker
 
 class BaseLLMProvider:
     def __init__(self, config: RCConfig):
@@ -811,9 +811,9 @@ class BaseLLMProvider:
 ### Example 2: Filter Experiment Output
 
 ```python
-# researchclaw/experiment/sandbox.py
+# berb/experiment/sandbox.py
 
-from researchclaw.experiment.output_filter import ExperimentOutputFilter, FilterLevel
+from berb.experiment.output_filter import ExperimentOutputFilter, FilterLevel
 
 class SandboxExecutor:
     def __init__(self, config: RCConfig):
@@ -866,9 +866,9 @@ class SandboxExecutor:
 ### Example 3: Token Dashboard Widget
 
 ```python
-# researchclaw/dashboard/widgets.py
+# berb/dashboard/widgets.py
 
-from researchclaw.utils.token_tracker import TokenTracker
+from berb.utils.token_tracker import TokenTracker
 
 def render_token_widget(tracker: TokenTracker) -> str:
     """Render token usage widget for dashboard."""
@@ -922,7 +922,7 @@ def render_token_widget(tracker: TokenTracker) -> str:
 # tests/test_token_tracker.py
 
 import pytest
-from researchclaw.utils.token_tracker import TokenTracker, TokenUsage
+from berb.utils.token_tracker import TokenTracker, TokenUsage
 
 @pytest.fixture
 def tracker(tmp_path):

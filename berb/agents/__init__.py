@@ -1,1 +1,1 @@
-"""Multi-agent subsystems for AutoResearchClaw pipeline."""
+"""Multi-agent subsystems for Berb pipeline."""

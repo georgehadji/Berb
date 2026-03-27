@@ -1,4 +1,4 @@
-"""SearXNG Client - Metasearch integration for AutoResearchClaw.
+"""SearXNG Client - Metasearch integration for Berb.
 
 This module provides integration with SearXNG for:
 - Unified search across 200+ engines

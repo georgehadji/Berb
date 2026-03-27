@@ -42,14 +42,14 @@ Author: Georgios-Chrysovalantis Chatzivantsidis
 
 | Old Import | New Import |
 |------------|------------|
-| `researchclaw.mnemo_bridge` | `researchclaw.memory_vault` |
-| `researchclaw.reasoner_bridge` | `researchclaw.cognitive_flow` |
-| `researchclaw.literature.searxng_client` | `researchclaw.literature.metasearch_client` |
-| `researchclaw.utils.rtk_client` | `researchclaw.utils.token_saver` |
-| `researchclaw.llm.nadirclaw_router` | `researchclaw.llm.model_router` |
-| `researchclaw.hyperagent` | `researchclaw.self_evolve` |
-| `researchclaw.llm.perplexity_client` | `researchclaw.llm.deep_query_client` |
-| `researchclaw.llm.grok_client` | `researchclaw.llm.deepmind_client` |
+| `berb.mnemo_bridge` | `berb.memory_vault` |
+| `berb.reasoner_bridge` | `berb.cognitive_flow` |
+| `berb.literature.searxng_client` | `berb.literature.metasearch_client` |
+| `berb.utils.rtk_client` | `berb.utils.token_saver` |
+| `berb.llm.nadirclaw_router` | `berb.llm.model_router` |
+| `berb.hyperagent` | `berb.self_evolve` |
+| `berb.llm.perplexity_client` | `berb.llm.deep_query_client` |
+| `berb.llm.grok_client` | `berb.llm.deepmind_client` |
 
 ---
 

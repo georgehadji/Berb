@@ -1,4 +1,4 @@
-"""Tests for researchclaw.trends — Research Trend Tracker (Agent D1).
+"""Tests for berb.trends — Research Trend Tracker (Agent D1).
 
 25+ tests covering feeds, trend_analyzer, opportunity_finder,
 daily_digest, auto_topic, and literature/trends.

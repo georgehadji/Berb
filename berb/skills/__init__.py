@@ -1,4 +1,4 @@
-"""Dynamic skills library for AutoResearchClaw.
+"""Dynamic skills library for Berb.
 
 Provides a registry of reusable research/engineering/writing skills
 that can be automatically matched to pipeline stages and injected

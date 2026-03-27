@@ -61,7 +61,7 @@ class MetricType(str, Enum):
 class DomainProfile:
     """Complete description of a research domain's experiment conventions.
 
-    Loaded from YAML files in ``researchclaw/domains/profiles/``.
+    Loaded from YAML files in ``berb/domains/profiles/``.
     """
 
     # Identity
@@ -85,7 +85,7 @@ class DomainProfile:
 
     # Dependencies & environment
     core_libraries: list[str] = field(default_factory=list)
-    docker_image: str = "researchclaw/sandbox-generic:latest"
+    docker_image: str = "berb/sandbox-generic:latest"
     gpu_required: bool = False
     pip_packages: list[str] = field(default_factory=list)
 
@@ -132,7 +132,7 @@ def _load_profile(path: Path) -> DomainProfile:
         typical_file_structure=data.get("typical_file_structure", {}),
         entry_point=data.get("entry_point", "main.py"),
         core_libraries=data.get("core_libraries", []),
-        docker_image=data.get("docker_image", "researchclaw/sandbox-generic:latest"),
+        docker_image=data.get("docker_image", "berb/sandbox-generic:latest"),
         gpu_required=data.get("gpu_required", False),
         pip_packages=data.get("pip_packages", []),
         metric_types=data.get("metric_types", ["scalar"]),
@@ -189,7 +189,7 @@ def get_generic_profile() -> DomainProfile:
         display_name="Generic Computational Research",
         experiment_paradigm="comparison",
         core_libraries=["numpy", "scipy", "matplotlib", "pandas"],
-        docker_image="researchclaw/sandbox-generic:latest",
+        docker_image="berb/sandbox-generic:latest",
     )
 
 

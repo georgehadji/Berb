@@ -149,7 +149,7 @@ def _collect_content_metrics(run_dir: Path | None) -> dict[str, object]:
     draft_path = run_dir / "stage-17" / "paper_draft.md"
     if draft_path.exists():
         try:
-            quality_module = importlib.import_module("researchclaw.quality")
+            quality_module = importlib.import_module("berb.quality")
             compute_template_ratio = quality_module.compute_template_ratio
             text = draft_path.read_text(encoding="utf-8")
             metrics["template_ratio"] = round(compute_template_ratio(text), 4)

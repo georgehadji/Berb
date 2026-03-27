@@ -9,7 +9,7 @@ from typing import Any
 
 @dataclass
 class Project:
-    """A research project managed by AutoResearchClaw."""
+    """A research project managed by Berb."""
 
     name: str
     config_path: str

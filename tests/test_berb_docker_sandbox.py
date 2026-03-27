@@ -122,7 +122,7 @@ def test_build_run_command_specific_gpus(tmp_path: Path):
 
 
 def test_harness_injection(tmp_path: Path):
-    harness_src = Path(__file__).parent.parent / "researchclaw" / "experiment" / "harness_template.py"
+    harness_src = Path(__file__).parent.parent / "berb" / "experiment" / "harness_template.py"
     if not harness_src.exists():
         pytest.skip("harness_template.py not found")
 
@@ -143,15 +143,15 @@ def test_factory_returns_experiment_sandbox(tmp_path: Path):
     assert isinstance(sandbox, ExperimentSandbox)
 
 
-@patch("researchclaw.experiment.docker_sandbox.DockerSandbox.ensure_image", return_value=True)
-@patch("researchclaw.experiment.docker_sandbox.DockerSandbox.check_docker_available", return_value=True)
+@patch("berb.experiment.docker_sandbox.DockerSandbox.ensure_image", return_value=True)
+@patch("berb.experiment.docker_sandbox.DockerSandbox.check_docker_available", return_value=True)
 def test_factory_returns_docker_sandbox(mock_avail, mock_image, tmp_path: Path):
     config = ExperimentConfig(mode="docker")
     sandbox = create_sandbox(config, tmp_path / "work")
     assert isinstance(sandbox, DockerSandbox)
 
 
-@patch("researchclaw.experiment.docker_sandbox.DockerSandbox.check_docker_available", return_value=False)
+@patch("berb.experiment.docker_sandbox.DockerSandbox.check_docker_available", return_value=False)
 def test_factory_falls_back_when_docker_unavailable(mock_avail, tmp_path: Path):
     config = ExperimentConfig(mode="docker")
     sandbox = create_sandbox(config, tmp_path / "work")
@@ -160,8 +160,8 @@ def test_factory_falls_back_when_docker_unavailable(mock_avail, tmp_path: Path):
     assert isinstance(sandbox, ExperimentSandbox)
 
 
-@patch("researchclaw.experiment.docker_sandbox.DockerSandbox.ensure_image", return_value=False)
-@patch("researchclaw.experiment.docker_sandbox.DockerSandbox.check_docker_available", return_value=True)
+@patch("berb.experiment.docker_sandbox.DockerSandbox.ensure_image", return_value=False)
+@patch("berb.experiment.docker_sandbox.DockerSandbox.check_docker_available", return_value=True)
 def test_factory_raises_when_image_missing(mock_avail, mock_image, tmp_path: Path):
     config = ExperimentConfig(mode="docker")
     with pytest.raises(RuntimeError, match="not found locally"):
@@ -352,7 +352,7 @@ def test_check_docker_available_no_binary(mock_run):
 @patch("subprocess.run")
 def test_ensure_image_true(mock_run):
     mock_run.return_value = subprocess.CompletedProcess(args=[], returncode=0)
-    assert DockerSandbox.ensure_image("researchclaw/experiment:latest") is True
+    assert DockerSandbox.ensure_image("berb/experiment:latest") is True
 
 
 @patch("subprocess.run")
@@ -378,7 +378,7 @@ def test_default_auto_install_deps_enabled():
 # ── Entry point path traversal validation ─────────────────────────────
 
 
-@patch("researchclaw.experiment.docker_sandbox.subprocess.run")
+@patch("berb.experiment.docker_sandbox.subprocess.run")
 def test_run_project_rejects_path_traversal(mock_run: MagicMock, tmp_path: Path):
     """run_project() must reject entry_point with '..' components."""
     project = tmp_path / "proj"
@@ -399,7 +399,7 @@ def test_run_project_rejects_path_traversal(mock_run: MagicMock, tmp_path: Path)
     mock_run.assert_not_called()
 
 
-@patch("researchclaw.experiment.docker_sandbox.subprocess.run")
+@patch("berb.experiment.docker_sandbox.subprocess.run")
 def test_run_project_rejects_absolute_path(mock_run: MagicMock, tmp_path: Path):
     """run_project() must reject absolute entry_point paths."""
     project = tmp_path / "proj"

@@ -99,7 +99,7 @@ This document defines the **optimal software architecture** for AutoResearchClaw
 
 ### Layer 1: Presentation Layer
 
-#### 1.1 CLI Interface (`researchclaw/cli.py`)
+#### 1.1 CLI Interface (`berb/cli.py`)
 
 **Paradigm:** **Imperative + Functional**
 
@@ -139,7 +139,7 @@ def main():
 
 ---
 
-#### 1.2 Web Dashboard (`researchclaw/dashboard/`)
+#### 1.2 Web Dashboard (`berb/dashboard/`)
 
 **Paradigm:** **Reactive + Component-Based**
 
@@ -188,7 +188,7 @@ async def dashboard_ws(websocket: WebSocket):
 
 ---
 
-#### 1.3 Programmatic API (`researchclaw/api.py`)
+#### 1.3 Programmatic API (`berb/api.py`)
 
 **Paradigm:** **Functional + Declarative**
 
@@ -235,7 +235,7 @@ def get_runner() -> PipelineRunner:
 
 ### Layer 2: Application Layer
 
-#### 2.1 Pipeline Orchestrator (`researchclaw/pipeline/runner.py`)
+#### 2.1 Pipeline Orchestrator (`berb/pipeline/runner.py`)
 
 **Paradigm:** **State Machine + Event-Driven**
 
@@ -288,7 +288,7 @@ class PipelineOrchestrator:
 
 ---
 
-#### 2.2 Command Handler (`researchclaw/commands/`)
+#### 2.2 Command Handler (`berb/commands/`)
 
 **Paradigm:** **Command + Functional**
 
@@ -339,7 +339,7 @@ class PipelineReadModel:
 
 ---
 
-#### 2.3 Event Bus (`researchclaw/events/`)
+#### 2.3 Event Bus (`berb/events/`)
 
 **Paradigm:** **Event-Driven + Publish-Subscribe**
 
@@ -393,7 +393,7 @@ class EventStore:
 
 ### Layer 3: Domain Layer
 
-#### 3.1 Literature Domain (`researchclaw/literature/`)
+#### 3.1 Literature Domain (`berb/literature/`)
 
 **Paradigm:** **Functional + Domain-Driven Design**
 
@@ -453,7 +453,7 @@ class PaperRepository(Protocol):
 
 ---
 
-#### 3.2 Experiment Domain (`researchclaw/experiment/`)
+#### 3.2 Experiment Domain (`berb/experiment/`)
 
 **Paradigm:** **Actor Model + Functional**
 
@@ -506,7 +506,7 @@ class SSHRemoteBackend: ...
 
 ---
 
-#### 3.3 Writing Domain (`researchclaw/writing/`)
+#### 3.3 Writing Domain (`berb/writing/`)
 
 **Paradigm:** **Functional + Builder Pattern**
 
@@ -565,7 +565,7 @@ class GrammarFixHandler: ...
 
 ---
 
-#### 3.4 Knowledge Domain (`researchclaw/knowledge/`)
+#### 3.4 Knowledge Domain (`berb/knowledge/`)
 
 **Paradigm:** **Repository + Event Sourcing**
 
@@ -614,7 +614,7 @@ class KnowledgeReadModel:
 
 ### Layer 4: Integration Layer
 
-#### 4.1 Mnemo Bridge (`researchclaw/mnemo_bridge/`)
+#### 4.1 Mnemo Bridge (`berb/mnemo_bridge/`)
 
 **Paradigm:** **Adapter + Async Proxy**
 
@@ -673,7 +673,7 @@ class CircuitBreaker:
 
 ---
 
-#### 4.2 Reasoner Bridge (`researchclaw/reasoner_bridge/`)
+#### 4.2 Reasoner Bridge (`berb/reasoner_bridge/`)
 
 **Paradigm:** **Strategy + Template Method**
 
@@ -729,7 +729,7 @@ class ReasoningStrategyFactory:
 
 ---
 
-#### 4.3 SearXNG Client (`researchclaw/literature/searxng_client.py`)
+#### 4.3 SearXNG Client (`berb/literature/searxng_client.py`)
 
 **Paradigm:** **Facade + Repository**
 
@@ -792,7 +792,7 @@ class MultiSourceSearch:
 
 ---
 
-#### 4.4 RTK Client (`researchclaw/utils/rtk_client.py`)
+#### 4.4 RTK Client (`berb/utils/rtk_client.py`)
 
 **Paradigm:** **Decorator + Observer**
 
@@ -844,7 +844,7 @@ class TokenAnalyticsObserver:
 
 ---
 
-#### 4.5 NadirClaw Router (`researchclaw/llm/nadirclaw_router.py`)
+#### 4.5 NadirClaw Router (`berb/llm/nadirclaw_router.py`)
 
 **Paradigm:** **Strategy + Chain of Responsibility**
 
@@ -905,7 +905,7 @@ fallback_chain = (
 
 ### Layer 5: Infrastructure Layer
 
-#### 5.1 SQLite Database (`researchclaw/db/`)
+#### 5.1 SQLite Database (`berb/db/`)
 
 **Paradigm:** **Repository + Unit of Work**
 
@@ -969,7 +969,7 @@ class PaperMapper:
 
 ---
 
-#### 5.2 Redis Cache (`researchclaw/cache/`)
+#### 5.2 Redis Cache (`berb/cache/`)
 
 **Paradigm:** **Cache-Aside + Observer**
 

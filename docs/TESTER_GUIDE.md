@@ -125,13 +125,13 @@ source .venv/bin/activate       # macOS / Linux
 pip install -e .
 
 # 4. Verify
-researchclaw --help
+berb --help
 ```
 
 ### ⚙️ Configuration
 
 ```bash
-cp config.researchclaw.example.yaml config.yaml
+cp config.berb.example.yaml config.yaml
 ```
 
 Edit `config.yaml` — here are the key fields:
@@ -203,13 +203,13 @@ export S2_API_KEY="your-s2-key"
 source .venv/bin/activate
 export OPENAI_API_KEY="sk-xxxx"       # or ANTHROPIC_API_KEY
 
-researchclaw run --config config.yaml --auto-approve
+berb run --config config.yaml --auto-approve
 ```
 
 ### With a Specific Topic
 
 ```bash
-researchclaw run \
+berb run \
   --config config.yaml \
   --topic "Investigating the effect of curriculum learning on image classification with adaptive difficulty scheduling" \
   --auto-approve
@@ -238,7 +238,7 @@ Pipeline complete — deliverables at: artifacts/rc-20260315-XXXXXX-YYYY/deliver
 The pipeline supports checkpointing — just resume:
 
 ```bash
-researchclaw run --config config.yaml --resume
+berb run --config config.yaml --resume
 ```
 
 ---
@@ -493,7 +493,7 @@ A full pipeline run costs roughly **$5–15** in API fees, depending on the mode
 Resume from the checkpoint:
 
 ```bash
-researchclaw run --config config.yaml --resume
+berb run --config config.yaml --resume
 ```
 
 ### Q4: Can I use a non-English research topic?
@@ -514,7 +514,7 @@ If you have an NVIDIA GPU with Docker + NVIDIA Container Toolkit:
 
 ```bash
 # 1. Build the experiment image
-docker build -t researchclaw/experiment:latest researchclaw/docker/
+docker build -t berb/experiment:latest berb/docker/
 
 # 2. Update config.yaml:
 #   experiment:
@@ -525,7 +525,7 @@ docker build -t researchclaw/experiment:latest researchclaw/docker/
 #       network_policy: "setup_only"  # recommended default
 
 # 3. Run
-researchclaw run --config config.yaml --auto-approve
+berb run --config config.yaml --auto-approve
 ```
 
 Docker mode uses a three-phase execution model: pip install (network on) → setup.py (network on) → experiment (network off). The image includes pre-cached datasets (CIFAR-10/100, MNIST, FashionMNIST, STL-10, SVHN) so standard benchmarks work without network access.

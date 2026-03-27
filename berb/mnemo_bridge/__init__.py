@@ -1,4 +1,4 @@
-"""Mnemo Cortex Bridge - Memory system integration for AutoResearchClaw.
+"""Mnemo Cortex Bridge - Memory system integration for Berb.
 
 This module provides integration with Mnemo Cortex memory system, enabling:
 - Cross-session memory persistence

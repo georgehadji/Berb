@@ -19,11 +19,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from researchclaw.config import DockerSandboxConfig, ExperimentConfig
-from researchclaw.experiment.docker_sandbox import DockerSandbox
-from researchclaw.llm.client import LLMClient, LLMConfig
-from researchclaw.pipeline.code_agent import CodeAgent, CodeAgentConfig
-from researchclaw.prompts import PromptManager
+from berb.config import DockerSandboxConfig, ExperimentConfig
+from berb.experiment.docker_sandbox import DockerSandbox
+from berb.llm.client import LLMClient, LLMConfig
+from berb.pipeline.code_agent import CodeAgent, CodeAgentConfig
+from berb.prompts import PromptManager
 
 # ---------------------------------------------------------------------------
 # Test case (simple — should run quickly in sandbox)
@@ -160,7 +160,7 @@ def main():
 
     # Docker sandbox setup
     docker_cfg = DockerSandboxConfig(
-        image="researchclaw/experiment:latest",
+        image="berb/experiment:latest",
         gpu_enabled=True,
         memory_limit_mb=16384,
         network_policy="setup_only",

@@ -252,7 +252,7 @@ class TestOverleafSync:
         with pytest.raises(RuntimeError, match="setup"):
             sync.resolve_conflicts()
 
-    @patch("researchclaw.overleaf.sync.subprocess.run")
+    @patch("berb.overleaf.sync.subprocess.run")
     def test_setup_clones(self, mock_run: MagicMock, tmp_path: Path) -> None:
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
         sync = OverleafSync(git_url="https://git.overleaf.com/abc123")

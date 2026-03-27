@@ -1,4 +1,4 @@
-"""Tests for researchclaw.hardware — GPU detection & metric filtering."""
+"""Tests for berb.hardware — GPU detection & metric filtering."""
 
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ class TestDetectNvidia:
         mock_result.returncode = 0
         mock_result.stdout = "NVIDIA GeForce RTX 4090, 24564\n"
 
-        with patch("researchclaw.hardware.subprocess.run", return_value=mock_result):
+        with patch("berb.hardware.subprocess.run", return_value=mock_result):
             profile = _detect_nvidia()
 
         assert profile is not None
@@ -67,7 +67,7 @@ class TestDetectNvidia:
         mock_result.returncode = 0
         mock_result.stdout = "NVIDIA GeForce GTX 1650, 4096\n"
 
-        with patch("researchclaw.hardware.subprocess.run", return_value=mock_result):
+        with patch("berb.hardware.subprocess.run", return_value=mock_result):
             profile = _detect_nvidia()
 
         assert profile is not None
@@ -76,7 +76,7 @@ class TestDetectNvidia:
 
     def test_nvidia_smi_not_found(self):
         with patch(
-            "researchclaw.hardware.subprocess.run",
+            "berb.hardware.subprocess.run",
             side_effect=FileNotFoundError,
         ):
             assert _detect_nvidia() is None
@@ -85,12 +85,12 @@ class TestDetectNvidia:
         mock_result = MagicMock()
         mock_result.returncode = 1
 
-        with patch("researchclaw.hardware.subprocess.run", return_value=mock_result):
+        with patch("berb.hardware.subprocess.run", return_value=mock_result):
             assert _detect_nvidia() is None
 
     def test_nvidia_smi_timeout(self):
         with patch(
-            "researchclaw.hardware.subprocess.run",
+            "berb.hardware.subprocess.run",
             side_effect=subprocess.TimeoutExpired("nvidia-smi", 10),
         ):
             assert _detect_nvidia() is None
@@ -107,9 +107,9 @@ class TestDetectMPS:
         mock_result.stdout = "Apple M3 Pro\n"
 
         with (
-            patch("researchclaw.hardware.platform.system", return_value="Darwin"),
-            patch("researchclaw.hardware.platform.machine", return_value="arm64"),
-            patch("researchclaw.hardware.subprocess.run", return_value=mock_result),
+            patch("berb.hardware.platform.system", return_value="Darwin"),
+            patch("berb.hardware.platform.machine", return_value="arm64"),
+            patch("berb.hardware.subprocess.run", return_value=mock_result),
         ):
             profile = _detect_mps()
 
@@ -121,13 +121,13 @@ class TestDetectMPS:
         assert "MPS" in profile.warning
 
     def test_non_darwin(self):
-        with patch("researchclaw.hardware.platform.system", return_value="Linux"):
+        with patch("berb.hardware.platform.system", return_value="Linux"):
             assert _detect_mps() is None
 
     def test_intel_mac(self):
         with (
-            patch("researchclaw.hardware.platform.system", return_value="Darwin"),
-            patch("researchclaw.hardware.platform.machine", return_value="x86_64"),
+            patch("berb.hardware.platform.system", return_value="Darwin"),
+            patch("berb.hardware.platform.machine", return_value="x86_64"),
         ):
             assert _detect_mps() is None
 
@@ -139,8 +139,8 @@ class TestDetectMPS:
 class TestDetectHardware:
     def test_falls_back_to_cpu(self):
         with (
-            patch("researchclaw.hardware._detect_nvidia", return_value=None),
-            patch("researchclaw.hardware._detect_mps", return_value=None),
+            patch("berb.hardware._detect_nvidia", return_value=None),
+            patch("berb.hardware._detect_mps", return_value=None),
         ):
             profile = detect_hardware()
 
@@ -159,8 +159,8 @@ class TestDetectHardware:
             vram_mb=None, tier="limited", warning="MPS",
         )
         with (
-            patch("researchclaw.hardware._detect_nvidia", return_value=nvidia_profile),
-            patch("researchclaw.hardware._detect_mps", return_value=mps_profile),
+            patch("berb.hardware._detect_nvidia", return_value=nvidia_profile),
+            patch("berb.hardware._detect_mps", return_value=mps_profile),
         ):
             profile = detect_hardware()
 
@@ -177,7 +177,7 @@ class TestEnsureTorchAvailable:
         mock_result.returncode = 0
         mock_result.stdout = "2.3.0\n"
 
-        with patch("researchclaw.hardware.subprocess.run", return_value=mock_result):
+        with patch("berb.hardware.subprocess.run", return_value=mock_result):
             assert ensure_torch_available("/usr/bin/python3", "cuda") is True
 
     def test_cpu_only_skips_install(self):
@@ -185,7 +185,7 @@ class TestEnsureTorchAvailable:
         mock_check.returncode = 1  # not installed
         mock_check.stdout = ""
 
-        with patch("researchclaw.hardware.subprocess.run", return_value=mock_check):
+        with patch("berb.hardware.subprocess.run", return_value=mock_check):
             assert ensure_torch_available("/usr/bin/python3", "cpu") is False
 
     def test_install_succeeds(self):
@@ -202,7 +202,7 @@ class TestEnsureTorchAvailable:
                 mock.stdout = ""
             return mock
 
-        with patch("researchclaw.hardware.subprocess.run", side_effect=side_effect):
+        with patch("berb.hardware.subprocess.run", side_effect=side_effect):
             assert ensure_torch_available("/usr/bin/python3", "cuda") is True
 
     def test_install_fails(self):
@@ -211,12 +211,12 @@ class TestEnsureTorchAvailable:
         mock.stdout = ""
         mock.stderr = "ERROR: Could not install"
 
-        with patch("researchclaw.hardware.subprocess.run", return_value=mock):
+        with patch("berb.hardware.subprocess.run", return_value=mock):
             assert ensure_torch_available("/usr/bin/python3", "mps") is False
 
     def test_python_not_found(self):
         with patch(
-            "researchclaw.hardware.subprocess.run",
+            "berb.hardware.subprocess.run",
             side_effect=FileNotFoundError,
         ):
             assert ensure_torch_available("/nonexistent/python3", "cuda") is False

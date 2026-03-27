@@ -36,7 +36,7 @@ def create_sandbox(config: ExperimentConfig, workdir: Path) -> SandboxProtocol:
         if not DockerSandbox.ensure_image(docker_cfg.image):
             raise RuntimeError(
                 f"Docker image '{docker_cfg.image}' not found locally. "
-                f"Build it: docker build -t {docker_cfg.image} researchclaw/docker/"
+                f"Build it: docker build -t {docker_cfg.image} berb/docker/"
             )
 
         if docker_cfg.gpu_enabled:

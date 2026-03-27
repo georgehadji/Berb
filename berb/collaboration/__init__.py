@@ -1,6 +1,6 @@
 """Agent collaboration and knowledge sharing system.
 
-Enables multiple AutoResearchClaw instances to share research artifacts
+Enables multiple Berb instances to share research artifacts
 (literature summaries, experiment results, code templates, review feedback)
 through a file-system-based shared repository.
 """

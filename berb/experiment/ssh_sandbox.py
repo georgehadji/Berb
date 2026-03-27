@@ -131,12 +131,12 @@ class SshRemoteSandbox:
         if not config.host:
             return False, "ssh_remote.host is empty"
         cmd = _build_ssh_base(config, extra_opts=["-o", "ConnectTimeout=10"])
-        cmd.append("echo researchclaw-ssh-ok")
+        cmd.append("echo berb-ssh-ok")
         try:
             cp = subprocess.run(
                 cmd, capture_output=True, text=True, timeout=15, check=False,
             )
-            if cp.returncode == 0 and "researchclaw-ssh-ok" in cp.stdout:
+            if cp.returncode == 0 and "berb-ssh-ok" in cp.stdout:
                 return True, f"SSH connection to {config.host} OK"
             return False, f"SSH test failed (exit {cp.returncode}): {cp.stderr.strip()}"
         except subprocess.TimeoutExpired:

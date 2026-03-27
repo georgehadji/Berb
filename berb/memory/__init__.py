@@ -1,4 +1,4 @@
-"""Persistent evolutionary memory system for AutoResearchClaw.
+"""Persistent evolutionary memory system for Berb.
 
 Provides three categories of memory:
 - **Ideation**: Research topics, hypotheses, and their outcomes.

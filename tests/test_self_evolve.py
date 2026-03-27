@@ -301,7 +301,7 @@ class TestSelfEvolveOrchestrator:
     
     def test_record_research_run(self, tmp_path):
         """Test recording a research run."""
-        with patch("researchclaw.self_evolve.ExperienceCollector") as MockCollector:
+        with patch("berb.self_evolve.ExperienceCollector") as MockCollector:
             mock_collector = MagicMock()
             MockCollector.return_value = mock_collector
             
@@ -324,9 +324,9 @@ class TestSelfEvolveOrchestrator:
     @pytest.mark.asyncio
     async def test_start_improvement_cycle(self, tmp_path):
         """Test starting improvement cycle."""
-        with patch("researchclaw.self_evolve.ExperienceCollector") as MockCollector, \
-             patch("researchclaw.self_evolve.ExperienceAnalyzer") as MockAnalyzer, \
-             patch("researchclaw.self_evolve.PolicyUpdater") as MockUpdater:
+        with patch("berb.self_evolve.ExperienceCollector") as MockCollector, \
+             patch("berb.self_evolve.ExperienceAnalyzer") as MockAnalyzer, \
+             patch("berb.self_evolve.PolicyUpdater") as MockUpdater:
             
             mock_collector = MagicMock()
             mock_analyzer = MagicMock()
@@ -359,7 +359,7 @@ class TestSelfEvolveOrchestrator:
     
     def test_get_statistics(self, tmp_path):
         """Test getting statistics."""
-        with patch("researchclaw.self_evolve.ExperienceCollector") as MockCollector:
+        with patch("berb.self_evolve.ExperienceCollector") as MockCollector:
             mock_collector = MagicMock()
             mock_collector.get_statistics.return_value = {
                 "total_experiences": 100,

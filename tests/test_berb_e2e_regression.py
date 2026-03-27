@@ -130,15 +130,15 @@ class TestDegradationChain:
         )
 
         with patch(
-            "researchclaw.literature.search.search_semantic_scholar",
+            "berb.literature.search.search_semantic_scholar",
             side_effect=RuntimeError("API down"),
         ):
             with patch(
-                "researchclaw.literature.search.search_arxiv",
+                "berb.literature.search.search_arxiv",
                 side_effect=RuntimeError("API down"),
             ):
                 with patch(
-                    "researchclaw.literature.cache._DEFAULT_CACHE_DIR", tmp_path
+                    "berb.literature.cache._DEFAULT_CACHE_DIR", tmp_path
                 ):
                     papers = search_papers("test degradation", limit=20)
 
@@ -149,19 +149,19 @@ class TestDegradationChain:
         from berb.literature.search import search_papers
 
         with patch(
-            "researchclaw.literature.search.search_openalex",
+            "berb.literature.search.search_openalex",
             side_effect=RuntimeError("API down"),
         ):
             with patch(
-                "researchclaw.literature.search.search_semantic_scholar",
+                "berb.literature.search.search_semantic_scholar",
                 side_effect=RuntimeError("API down"),
             ):
                 with patch(
-                    "researchclaw.literature.search.search_arxiv",
+                    "berb.literature.search.search_arxiv",
                     side_effect=RuntimeError("API down"),
                 ):
                     with patch(
-                        "researchclaw.literature.cache._DEFAULT_CACHE_DIR",
+                        "berb.literature.cache._DEFAULT_CACHE_DIR",
                         tmp_path / "empty-cache",
                     ):
                         papers = search_papers("no results query", limit=20)

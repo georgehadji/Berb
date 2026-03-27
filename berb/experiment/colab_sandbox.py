@@ -42,7 +42,7 @@ from google.colab import drive
 
 drive.mount("/content/drive")
 
-DRIVE_ROOT = Path("/content/drive/MyDrive/researchclaw")
+DRIVE_ROOT = Path("/content/drive/MyDrive/berb")
 PENDING = DRIVE_ROOT / "pending"
 RUNNING = DRIVE_ROOT / "running"
 DONE = DRIVE_ROOT / "done"

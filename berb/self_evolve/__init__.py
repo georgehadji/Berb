@@ -70,7 +70,7 @@ class Experience:
 class ExperienceCollector:
     """Collect experiences from research runs."""
     
-    def __init__(self, storage_path: str = ".researchclaw/experiences"):
+    def __init__(self, storage_path: str = ".berb/experiences"):
         """Initialize experience collector.
         
         Args:
@@ -446,7 +446,7 @@ class ExperienceAnalyzer:
 class PolicyUpdater:
     """Update system policies based on analysis."""
     
-    def __init__(self, config_path: str = ".researchclaw/policies"):
+    def __init__(self, config_path: str = ".berb/policies"):
         """Initialize policy updater.
         
         Args:

@@ -1,4 +1,4 @@
-"""Tests for researchclaw.copilot — Interactive Co-Pilot Mode (Agent D2).
+"""Tests for berb.copilot — Interactive Co-Pilot Mode (Agent D2).
 
 30+ tests covering modes, feedback, branching, and controller.
 """

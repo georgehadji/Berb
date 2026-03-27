@@ -1,4 +1,4 @@
-"""Cross-Project Learning for AutoResearchClaw.
+"""Cross-Project Learning for Berb.
 
 This module implements cross-project transfer learning, extracting patterns
 from historical research runs to improve future performance. This creates a
@@ -16,7 +16,7 @@ Author: Georgios-Chrysovalantis Chatzivantsidis
 Usage:
     from berb.learning.cross_project_learning import CrossProjectLearning
 
-    cpl = CrossProjectLearning(data_dir=".researchclaw/runs")
+    cpl = CrossProjectLearning(data_dir=".berb/runs")
     await cpl.load_runs()
     insights = await cpl.extract_patterns()
     
@@ -112,7 +112,7 @@ class LiteratureSourceQuality:
 class CrossProjectLearning:
     """Cross-project transfer learning system."""
 
-    def __init__(self, data_dir: str | Path = ".researchclaw/runs"):
+    def __init__(self, data_dir: str | Path = ".berb/runs"):
         """Initialize cross-project learning.
 
         Args:

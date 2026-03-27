@@ -143,7 +143,7 @@ curl -X POST http://localhost:30000/v1/chat/completions \
 
 #### Task 1.1: 修改 AutoResearchClaw 配置
 
-修改 `config.researchclaw.yaml`:
+修改 `config.berb.yaml`:
 ```yaml
 llm:
   provider: "openai-compatible"
@@ -156,9 +156,9 @@ llm:
 
 #### Task 1.2: 兼容性适配
 
-在 `researchclaw/llm/client.py` 中处理 MetaClaw 可能返回的 503 状态码（权重更新中）：
+在 `berb/llm/client.py` 中处理 MetaClaw 可能返回的 503 状态码（权重更新中）：
 
-**文件**: `researchclaw/llm/client.py`
+**文件**: `berb/llm/client.py`
 **改动**: 将 503 加入可重试状态码列表
 
 ```python
@@ -175,7 +175,7 @@ _RETRYABLE_STATUS = {429, 500, 502, 503, 504}
 metaclaw start --mode skills_only
 
 # 2. 运行 AutoResearchClaw 短流程
-researchclaw run --topic "test topic" --config config.yaml
+berb run --topic "test topic" --config config.yaml
 ```
 
 **验证点**:
@@ -238,7 +238,7 @@ When designing search queries for arXiv, Semantic Scholar, or other academic dat
 
 #### Task 2.2: 阶段-技能映射模块
 
-**新增文件**: `researchclaw/metaclaw_bridge/stage_skill_map.py`
+**新增文件**: `berb/metaclaw_bridge/stage_skill_map.py`
 
 ```python
 """Maps AutoResearchClaw pipeline stages to MetaClaw skill categories."""
@@ -365,7 +365,7 @@ STAGE_SKILL_MAP: dict[str, dict] = {
 
 #### Task 2.3: 阶段感知 HTTP Header 注入
 
-修改 `researchclaw/llm/client.py`，在发送请求时附带阶段上下文 Header：
+修改 `berb/llm/client.py`，在发送请求时附带阶段上下文 Header：
 
 ```python
 # 在 _request() 方法中新增
@@ -388,7 +388,7 @@ headers["X-Turn-Type"] = "main"           # 确保触发技能注入
 
 #### Task 3.1: Lesson → Skill 转化器
 
-**新增文件**: `researchclaw/metaclaw_bridge/lesson_to_skill.py`
+**新增文件**: `berb/metaclaw_bridge/lesson_to_skill.py`
 
 **功能**:
 1. 从 `evolution/lessons.jsonl` 读取高严重性教训（severity = "error"）
@@ -424,7 +424,7 @@ LESSON_CATEGORY_TO_SKILL_CATEGORY = {
 
 #### Task 3.2: Skill 效果回馈
 
-**新增文件**: `researchclaw/metaclaw_bridge/skill_feedback.py`
+**新增文件**: `berb/metaclaw_bridge/skill_feedback.py`
 
 **功能**:
 1. 在每次 Pipeline 运行结束后，统计各阶段成功/失败
@@ -447,7 +447,7 @@ class SkillEffectivenessRecord:
 
 #### Task 3.3: 自动进化触发
 
-在 `researchclaw/pipeline/executor.py` 的运行结束钩子中，添加:
+在 `berb/pipeline/executor.py` 的运行结束钩子中，添加:
 
 ```python
 # Pipeline 完成后触发
@@ -458,7 +458,7 @@ async def _post_pipeline_hook(self, run_results: list[StageResult]):
 
     # 2. 将高严重性教训转化为技能 (如果 MetaClaw bridge 启用)
     if self.config.metaclaw_bridge.enabled:
-        from researchclaw.metaclaw_bridge.lesson_to_skill import convert_lessons_to_skills
+        from berb.metaclaw_bridge.lesson_to_skill import convert_lessons_to_skills
         new_skills = await convert_lessons_to_skills(
             lessons=[l for l in lessons if l.severity == "error"],
             llm=self.llm,
@@ -477,7 +477,7 @@ async def _post_pipeline_hook(self, run_results: list[StageResult]):
 
 #### Task 4.1: PRM 评分器集成
 
-**新增文件**: `researchclaw/metaclaw_bridge/prm_gate.py`
+**新增文件**: `berb/metaclaw_bridge/prm_gate.py`
 
 **功能**: 封装 MetaClaw PRMScorer，为 AutoResearchClaw 的质量门控提供评分。
 
@@ -535,7 +535,7 @@ elif prm_score == -1.0:
 
 #### Task 4.3: 配置项扩展
 
-在 `config.researchclaw.yaml` 中新增:
+在 `config.berb.yaml` 中新增:
 
 ```yaml
 metaclaw_bridge:
@@ -640,7 +640,7 @@ headers["X-Session-Done"] = "true"  # 通知 MetaClaw 一次研究会话结束
 
 ```
 AutoResearchClaw/
-├── researchclaw/
+├── berb/
 │   └── metaclaw_bridge/           # 新增模块
 │       ├── __init__.py
 │       ├── config.py              # MetaClaw 集成配置
@@ -662,10 +662,10 @@ AutoResearchClaw/
 **需修改的现有文件**:
 | 文件 | 改动内容 |
 |------|----------|
-| `researchclaw/llm/client.py` | 添加 503 重试 + X-Session-Id/X-Turn-Type header |
-| `researchclaw/config.py` | 新增 `metaclaw_bridge` 配置段 |
-| `researchclaw/pipeline/executor.py` | 添加 post-pipeline hook 调用 lesson_to_skill |
-| `config.researchclaw.example.yaml` | 添加 metaclaw_bridge 配置示例 |
+| `berb/llm/client.py` | 添加 503 重试 + X-Session-Id/X-Turn-Type header |
+| `berb/config.py` | 新增 `metaclaw_bridge` 配置段 |
+| `berb/pipeline/executor.py` | 添加 post-pipeline hook 调用 lesson_to_skill |
+| `config.berb.example.yaml` | 添加 metaclaw_bridge 配置示例 |
 
 ---
 
@@ -710,7 +710,7 @@ Week 4: Phase 4 (PRM 门控) + 收尾
 
 ### 关键缓解：Fallback 机制
 
-在 `researchclaw/llm/client.py` 中实现:
+在 `berb/llm/client.py` 中实现:
 
 ```python
 async def _request(self, ...):
@@ -766,9 +766,9 @@ metaclaw start --mode skills_only --port 30000
 # 2. 运行增强版 AutoResearchClaw
 cd /home/jqliu/projects/AutoResearchClaw
 git checkout feat/metaclaw-integration
-researchclaw run \
+berb run \
   --topic "Your research idea" \
-  --config config.researchclaw.yaml
+  --config config.berb.yaml
 
 # 3. 查看 MetaClaw 技能注入日志
 metaclaw status

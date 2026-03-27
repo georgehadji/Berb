@@ -1,4 +1,4 @@
-"""PRM (Process Reward Model) quality gate for AutoResearchClaw.
+"""PRM (Process Reward Model) quality gate for Berb.
 
 Uses an LLM-as-judge approach (compatible with MetaClaw's PRMScorer)
 to evaluate the quality of pipeline stage outputs at key gate stages.

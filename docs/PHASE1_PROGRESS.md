@@ -34,7 +34,7 @@
 
 ### ✅ 1. Token Tracker (RTK Integration)
 **Status:** ✅ Complete  
-**Files:** `researchclaw/utils/token_tracker.py`, `tests/test_token_tracker.py`  
+**Files:** `berb/utils/token_tracker.py`, `tests/test_token_tracker.py`  
 **Lines:** 450 + 180 tests
 
 **Features:**
@@ -61,7 +61,7 @@
 
 ### ✅ 2. Config Schema Updates
 **Status:** ✅ Complete  
-**Files:** `researchclaw/config.py`  
+**Files:** `berb/config.py`  
 **Lines:** +60
 
 **Features:**
@@ -81,7 +81,7 @@
 
 ### ✅ 3. LLM Integration (Smart Client)
 **Status:** ✅ Complete  
-**Files:** `researchclaw/llm/smart_client.py`  
+**Files:** `berb/llm/smart_client.py`  
 **Lines:** 300
 
 **Features:**
@@ -100,7 +100,7 @@
 
 ### ✅ 4. NadirClaw Router
 **Status:** ✅ Complete  
-**Files:** `researchclaw/llm/nadirclaw_router.py`  
+**Files:** `berb/llm/nadirclaw_router.py`  
 **Lines:** 600
 
 **Features:**
@@ -119,7 +119,7 @@
 
 ### ✅ 5. Mnemo Bridge
 **Status:** ✅ Complete  
-**Files:** `researchclaw/mnemo_bridge/__init__.py`  
+**Files:** `berb/mnemo_bridge/__init__.py`  
 **Lines:** 400
 
 **Features:**
@@ -139,7 +139,7 @@
 
 ### ✅ 6. Reasoner Bridge
 **Status:** ✅ Complete  
-**Files:** `researchclaw/reasoner_bridge/__init__.py`  
+**Files:** `berb/reasoner_bridge/__init__.py`  
 **Lines:** 566
 
 **Features:**
@@ -158,7 +158,7 @@
 
 ### ✅ 7. SearXNG Client
 **Status:** ✅ Complete  
-**Files:** `researchclaw/literature/searxng_client.py`  
+**Files:** `berb/literature/searxng_client.py`  
 **Lines:** 460
 
 **Features:**
@@ -209,7 +209,7 @@
 
 ### ⏳ 6. Mnemo Bridge
 **Status:** ⏳ Pending  
-**Files:** `researchclaw/mnemo_bridge/`
+**Files:** `berb/mnemo_bridge/`
 
 **Modules:**
 - `__init__.py` - MnemoBridge class
@@ -223,7 +223,7 @@
 
 ### ⏳ 7. Reasoner Bridge
 **Status:** ⏳ Pending  
-**Files:** `researchclaw/reasoner_bridge/`
+**Files:** `berb/reasoner_bridge/`
 
 **Modules:**
 - `__init__.py` - ReasonerAdapter
@@ -237,7 +237,7 @@
 
 ### ⏳ 8. SearXNG Client
 **Status:** ⏳ Pending  
-**Files:** `researchclaw/literature/searxng_client.py`
+**Files:** `berb/literature/searxng_client.py`
 
 **Features:**
 - SearXNGClient class

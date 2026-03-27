@@ -480,8 +480,8 @@ print("condition=Ablation metric=85.0")
         mock_sandbox = MagicMock()
         mock_sandbox.run_project.return_value = mock_sandbox_result
 
-        with patch("researchclaw.llm.create_llm_client") as mock_create_llm, \
-             patch("researchclaw.experiment.factory.create_sandbox") as mock_create_sb:
+        with patch("berb.llm.create_llm_client") as mock_create_llm, \
+             patch("berb.experiment.factory.create_sandbox") as mock_create_sb:
             mock_create_llm.return_value = mock_llm
             mock_create_sb.return_value = mock_sandbox
 

@@ -261,8 +261,8 @@ class TestGreyLiteratureSearch:
     @pytest.mark.asyncio
     async def test_search_biology_domain(self):
         """Test search for biology domain."""
-        with patch("researchclaw.literature.grey_search.BioRxivClient") as mock_biorxiv, \
-             patch("researchclaw.literature.grey_search.ZenodoClient") as mock_zenodo:
+        with patch("berb.literature.grey_search.BioRxivClient") as mock_biorxiv, \
+             patch("berb.literature.grey_search.ZenodoClient") as mock_zenodo:
             
             mock_biorxiv.return_value.search = AsyncMock(return_value=[])
             mock_zenodo.return_value.search = AsyncMock(return_value=[])
@@ -277,9 +277,9 @@ class TestGreyLiteratureSearch:
     @pytest.mark.asyncio
     async def test_search_medicine_domain(self):
         """Test search for medicine domain."""
-        with patch("researchclaw.literature.grey_search.MedRxivClient") as mock_medrxiv, \
-             patch("researchclaw.literature.grey_search.ClinicalTrialsClient") as mock_clinical, \
-             patch("researchclaw.literature.grey_search.ZenodoClient") as mock_zenodo:
+        with patch("berb.literature.grey_search.MedRxivClient") as mock_medrxiv, \
+             patch("berb.literature.grey_search.ClinicalTrialsClient") as mock_clinical, \
+             patch("berb.literature.grey_search.ZenodoClient") as mock_zenodo:
             
             mock_medrxiv.return_value.search = AsyncMock(return_value=[])
             mock_clinical.return_value.search = AsyncMock(return_value=[])
@@ -296,8 +296,8 @@ class TestGreyLiteratureSearch:
     @pytest.mark.asyncio
     async def test_search_with_source_filter(self):
         """Test search with specific sources."""
-        with patch("researchclaw.literature.grey_search.BioRxivClient") as mock_biorxiv, \
-             patch("researchclaw.literature.grey_search.MedRxivClient") as mock_medrxiv:
+        with patch("berb.literature.grey_search.BioRxivClient") as mock_biorxiv, \
+             patch("berb.literature.grey_search.MedRxivClient") as mock_medrxiv:
             
             mock_biorxiv.return_value.search = AsyncMock(return_value=[])
             mock_medrxiv.return_value.search = AsyncMock(return_value=[])
@@ -314,8 +314,8 @@ class TestGreyLiteratureSearch:
     @pytest.mark.asyncio
     async def test_search_handles_errors_gracefully(self):
         """Test that search continues even if one source fails."""
-        with patch("researchclaw.literature.grey_search.BioRxivClient") as mock_biorxiv, \
-             patch("researchclaw.literature.grey_search.ZenodoClient") as mock_zenodo:
+        with patch("berb.literature.grey_search.BioRxivClient") as mock_biorxiv, \
+             patch("berb.literature.grey_search.ZenodoClient") as mock_zenodo:
             
             # bioRxiv fails
             mock_biorxiv.return_value.search = AsyncMock(side_effect=Exception("API error"))

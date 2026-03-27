@@ -44,7 +44,7 @@ Stage 10a: TEST_GENERATION → Stage 10b: CODE_GENERATION → Stage 12: EXPERIME
 
 **Implementation:**
 ```python
-# researchclaw/pipeline/stage_impls/code_generation_tdd.py
+# berb/pipeline/stage_impls/code_generation_tdd.py
 
 async def execute_code_generation_tdd(self, context: dict) -> TaskResult:
     """TDD: Generate tests FIRST → Generate code to pass tests."""
@@ -125,7 +125,7 @@ Output ONLY implementation code. Every test must pass."""
 
 **Proposed Change:**
 ```python
-# researchclaw/pipeline/stage_impls/diff_revision.py
+# berb/pipeline/stage_impls/diff_revision.py
 
 async def execute_revision_as_diff(
     self,
@@ -186,7 +186,7 @@ Preserve everything else unchanged."""
 
 **Proposed Enhancement:**
 ```python
-# researchclaw/learning/cross_project_learning.py
+# berb/learning/cross_project_learning.py
 
 class CrossProjectLearning:
     """Extract patterns across all completed research runs."""
@@ -285,7 +285,7 @@ class CrossProjectLearning:
 
 **Implementation:**
 ```python
-# researchclaw/multimodal/figure_generation.py
+# berb/multimodal/figure_generation.py
 
 async def generate_figure_from_sketch(self, sketch_path: Path) -> FigureResult:
     """Convert hand-drawn sketch to publication-quality figure."""
@@ -344,7 +344,7 @@ Output as structured JSON for matplotlib/tikz generation."""},
 
 **Implementation:**
 ```python
-# researchclaw/experiment/deployment_feedback.py
+# berb/experiment/deployment_feedback.py
 
 class ExperimentFeedbackLoop:
     """Monitor running experiments, auto-fix issues."""
@@ -409,7 +409,7 @@ class ExperimentFeedbackLoop:
 
 **Proposed Implementation:**
 ```python
-# researchclaw/benchmarks/runner.py
+# berb/benchmarks/runner.py
 
 BENCHMARK_SUITE = [
     BenchmarkProject(
@@ -503,7 +503,7 @@ class BenchmarkRunner:
 
 **Proposed Implementation:**
 ```python
-# researchclaw/plugins/manager.py
+# berb/plugins/manager.py
 
 class PluginManifest(BaseModel):
     name: str
@@ -590,7 +590,7 @@ class PluginManager:
 
 **Proposed Implementation:**
 ```python
-# researchclaw/saas/tenant_manager.py
+# berb/saas/tenant_manager.py
 
 class TenantManager:
     """Multi-tenant support with usage tracking and billing."""

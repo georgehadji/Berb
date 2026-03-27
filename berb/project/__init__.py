@@ -1,4 +1,4 @@
-"""Multi-project management for AutoResearchClaw."""
+"""Multi-project management for Berb."""
 
 from berb.project.models import Idea, Project
 from berb.project.manager import ProjectManager

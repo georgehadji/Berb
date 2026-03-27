@@ -2,7 +2,7 @@
 """End-to-end verification for Docker sandbox.
 
 Run after building the image:
-    docker build -t researchclaw/experiment:latest researchclaw/docker/
+    docker build -t berb/experiment:latest berb/docker/
     python tests/e2e_docker_sandbox.py
 """
 
@@ -49,11 +49,11 @@ def main() -> None:
         print("\nDocker is not available. Cannot proceed.")
         sys.exit(1)
 
-    image_ok = DockerSandbox.ensure_image("researchclaw/experiment:latest")
+    image_ok = DockerSandbox.ensure_image("berb/experiment:latest")
     check("Image exists locally", image_ok)
     if not image_ok:
         print("\nImage not found. Build it first:")
-        print("  docker build -t researchclaw/experiment:latest researchclaw/docker/")
+        print("  docker build -t berb/experiment:latest berb/docker/")
         sys.exit(1)
 
     # ── Test 1: Basic execution + metrics ──────────────────────

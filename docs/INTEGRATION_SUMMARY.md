@@ -48,8 +48,8 @@ Two powerful systems have been analyzed for integration into AutoResearchClaw:
 | Unit Tests | Both | P0 | 2 days |
 
 **Deliverables:**
-- `researchclaw/mnemo_bridge/` module
-- `researchclaw/reasoner_bridge/` module
+- `berb/mnemo_bridge/` module
+- `berb/reasoner_bridge/` module
 - Working multi-perspective hypothesis generation
 - Working stress testing for experiment design
 - Context injection from Mnemo

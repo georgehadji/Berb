@@ -1,4 +1,4 @@
-"""Overleaf bidirectional sync for AutoResearchClaw."""
+"""Overleaf bidirectional sync for Berb."""
 
 from berb.overleaf.sync import OverleafSync
 from berb.overleaf.conflict import ConflictResolver

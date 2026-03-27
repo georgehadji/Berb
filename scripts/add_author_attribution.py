@@ -8,25 +8,25 @@ from pathlib import Path
 # All new files we created that need author attribution
 new_files = [
     # LLM modules
-    'researchclaw/llm/output_limits.py',
-    'researchclaw/llm/structured_outputs.py',
-    'researchclaw/llm/prompt_cache.py',
-    'researchclaw/llm/batch_api.py',
-    'researchclaw/llm/model_cascade.py',
-    'researchclaw/llm/model_router.py',
-    'researchclaw/llm/speculative_gen.py',
-    'researchclaw/llm/speculative_router.py',
-    'researchclaw/llm/eval_dataset.py',
-    'researchclaw/llm/adaptive_temp.py',
-    'researchclaw/llm/nadirclaw_router.py',
+    'berb/llm/output_limits.py',
+    'berb/llm/structured_outputs.py',
+    'berb/llm/prompt_cache.py',
+    'berb/llm/batch_api.py',
+    'berb/llm/model_cascade.py',
+    'berb/llm/model_router.py',
+    'berb/llm/speculative_gen.py',
+    'berb/llm/speculative_router.py',
+    'berb/llm/eval_dataset.py',
+    'berb/llm/adaptive_temp.py',
+    'berb/llm/nadirclaw_router.py',
     # Pipeline modules
-    'researchclaw/pipeline/tdd_generation.py',
-    'researchclaw/pipeline/diff_revisions.py',
-    'researchclaw/pipeline/dependency_context.py',
+    'berb/pipeline/tdd_generation.py',
+    'berb/pipeline/diff_revisions.py',
+    'berb/pipeline/dependency_context.py',
     # Utils
-    'researchclaw/utils/token_tracker.py',
+    'berb/utils/token_tracker.py',
     # Memory vault
-    'researchclaw/memory_vault/__init__.py',
+    'berb/memory_vault/__init__.py',
 ]
 
 author_line = '\nAuthor: Georgios-Chrysovalantis Chatzivantsidis\n'

@@ -29,7 +29,7 @@ class LatexFormatter:
 
     @staticmethod
     def strip_local_comments(content: str) -> str:
-        """Remove AutoResearchClaw-internal comments from LaTeX."""
+        """Remove Berb-internal comments from LaTeX."""
         lines = content.splitlines(keepends=True)
         return "".join(
             line for line in lines

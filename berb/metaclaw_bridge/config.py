@@ -21,7 +21,7 @@ class PRMConfig:
 
 @dataclass(frozen=True)
 class LessonToSkillConfig:
-    """Settings for converting AutoResearchClaw lessons into MetaClaw skills."""
+    """Settings for converting Berb lessons into MetaClaw skills."""
 
     enabled: bool = True
     min_severity: str = "error"

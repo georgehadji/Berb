@@ -45,8 +45,8 @@
 - LLM 在缺少约束的情况下会「幻觉」出常见的高端硬件名称（如 A100）
 
 **涉及文件：**
-- `researchclaw/pipeline/executor.py`（PAPER_DRAFT 阶段的 prompt 构建部分，约第 5776-5960 行）
-- `researchclaw/prompts.py`（paper writing prompt 模板）
+- `berb/pipeline/executor.py`（PAPER_DRAFT 阶段的 prompt 构建部分，约第 5776-5960 行）
+- `berb/prompts.py`（paper writing prompt 模板）
 
 **修复方案：**
 1. 在 PAPER_DRAFT 阶段的 prompt 构建中，读取 `stage-01/hardware_profile.json`
@@ -88,9 +88,9 @@
 - 用户看到的错误完全不提 Docker，只说「no metrics」，非常误导
 
 **涉及文件：**
-- `researchclaw/experiment/factory.py`（第 25-29 行，sandbox 创建逻辑）
-- `researchclaw/experiment/docker_sandbox.py`（第 337、366、384 行，路径和命令构建）
-- `researchclaw/pipeline/executor.py`（第 6000-6020 行，Stage 17 hard block）
+- `berb/experiment/factory.py`（第 25-29 行，sandbox 创建逻辑）
+- `berb/experiment/docker_sandbox.py`（第 337、366、384 行，路径和命令构建）
+- `berb/pipeline/executor.py`（第 6000-6020 行，Stage 17 hard block）
 
 **修复方案：**
 1. `factory.py`：当 Docker 不可用时，自动 fallback 到 subprocess sandbox 模式，而不是 raise RuntimeError。增加日志 warning 告知用户：
@@ -135,8 +135,8 @@ Windows 用户即使没有 Docker，Pipeline 也能通过 subprocess sandbox 完
 - 核心问题：**缺少 claim-evidence 的自动对齐验证**
 
 **涉及文件：**
-- `researchclaw/pipeline/executor.py`（第 5647-5715 行、5944-5956 行、6432-6443 行）
-- `researchclaw/prompts.py`（第 2006-2049 行、2124-2138 行）
+- `berb/pipeline/executor.py`（第 5647-5715 行、5944-5956 行、6432-6443 行）
+- `berb/prompts.py`（第 2006-2049 行、2124-2138 行）
 
 **修复方案：**
 1. 在 PAPER_DRAFT 阶段的 prompt 中，**明确列出** 实际完成评测的数据集和指标（从 `experiment_summary.json` 提取），硬性要求 LLM **只能**声称在这些数据集上进行了评测：
@@ -178,9 +178,9 @@ Windows 用户即使没有 Docker，Pipeline 也能通过 subprocess sandbox 完
 - `executor.py` 第 3915-3956 行：Stage 13 检测到 NaN 后调用 LLM 做 `iterative_repair`，但修复质量不稳定
 
 **涉及文件：**
-- `researchclaw/pipeline/code_agent.py`（prompt 构建，所有阶段）
-- `researchclaw/prompts.py`（代码生成相关 prompt）
-- `researchclaw/experiment/harness_template.py`（第 45-62 行）
+- `berb/pipeline/code_agent.py`（prompt 构建，所有阶段）
+- `berb/prompts.py`（代码生成相关 prompt）
+- `berb/experiment/harness_template.py`（第 45-62 行）
 
 **修复方案：**
 1. 在 `code_agent.py` 的代码生成 prompt 中，增加 **强制性** 数值稳定性要求：
@@ -234,7 +234,7 @@ FAIL: Too many NaN/Inf values detected. Stopping experiment early.
 - Stage 13 (ITERATIVE_REFINE) 的中间迭代可能产出了部分有效 metrics，但 Stage 17 只看 `experiment_summary.json` 的 final best_run
 
 **涉及文件：**
-- `researchclaw/pipeline/executor.py`（第 6000-6020 行）
+- `berb/pipeline/executor.py`（第 6000-6020 行）
 
 **修复方案：**
 将 hard block 改为 soft degradation：
@@ -266,9 +266,9 @@ FAIL: Too many NaN/Inf values detected. Stopping experiment early.
 - `agents/benchmark_agent/orchestrator.py` 第 314-322 行：BenchmarkAgent 验证失败时 silent retry，最终 silent proceed
 
 **涉及文件：**
-- `researchclaw/pipeline/executor.py`（第 2220-2236 行、4618-4640 行）
-- `researchclaw/pipeline/stages.py`（GATE_STAGES 定义）
-- `researchclaw/agents/benchmark_agent/orchestrator.py`（第 314-322 行）
+- `berb/pipeline/executor.py`（第 2220-2236 行、4618-4640 行）
+- `berb/pipeline/stages.py`（GATE_STAGES 定义）
+- `berb/agents/benchmark_agent/orchestrator.py`（第 314-322 行）
 
 **修复方案：**
 1. 在 EXPERIMENT_DESIGN (Stage 9) 中，当检测到 significant downgrade（如：用户要求的数据集不可用、GPU 不满足要求、关键组件被简化）时，生成一个 **downgrade summary** 并暂停等待用户确认

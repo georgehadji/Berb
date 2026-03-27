@@ -24,7 +24,7 @@ class SlurmExecutor:
     def _generate_sbatch_script(
         self,
         command: str,
-        job_name: str = "researchclaw",
+        job_name: str = "berb",
         resources: dict[str, Any] | None = None,
     ) -> str:
         """Generate an sbatch submission script."""
@@ -53,7 +53,7 @@ class SlurmExecutor:
         self,
         command: str,
         remote_dir: str,
-        job_name: str = "researchclaw",
+        job_name: str = "berb",
         resources: dict[str, Any] | None = None,
     ) -> str:
         """Submit a Slurm job and return the job ID."""

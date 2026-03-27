@@ -1,4 +1,4 @@
-"""Cross-Project Learning module for AutoResearchClaw.
+"""Cross-Project Learning module for Berb.
 
 This module implements transfer learning from historical research runs,
 enabling the system to provably improve over time.

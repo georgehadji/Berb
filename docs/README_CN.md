@@ -74,7 +74,7 @@
 ## ⚡ 一行命令。一篇论文。
 
 ```bash
-pip install -e . && researchclaw setup && researchclaw init && researchclaw run --topic "Your research idea here" --auto-approve
+pip install -e . && berb setup && berb init && berb run --topic "Your research idea here" --auto-approve
 ```
 
 
@@ -114,15 +114,15 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 
 # 2. 初始化（交互式 — 安装 OpenCode Beast Mode，检查 Docker/LaTeX）
-researchclaw setup
+berb setup
 
 # 3. 配置
-researchclaw init          # 交互式：选择 LLM 提供商，创建 config.arc.yaml
-# 或手动：cp config.researchclaw.example.yaml config.arc.yaml
+berb init          # 交互式：选择 LLM 提供商，创建 config.arc.yaml
+# 或手动：cp config.berb.example.yaml config.arc.yaml
 
 # 4. 运行
 export OPENAI_API_KEY="sk-..."
-researchclaw run --config config.arc.yaml --topic "Your research idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your research idea" --auto-approve
 ```
 
 输出 → `artifacts/rc-YYYYMMDD-HHMMSS-<hash>/deliverables/` — 可编译的 LaTeX、BibTeX、实验代码、图表。
@@ -193,9 +193,9 @@ experiment:
 
 1. OpenClaw 读取 `RESEARCHCLAW_AGENTS.md` → 学习研究编排器角色
 2. OpenClaw 读取 `README.md` → 理解安装方式和流水线结构
-3. OpenClaw 复制 `config.researchclaw.example.yaml` → `config.yaml`
+3. OpenClaw 复制 `config.berb.example.yaml` → `config.yaml`
 4. 向你询问 LLM API Key（或使用环境变量）
-5. 运行 `pip install -e .` + `researchclaw run --topic "..." --auto-approve`
+5. 运行 `pip install -e .` + `berb run --topic "..." --auto-approve`
 6. 返回论文、LaTeX、实验结果和引用
 
 </details>
@@ -242,17 +242,17 @@ llm:
 
 ```bash
 # 直接运行 — Agent 使用自己的凭据
-researchclaw run --config config.yaml --topic "Your research idea" --auto-approve
+berb run --config config.yaml --topic "Your research idea" --auto-approve
 ```
 
 ### 🛠️ 其他运行方式
 
 | 方式 | 怎么用 |
 |------|--------|
-| **独立 CLI** | `researchclaw setup` → `researchclaw init` → `researchclaw run --topic "..." --auto-approve` |
-| **Python API** | `from researchclaw.pipeline import Runner; Runner(config).run()` |
+| **独立 CLI** | `berb setup` → `berb init` → `berb run --topic "..." --auto-approve` |
+| **Python API** | `from berb.pipeline import Runner; Runner(config).run()` |
 | **Claude Code** | 读取 `RESEARCHCLAW_CLAUDE.md` — 直接说 *"Run research on [主题]"* |
-| **Copilot CLI** | `researchclaw run --topic "..."` 配合 `llm.acp.agent: "gh"` |
+| **Copilot CLI** | `berb run --topic "..."` 配合 `llm.acp.agent: "gh"` |
 | **OpenCode** | 读取 `.claude/skills/` — 同样的自然语言交互 |
 | **任何 AI CLI** | 提供 `RESEARCHCLAW_AGENTS.md` 作为上下文 → agent 自动引导 |
 
@@ -312,7 +312,7 @@ researchclaw run --config config.yaml --topic "Your research idea" --auto-approv
 | **📚 多源文献** | 来自 OpenAlex、Semantic Scholar 和 arXiv 的真实论文——查询扩展、去重、三态熔断器与优雅降级 |
 | **🔍 四层引用核查** | arXiv ID 校验 → CrossRef/DataCite DOI → Semantic Scholar 标题匹配 → LLM 相关性评分。幻觉引用自动删除。 |
 | **🖥️ 硬件感知执行** | 自动检测 GPU（NVIDIA CUDA / Apple MPS / 纯 CPU），据此调整代码生成、import 和实验规模 |
-| **🦾 OpenCode Beast Mode** | 复杂实验自动路由至 [OpenCode](https://github.com/anomalyco/opencode)——生成多文件项目，含自定义架构、训练循环和消融实验。通过 `researchclaw setup` 安装。 |
+| **🦾 OpenCode Beast Mode** | 复杂实验自动路由至 [OpenCode](https://github.com/anomalyco/opencode)——生成多文件项目，含自定义架构、训练循环和消融实验。通过 `berb setup` 安装。 |
 | **🧪 沙箱实验** | AST 验证代码、不可变 harness、NaN/Inf 快速失败、自修复、迭代优化（最多 10 轮）、部分结果捕获 |
 | **📝 顶会级写作** | NeurIPS/ICML/ICLR 模板，分段撰写（5,000-6,500 词），反数据捏造守卫、修订长度保障、反免责声明强制 |
 | **📐 模板切换** | `neurips_2025`、`iclr_2026`、`icml_2026` — Markdown → LaTeX，含数学公式、表格、图片、交叉引用、`\cite{}` |
@@ -366,7 +366,7 @@ metaclaw_bridge:
 
 ```bash
 # 3. 照常运行 — MetaClaw 透明运作
-researchclaw run --config config.arc.yaml --topic "Your idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your idea" --auto-approve
 ```
 
 每次运行后，查看 `~/.metaclaw/skills/arc-*/SKILL.md` 以了解流水线学到了哪些技能。
@@ -443,7 +443,7 @@ experiment:
     allowed_imports: [math, random, json, csv, numpy, torch, sklearn]
     max_memory_mb: 4096
   docker:
-    image: "researchclaw/experiment:latest"
+    image: "berb/experiment:latest"
     network_policy: "setup_only"   # none | setup_only | pip_only | full
     gpu_enabled: true
     memory_limit_mb: 8192
@@ -451,8 +451,8 @@ experiment:
   ssh_remote:
     host: ""                       # GPU 服务器主机名
     gpu_ids: []                    # 可用 GPU ID
-    remote_workdir: "/tmp/researchclaw_experiments"
-  opencode:                          # OpenCode Beast Mode（通过 `researchclaw setup` 自动安装）
+    remote_workdir: "/tmp/berb_experiments"
+  opencode:                          # OpenCode Beast Mode（通过 `berb setup` 自动安装）
     enabled: true                    # 主开关（默认：true）
     auto: true                       # 无需确认自动触发（默认：true）
     complexity_threshold: 0.2        # 0.0-1.0 — 越高 = 仅在复杂实验时触发
@@ -575,7 +575,7 @@ MIT — 详见 [LICENSE](../LICENSE)。
 如果你觉得 AutoResearchClaw 有用，请引用：
 
 ```bibtex
-@misc{liu2026autoresearchclaw,
+@misc{liu2026autoberb,
   author       = {Liu, Jiaqi and Xia, Peng and Han, Siwei and Qiu, Shi and Zhang, Letian and Chen, Guiming  and Tu, Haoqin and Yang, Xinyu and and Zhou, Jiawei and Zhu, Hongtu and Li, Yun and Zhou, Yuyin and Zheng, Zeyu and Xie, Cihang and Ding, Mingyu and Yao, Huaxiu},
   title        = {AutoResearchClaw: Fully Autonomous Research from Idea to Paper},
   year         = {2026},

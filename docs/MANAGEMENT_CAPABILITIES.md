@@ -96,10 +96,10 @@ experiment:
 
 | File | Purpose |
 |------|---------|
-| `researchclaw/pipeline/runner.py` | Pipeline orchestration |
-| `researchclaw/pipeline/stages.py` | Stage definitions |
-| `researchclaw/pipeline/executor.py` | Stage execution |
-| `researchclaw/config.py` | Project configuration |
+| `berb/pipeline/runner.py` | Pipeline orchestration |
+| `berb/pipeline/stages.py` | Stage definitions |
+| `berb/pipeline/executor.py` | Stage execution |
+| `berb/config.py` | Project configuration |
 
 ---
 
@@ -166,10 +166,10 @@ export:
 
 | File | Purpose |
 |------|---------|
-| `researchclaw/writing/` | Paper generation |
-| `researchclaw/templates/` | Conference templates |
-| `researchclaw/overleaf/` | Publishing integration |
-| `researchclaw/pipeline/verified_registry.py` | Version tracking |
+| `berb/writing/` | Paper generation |
+| `berb/templates/` | Conference templates |
+| `berb/overleaf/` | Publishing integration |
+| `berb/pipeline/verified_registry.py` | Version tracking |
 
 ---
 
@@ -246,11 +246,11 @@ knowledge_base:
 
 | File | Purpose |
 |------|---------|
-| `researchclaw/mnemo_bridge/` | Memory integration |
-| `researchclaw/metaclaw_bridge/` | Skill extraction |
-| `researchclaw/knowledge/` | Knowledge base |
-| `researchclaw/literature/searxng_client.py` | Search |
-| `researchclaw/evolution.py` | Lesson extraction |
+| `berb/mnemo_bridge/` | Memory integration |
+| `berb/metaclaw_bridge/` | Skill extraction |
+| `berb/knowledge/` | Knowledge base |
+| `berb/literature/searxng_client.py` | Search |
+| `berb/evolution.py` | Lesson extraction |
 
 ---
 
@@ -332,11 +332,11 @@ Ensures research quality through multiple validation layers with zero-tolerance 
 
 | File | Purpose |
 |------|---------|
-| `researchclaw/quality.py` | Quality checks |
-| `researchclaw/pipeline/paper_verifier.py` | Citation verification |
-| `researchclaw/pipeline/experiment_diagnosis.py` | Error detection |
-| `researchclaw/reasoner_bridge/` | Critique scoring |
-| `researchclaw/pipeline/verified_registry.py` | Claim verification |
+| `berb/quality.py` | Quality checks |
+| `berb/pipeline/paper_verifier.py` | Citation verification |
+| `berb/pipeline/experiment_diagnosis.py` | Error detection |
+| `berb/reasoner_bridge/` | Critique scoring |
+| `berb/pipeline/verified_registry.py` | Claim verification |
 
 ---
 
@@ -404,19 +404,19 @@ Ensures research quality through multiple validation layers with zero-tolerance 
 
 ```bash
 # Start new research project
-researchclaw run --topic "Graph neural networks for drug discovery" --auto-approve
+berb run --topic "Graph neural networks for drug discovery" --auto-approve
 
 # Check project status
-researchclaw status --run-id rc-20260326-143022-abc123
+berb status --run-id rc-20260326-143022-abc123
 
 # Resume from checkpoint
-researchclaw run --resume --run-id rc-20260326-143022-abc123
+berb run --resume --run-id rc-20260326-143022-abc123
 ```
 
 ### Knowledge Management
 
 ```python
-from researchclaw.mnemo_bridge import MnemoBridge
+from berb.mnemo_bridge import MnemoBridge
 
 # Get relevant past context
 bridge = MnemoBridge(server_url="http://localhost:50001")
@@ -429,7 +429,7 @@ await bridge.ingest(prompt, response, metadata={"stage": 8})
 ### Quality Control
 
 ```python
-from researchclaw.reasoner_bridge import ReasonerBridge
+from berb.reasoner_bridge import ReasonerBridge
 
 # Stress test experiment design
 bridge = ReasonerBridge(llm_client)

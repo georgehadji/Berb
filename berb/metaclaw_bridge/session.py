@@ -1,4 +1,4 @@
-"""MetaClaw session lifecycle management for AutoResearchClaw.
+"""MetaClaw session lifecycle management for Berb.
 
 Manages MetaClaw proxy session headers and lifecycle signals
 to enable proper skill evolution and RL training data collection.
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class MetaClawSession:
-    """Manages a MetaClaw session spanning an AutoResearchClaw pipeline run."""
+    """Manages a MetaClaw session spanning an Berb pipeline run."""
 
     def __init__(self, run_id: str) -> None:
         self.session_id = f"arc-{run_id}"

@@ -1,4 +1,4 @@
-"""Maps AutoResearchClaw pipeline stages to MetaClaw skill categories.
+"""Maps Berb pipeline stages to MetaClaw skill categories.
 
 Each stage maps to:
 - task_type: MetaClaw's task category for skill retrieval
@@ -128,7 +128,7 @@ STAGE_SKILL_MAP: dict[str, dict[str, Any]] = {
     },
 }
 
-# Mapping from AutoResearchClaw lesson categories to skill categories.
+# Mapping from Berb lesson categories to skill categories.
 # Uses the new taxonomy: writing, domain, experiment, tooling.
 LESSON_CATEGORY_TO_SKILL_CATEGORY: dict[str, str] = {
     "system": "tooling",

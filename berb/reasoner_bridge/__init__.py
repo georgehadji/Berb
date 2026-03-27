@@ -1,4 +1,4 @@
-"""Reasoner Bridge - ARA Pipeline integration for AutoResearchClaw.
+"""Reasoner Bridge - ARA Pipeline integration for Berb.
 
 This module provides integration with Reasoner (ARA Pipeline) for:
 - Multi-perspective reasoning (4 perspectives)

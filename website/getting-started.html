@@ -66,7 +66,7 @@ cd AutoResearchClaw
 pip install -e .
       </div>
       <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--color-text-muted);">
-        This installs the <code>researchclaw</code> package and all required dependencies.
+        This installs the <code>berb</code> package and all required dependencies.
       </p>
     </div>
 
@@ -111,7 +111,7 @@ export OPENAI_API_KEY="sk-your-key-here"
         If using the Docker sandbox backend for GPU-accelerated experiments:
       </p>
       <div class="code-block">
-docker build -t researchclaw-sandbox -f researchclaw/docker/Dockerfile .
+docker build -t berb-sandbox -f berb/docker/Dockerfile .
       </div>
     </div>
 
@@ -119,7 +119,7 @@ docker build -t researchclaw-sandbox -f researchclaw/docker/Dockerfile .
     <div class="step-block">
       <h3><span class="step-num">6</span> Run Your First Paper</h3>
       <div class="code-block">
-python -m researchclaw run --config config.yaml
+python -m berb run --config config.yaml
       </div>
       <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--color-text-muted);">
         The pipeline will execute all 23 stages autonomously. Output will be saved

@@ -8,7 +8,7 @@ from unittest.mock import patch
 from berb.literature.models import Author, Paper
 from berb.literature.search import search_papers
 
-cache_mod = importlib.import_module("researchclaw.literature.cache")
+cache_mod = importlib.import_module("berb.literature.cache")
 cache_key = cache_mod.cache_key
 cache_stats = cache_mod.cache_stats
 clear_cache = cache_mod.clear_cache
@@ -122,22 +122,22 @@ class TestSearchDegradation:
         )
 
         with patch(
-            "researchclaw.literature.search.search_openalex",
+            "berb.literature.search.search_openalex",
             side_effect=RuntimeError("API down"),
         ):
             with patch(
-                "researchclaw.literature.search.search_semantic_scholar",
+                "berb.literature.search.search_semantic_scholar",
                 side_effect=RuntimeError("API down"),
             ):
                 with patch(
-                    "researchclaw.literature.search.search_arxiv",
+                    "berb.literature.search.search_arxiv",
                     side_effect=RuntimeError("API down"),
                 ):
                     with patch(
-                        "researchclaw.literature.cache._DEFAULT_CACHE_DIR", tmp_path
+                        "berb.literature.cache._DEFAULT_CACHE_DIR", tmp_path
                     ):
                         with patch(
-                            "researchclaw.literature.search.time.sleep", lambda _: None
+                            "berb.literature.search.time.sleep", lambda _: None
                         ):
                             results = search_papers("test query", limit=20)
 
@@ -155,15 +155,15 @@ class TestSearchDegradation:
         )
 
         with patch(
-            "researchclaw.literature.search.search_semantic_scholar",
+            "berb.literature.search.search_semantic_scholar",
             return_value=[mock_paper],
         ):
-            with patch("researchclaw.literature.search.search_arxiv", return_value=[]):
+            with patch("berb.literature.search.search_arxiv", return_value=[]):
                 with patch(
-                    "researchclaw.literature.cache._DEFAULT_CACHE_DIR", tmp_path
+                    "berb.literature.cache._DEFAULT_CACHE_DIR", tmp_path
                 ):
                     with patch(
-                        "researchclaw.literature.search.time.sleep", lambda _: None
+                        "berb.literature.search.time.sleep", lambda _: None
                     ):
                         _ = search_papers("test", limit=20)
 

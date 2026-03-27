@@ -41,7 +41,7 @@ def _make_paper(
 # Patch target for search_papers — the import inside _resolve_missing_citations
 # does `from berb.literature.search import search_papers`, so we patch
 # the source module.
-_SEARCH_PAPERS_PATH = "researchclaw.literature.search.search_papers"
+_SEARCH_PAPERS_PATH = "berb.literature.search.search_papers"
 
 
 # ---------------------------------------------------------------------------
@@ -77,7 +77,7 @@ class TestLoadSeminalPapersByKey:
             _load_seminal_papers_by_key,
         )
         with patch(
-            "researchclaw.data._load_all",
+            "berb.data._load_all",
             side_effect=RuntimeError("disk error"),
         ):
             result = _load_seminal_papers_by_key()

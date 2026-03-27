@@ -1,4 +1,4 @@
-# AutoResearchClaw - Example Configuration with Cost Optimization
+# Berb - Example Configuration with Cost Optimization
 # 
 # This example configuration demonstrates how to enable:
 # - Token consumption tracking (RTK integration)
@@ -8,7 +8,7 @@
 # - SearXNG metasearch
 #
 # Copy this file to config.arc.yaml and customize for your needs.
-# Run `researchclaw init` for interactive setup.
+# Run `berb init` for interactive setup.
 
 # =============================================================================
 # Project Configuration
@@ -243,9 +243,9 @@ prompts:
 # =============================================================================
 #
 # 1. Basic Setup (no integrations):
-#    researchclaw setup
-#    researchclaw init
-#    researchclaw run --topic "Your topic" --auto-approve
+#    berb setup
+#    berb init
+#    berb run --topic "Your topic" --auto-approve
 #
 # 2. With NadirClaw (recommended for cost savings):
 #    - Set nadirclaw.enabled: true
@@ -254,7 +254,7 @@ prompts:
 #
 # 3. With Token Tracking:
 #    - Set token_tracking.enabled: true
-#    - View stats: researchclaw token-stats
+#    - View stats: berb token-stats
 #    - Set budget alerts
 #
 # 4. Full Integration (all features):

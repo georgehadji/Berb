@@ -363,7 +363,7 @@ class OpenCodeBridge:
             if r.returncode != 0:
                 raise OSError(f"git add failed: {r.stderr}")
             r = subprocess.run(
-                ["git", "-c", "user.email=beast@researchclaw",
+                ["git", "-c", "user.email=beast@berb",
                  "-c", "user.name=BeastMode",
                  "commit", "-m", "init workspace"],
                 cwd=str(ws), capture_output=True, timeout=10,

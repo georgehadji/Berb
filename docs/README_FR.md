@@ -74,7 +74,7 @@
 ## ⚡ Une commande. Un article.
 
 ```bash
-pip install -e . && researchclaw setup && researchclaw init && researchclaw run --topic "Your research idea here" --auto-approve
+pip install -e . && berb setup && berb init && berb run --topic "Your research idea here" --auto-approve
 ```
 
 
@@ -114,15 +114,15 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 
 # 2. Setup (interactif — installe OpenCode beast mode, verifie Docker/LaTeX)
-researchclaw setup
+berb setup
 
 # 3. Configurer
-researchclaw init          # Interactif : choisir le fournisseur LLM, cree config.arc.yaml
-# Ou manuellement : cp config.researchclaw.example.yaml config.arc.yaml
+berb init          # Interactif : choisir le fournisseur LLM, cree config.arc.yaml
+# Ou manuellement : cp config.berb.example.yaml config.arc.yaml
 
 # 4. Executer
 export OPENAI_API_KEY="sk-..."
-researchclaw run --config config.arc.yaml --topic "Your research idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your research idea" --auto-approve
 ```
 
 Sortie → `artifacts/rc-YYYYMMDD-HHMMSS-<hash>/deliverables/` — LaTeX pret a compiler, BibTeX, code d'experience, graphiques.
@@ -193,9 +193,9 @@ Si vous utilisez deja [OpenClaw](https://github.com/openclaw/openclaw) comme ass
 
 1. OpenClaw lit `RESEARCHCLAW_AGENTS.md` → apprend le role d'orchestrateur de recherche
 2. OpenClaw lit `README.md` → comprend l'installation et la structure du pipeline
-3. OpenClaw copie `config.researchclaw.example.yaml` → `config.yaml`
+3. OpenClaw copie `config.berb.example.yaml` → `config.yaml`
 4. Demande votre cle API LLM (ou utilise votre variable d'environnement)
-5. Execute `pip install -e .` + `researchclaw run --topic "..." --auto-approve`
+5. Execute `pip install -e .` + `berb run --topic "..." --auto-approve`
 6. Renvoie l'article, le LaTeX, les experiences et les citations
 
 </details>
@@ -242,17 +242,17 @@ llm:
 
 ```bash
 # Executez simplement — l'agent utilise ses propres identifiants
-researchclaw run --config config.yaml --topic "Your research idea" --auto-approve
+berb run --config config.yaml --topic "Your research idea" --auto-approve
 ```
 
 ### 🛠️ Autres methodes d'execution
 
 | Methode | Comment |
 |---------|---------|
-| **CLI autonome** | `researchclaw setup` → `researchclaw init` → `researchclaw run --topic "..." --auto-approve` |
-| **API Python** | `from researchclaw.pipeline import Runner; Runner(config).run()` |
+| **CLI autonome** | `berb setup` → `berb init` → `berb run --topic "..." --auto-approve` |
+| **API Python** | `from berb.pipeline import Runner; Runner(config).run()` |
 | **Claude Code** | Lit `RESEARCHCLAW_CLAUDE.md` — dites simplement *"Run research on [sujet]"* |
-| **Copilot CLI** | `researchclaw run --topic "..."` avec `llm.acp.agent: "gh"` |
+| **Copilot CLI** | `berb run --topic "..."` avec `llm.acp.agent: "gh"` |
 | **OpenCode** | Lit `.claude/skills/` — meme interface en langage naturel |
 | **Tout CLI IA** | Fournissez `RESEARCHCLAW_AGENTS.md` comme contexte → l'agent s'auto-initialise |
 
@@ -312,7 +312,7 @@ Phase D : Conception experimentale    Phase H : Finalisation
 | **📚 Litterature multi-sources** | Vrais articles depuis OpenAlex, Semantic Scholar et arXiv — expansion de requetes, deduplication, disjoncteur avec degradation gracieuse |
 | **🔍 Verification des citations en 4 couches** | Verification arXiv ID → DOI CrossRef/DataCite → correspondance de titre Semantic Scholar → score de pertinence LLM. References hallucinées auto-supprimees. |
 | **🖥️ Execution adaptee au materiel** | Detection automatique du GPU (NVIDIA CUDA / Apple MPS / CPU uniquement) et adaptation de la generation de code, des imports et de l'echelle experimentale |
-| **🦾 OpenCode Beast Mode** | Les experiences complexes sont automatiquement dirigees vers [OpenCode](https://github.com/anomalyco/opencode) — genere des projets multi-fichiers avec architectures personnalisees, boucles d'entrainement et etudes d'ablation. Installation via `researchclaw setup`. |
+| **🦾 OpenCode Beast Mode** | Les experiences complexes sont automatiquement dirigees vers [OpenCode](https://github.com/anomalyco/opencode) — genere des projets multi-fichiers avec architectures personnalisees, boucles d'entrainement et etudes d'ablation. Installation via `berb setup`. |
 | **🧪 Experiences en sandbox** | Code valide par AST, harnais immuable, echec rapide NaN/Inf, reparation auto-guerison, raffinement iteratif (jusqu'a 10 tours), capture de resultats partiels |
 | **📝 Redaction de qualite conference** | Templates NeurIPS/ICML/ICLR, redaction section par section (5 000-6 500 mots), protection anti-fabrication, controle de longueur en revision, application anti-clause de non-responsabilite |
 | **📐 Changement de template** | `neurips_2025`, `iclr_2026`, `icml_2026` — Markdown → LaTeX avec formules, tableaux, figures, references croisees, `\cite{}` |
@@ -365,7 +365,7 @@ metaclaw_bridge:
 
 ```bash
 # 3. Executez comme d'habitude — MetaClaw fonctionne de maniere transparente
-researchclaw run --config config.arc.yaml --topic "Your idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your idea" --auto-approve
 ```
 
 Apres chaque execution, verifiez `~/.metaclaw/skills/arc-*/SKILL.md` pour voir les competences que votre pipeline a apprises.
@@ -442,7 +442,7 @@ experiment:
     allowed_imports: [math, random, json, csv, numpy, torch, sklearn]
     max_memory_mb: 4096
   docker:
-    image: "researchclaw/experiment:latest"
+    image: "berb/experiment:latest"
     network_policy: "setup_only"   # none | setup_only | pip_only | full
     gpu_enabled: true
     memory_limit_mb: 8192
@@ -450,8 +450,8 @@ experiment:
   ssh_remote:
     host: ""                       # Nom d'hote du serveur GPU
     gpu_ids: []                    # Identifiants GPU disponibles
-    remote_workdir: "/tmp/researchclaw_experiments"
-  opencode:                          # OpenCode Beast Mode (auto-installe via `researchclaw setup`)
+    remote_workdir: "/tmp/berb_experiments"
+  opencode:                          # OpenCode Beast Mode (auto-installe via `berb setup`)
     enabled: true                    # Interrupteur principal (defaut : true)
     auto: true                       # Declenchement auto sans confirmation (defaut : true)
     complexity_threshold: 0.2        # 0.0-1.0 — plus eleve = ne se declenche que pour les experiences complexes
@@ -533,7 +533,7 @@ MIT — voir [LICENSE](../LICENSE) pour les details.
 Si vous trouvez AutoResearchClaw utile, veuillez citer :
 
 ```bibtex
-@misc{liu2026autoresearchclaw,
+@misc{liu2026autoberb,
   author       = {Liu, Jiaqi and Xia, Peng and Han, Siwei and Qiu, Shi and Zhang, Letian and Chen, Guiming  and Tu, Haoqin and Yang, Xinyu and and Zhou, Jiawei and Zhu, Hongtu and Li, Yun and Zhou, Yuyin and Zheng, Zeyu and Xie, Cihang and Ding, Mingyu and Yao, Huaxiu},
   title        = {AutoResearchClaw: Fully Autonomous Research from Idea to Paper},
   year         = {2026},

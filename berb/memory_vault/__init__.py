@@ -1,4 +1,4 @@
-"""MemoryVault Bridge - Memory system integration for AutoResearchClaw.
+"""MemoryVault Bridge - Memory system integration for Berb.
 
 This module provides integration with MemoryVault memory system, enabling:
 - Cross-session memory persistence

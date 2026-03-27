@@ -25,7 +25,7 @@ class ResearchRepository:
     search and import of research outputs.
     """
 
-    def __init__(self, repo_dir: str | Path = ".researchclaw/shared") -> None:
+    def __init__(self, repo_dir: str | Path = ".berb/shared") -> None:
         self._repo_dir = Path(repo_dir)
 
     @property

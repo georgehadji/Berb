@@ -232,9 +232,9 @@ Robust experimental plan
 | **SearXNG** | Client, Docker deployment | Dev 3 | P0 |
 
 **Deliverables:**
-- `researchclaw/mnemo_bridge/` module
-- `researchclaw/reasoner_bridge/` module
-- `researchclaw/literature/searxng_client.py`
+- `berb/mnemo_bridge/` module
+- `berb/reasoner_bridge/` module
+- `berb/literature/searxng_client.py`
 - All three systems running locally
 
 ---
@@ -555,5 +555,5 @@ curl http://localhost:8888/healthz  # SearXNG
 
 # Run AutoResearchClaw with all integrations
 export OPENROUTER_API_KEY="sk-or-..."
-researchclaw run --topic "Your research topic" --auto-approve
+berb run --topic "Your research topic" --auto-approve
 ```

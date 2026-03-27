@@ -33,7 +33,7 @@ cp config.arc.example.yaml config.arc.yaml
 export OPENROUTER_API_KEY="sk-or-..."
 
 # 4. Run research
-researchclaw run --topic "Your topic" --auto-approve
+berb run --topic "Your topic" --auto-approve
 ```
 
 **Expected savings:** 60-75% vs baseline
@@ -84,10 +84,10 @@ nadirclaw:
 
 ```bash
 # View routing stats (future command)
-researchclaw nadirclaw stats
+berb nadirclaw stats
 
 # View cache stats
-researchclaw nadirclaw cache-stats
+berb nadirclaw cache-stats
 ```
 
 ---
@@ -116,7 +116,7 @@ token_tracking:
 ### Viewing Stats
 
 ```python
-from researchclaw.utils.token_tracker import TokenTracker
+from berb.utils.token_tracker import TokenTracker
 
 tracker = TokenTracker()
 summary = tracker.get_summary(days=7)
@@ -137,7 +137,7 @@ print(f"Total cost: ${costs['total_cost']:.4f}")
 ### Budget Alerts
 
 ```python
-from researchclaw.llm.smart_client import SmartLLMClient
+from berb.llm.smart_client import SmartLLMClient
 
 client = SmartLLMClient(config)
 stats = client.get_tracking_summary()
@@ -175,7 +175,7 @@ nadirclaw:
 ### Example
 
 ```python
-from researchclaw.llm.nadirclaw_router import NadirClawRouter
+from berb.llm.nadirclaw_router import NadirClawRouter
 
 router = NadirClawRouter()
 
@@ -304,7 +304,7 @@ token_tracking:
 ### TokenTracker
 
 ```python
-from researchclaw.utils.token_tracker import TokenTracker
+from berb.utils.token_tracker import TokenTracker
 
 tracker = TokenTracker(project_path=Path.cwd())
 
@@ -332,7 +332,7 @@ costs = tracker.estimate_cost(
 ### NadirClawRouter
 
 ```python
-from researchclaw.llm.nadirclaw_router import NadirClawRouter
+from berb.llm.nadirclaw_router import NadirClawRouter
 
 router = NadirClawRouter(
     simple_model="gemini/gemini-2.5-flash",
@@ -352,7 +352,7 @@ print(f"Saved {result.tokens_saved} tokens")
 ### SmartLLMClient
 
 ```python
-from researchclaw.llm.smart_client import SmartLLMClient
+from berb.llm.smart_client import SmartLLMClient
 
 client = SmartLLMClient(config)
 

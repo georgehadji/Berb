@@ -106,7 +106,7 @@ Phase N: 持续监控与改进
 
 ### P1.1 代码复杂度强制要求
 
-**文件**: `researchclaw/prompts.py`
+**文件**: `berb/prompts.py`
 **问题**: 当前 code_generation prompt 虽然有很多规则，但缺乏对算法实现深度的硬性要求
 
 **改进方案**:
@@ -126,7 +126,7 @@ Phase N: 持续监控与改进
 
 ### P1.2 算法实现正确性验证
 
-**文件**: `researchclaw/pipeline/executor.py`
+**文件**: `berb/pipeline/executor.py`
 **问题**: 当前仅做语法检查和安全扫描，不验证算法是否正确实现
 
 **改进方案**:
@@ -144,7 +144,7 @@ Phase N: 持续监控与改进
 
 ### P1.3 实验设计→代码 桥接增强
 
-**文件**: `researchclaw/prompts.py`, `researchclaw/pipeline/executor.py`
+**文件**: `berb/prompts.py`, `berb/pipeline/executor.py`
 **问题**: experiment_design 产出的方案过于抽象，code_generation 难以还原
 
 **改进方案**:
@@ -163,7 +163,7 @@ Phase N: 持续监控与改进
 
 ### P1.4 代码审查自动化（LLM-as-Reviewer）
 
-**文件**: `researchclaw/pipeline/executor.py` (新阶段)
+**文件**: `berb/pipeline/executor.py` (新阶段)
 **问题**: 代码生成后无系统性审查
 
 **改进方案**:
@@ -188,7 +188,7 @@ Phase N: 持续监控与改进
 
 ### P2.1 Docker 环境升级
 
-**文件**: `researchclaw/docker/Dockerfile`
+**文件**: `berb/docker/Dockerfile`
 
 **新增包**:
 ```dockerfile
@@ -215,7 +215,7 @@ RUN pip install --no-cache-dir llamafactory>=0.9.0
 
 ### P2.2 LLM 微调 Prompt 体系
 
-**文件**: `researchclaw/prompts.py`
+**文件**: `berb/prompts.py`
 
 新增 prompt blocks:
 
@@ -241,7 +241,7 @@ RUN pip install --no-cache-dir llamafactory>=0.9.0
 
 ### P2.3 计算预算自适应
 
-**文件**: `researchclaw/pipeline/executor.py`, `researchclaw/config.py`
+**文件**: `berb/pipeline/executor.py`, `berb/config.py`
 
 **改进方案**:
 1. 根据研究主题自动调整 time_budget:
@@ -259,7 +259,7 @@ RUN pip install --no-cache-dir llamafactory>=0.9.0
 
 ### P2.4 模型缓存与下载管理
 
-**文件**: `researchclaw/experiment/docker_sandbox.py`
+**文件**: `berb/experiment/docker_sandbox.py`
 
 **改进方案**:
 1. 支持 HuggingFace Hub 模型缓存目录挂载:

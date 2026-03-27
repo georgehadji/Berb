@@ -264,19 +264,19 @@ class Hyperagent:
 **Goal:** Implement core Hyperagent architecture
 
 - [ ] **P0.1** Create Hyperagent base class
-  - [ ] `researchclaw/hyperagent/base.py`
+  - [ ] `berb/hyperagent/base.py`
   - [ ] `TaskAgent` wrapper for existing pipeline
   - [ ] `MetaAgent` for self-improvement
   - [ ] `PersistentMemory` for cross-run storage
 
 - [ ] **P0.2** Implement self-improvement loop
-  - [ ] `researchclaw/hyperagent/improvement_loop.py`
+  - [ ] `berb/hyperagent/improvement_loop.py`
   - [ ] Performance analysis module
   - [ ] Diff generation for code improvements
   - [ ] Evaluation and selection logic
 
 - [ ] **P0.3** Add persistent memory
-  - [ ] `researchclaw/hyperagent/memory.py`
+  - [ ] `berb/hyperagent/memory.py`
   - [ ] Run history storage
   - [ ] Improvement tracking
   - [ ] Cross-domain pattern extraction
@@ -296,7 +296,7 @@ class Hyperagent:
 **Goal:** Enable meta-level self-modification
 
 - [ ] **P1.1** Make modification procedure editable
-  - [ ] `researchclaw/hyperagent/meta_modify.py`
+  - [ ] `berb/hyperagent/meta_modify.py`
   - [ ] Meta-agent can modify its own `generate_improvements()` method
   - [ ] Track meta-level improvements separately
 
@@ -384,7 +384,7 @@ class Hyperagent:
 ## Code Structure (Based on GitHub Repository)
 
 ```
-researchclaw/
+berb/
 ├── hyperagent/
 │   ├── __init__.py
 │   ├── base.py              # Hyperagent base class

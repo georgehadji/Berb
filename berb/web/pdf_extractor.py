@@ -82,7 +82,7 @@ class PDFExtractor:
         if not HAS_FITZ:
             return PDFContent(
                 path=str(path),
-                error="PyMuPDF not installed. Install: pip install 'researchclaw[pdf]'",
+                error="PyMuPDF not installed. Install: pip install 'berb[pdf]'",
             )
         path = Path(path)
         try:

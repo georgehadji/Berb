@@ -1,1 +1,1 @@
-# conftest.py — shared pytest fixtures for researchclaw tests
+# conftest.py — shared pytest fixtures for berb tests

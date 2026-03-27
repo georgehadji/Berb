@@ -129,7 +129,7 @@ AutoResearchClaw currently:
 **Goal:** NadirClaw routing working for LLM calls
 
 **Deliverables:**
-- `researchclaw/llm/nadirclaw_router.py` - NadirClawRouter class
+- `berb/llm/nadirclaw_router.py` - NadirClawRouter class
 - Integration with LLM providers
 - Config schema updates
 - Unit tests
@@ -147,7 +147,7 @@ AutoResearchClaw currently:
 **Goal:** Reduce input token consumption
 
 **Deliverables:**
-- `researchclaw/llm/context_optimizer.py` - Context optimizer
+- `berb/llm/context_optimizer.py` - Context optimizer
 - Integration with pipeline stages
 - Agentic task detection
 - Reasoning detection
@@ -235,7 +235,7 @@ nadirclaw:
 ## Code Example
 
 ```python
-from researchclaw.llm.nadirclaw_router import NadirClawRouter
+from berb.llm.nadirclaw_router import NadirClawRouter
 
 # Initialize router
 router = NadirClawRouter(

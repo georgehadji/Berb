@@ -40,11 +40,11 @@
 | Component | File | Purpose | AutoResearchClaw Integration Point |
 |-----------|------|---------|-----------------------------------|
 | **ARAPipeline** | `pipeline.py` | 6-phase orchestrator | Replace/enhance stage execution |
-| **ProviderRouter** | `llm.py` | Multi-provider LLM abstraction | Replace current `researchclaw/llm/` |
+| **ProviderRouter** | `llm.py` | Multi-provider LLM abstraction | Replace current `berb/llm/` |
 | **PipelineState** | `models.py` | Event-sourced state container | Enhance `runner.py` state management |
 | **Phase Prompts** | `phases.py` | Structured prompts per phase | Update `prompts.default.yaml` |
 | **Parsing Utils** | `parsing.py` | Robust JSON extraction | Replace current JSON parsing |
-| **Circuit Breaker** | `circuit_breaker.py` | Fault tolerance | Add to `researchclaw/utils/` |
+| **Circuit Breaker** | `circuit_breaker.py` | Fault tolerance | Add to `berb/utils/` |
 | **Presets** | `presets.py` | Pre-built routing configs | Add reasoning method presets |
 | **Healing Engine** | `healing/` | Self-repair mechanisms | Integrate with experiment repair |
 
@@ -237,7 +237,7 @@ config = CircuitBreakerConfig(
 ```
 
 **Integration:**
-- Add to `researchclaw/llm/base.py`
+- Add to `berb/llm/base.py`
 - Wrap all provider calls
 - Add health check endpoint showing circuit states
 
@@ -275,7 +275,7 @@ PHASE_TOKEN_BUDGETS = {
 ```
 
 **Integration:**
-- Add to `researchclaw/llm/` module
+- Add to `berb/llm/` module
 - Implement response caching with TTL
 - Add token budget enforcement per stage
 
@@ -305,8 +305,8 @@ def extract_json(text: str) -> dict:
 ```
 
 **Integration:**
-- Replace JSON parsing in `researchclaw/pipeline/`
-- Add to `researchclaw/utils/`
+- Replace JSON parsing in `berb/pipeline/`
+- Add to `berb/utils/`
 - Use in all stages with structured output
 
 **Expected Impact:**
@@ -346,7 +346,7 @@ class PipelineState:
 ```
 
 **Integration:**
-- Enhance `researchclaw/pipeline/runner.py` state management
+- Enhance `berb/pipeline/runner.py` state management
 - Add event logging for all stage transitions
 - Enable resume from checkpoint with full history
 
@@ -389,7 +389,7 @@ PRESETS = {
 ```
 
 **Integration:**
-- Add to `researchclaw/config.py`
+- Add to `berb/config.py`
 - Allow users to select reasoning method per stage
 - Auto-select based on task type
 
@@ -415,7 +415,7 @@ class TestGenerationEngine:
 ```
 
 **Integration:**
-- Enhance `researchclaw/pipeline/experiment_repair.py`
+- Enhance `berb/pipeline/experiment_repair.py`
 - Add to Stage 13 (ITERATIVE_REFINE)
 - Generate regression tests for fixed bugs
 
@@ -439,7 +439,7 @@ def detect_language(text: str) -> str:
 ```
 
 **Integration:**
-- Add to `researchclaw/pipeline/`
+- Add to `berb/pipeline/`
 - Support Greek, Chinese, Japanese, Korean users
 - Translate prompts dynamically
 
@@ -452,7 +452,7 @@ def detect_language(text: str) -> str:
 **Goal:** Port core reasoning patterns to critical stages
 
 **Tasks:**
-- [ ] **P0** Create `researchclaw/reasoner_bridge/` module
+- [ ] **P0** Create `berb/reasoner_bridge/` module
   - [ ] `pipeline_adapter.py` - ARA pipeline wrapper
   - [ ] `state.py` - Enhanced PipelineState
   - [ ] `presets.py` - Reasoning method presets
@@ -586,11 +586,11 @@ def detect_language(text: str) -> str:
 ### Example 1: Multi-Perspective Hypothesis Generation
 
 ```python
-# researchclaw/reasoner_bridge/pipeline_adapter.py
+# berb/reasoner_bridge/pipeline_adapter.py
 
 from dataclasses import dataclass
 from typing import Literal
-from researchclaw.llm import ProviderRouter
+from berb.llm import ProviderRouter
 
 @dataclass
 class HypothesisCandidate:
@@ -730,7 +730,7 @@ Score each hypothesis.""",
 ### Example 2: Stress Testing for Experiment Design
 
 ```python
-# researchclaw/reasoner_bridge/stress_testing.py
+# berb/reasoner_bridge/stress_testing.py
 
 from dataclasses import dataclass
 from enum import Enum
@@ -834,7 +834,7 @@ Analyze experiment performance under this scenario.""",
 ### Example 3: Context Vetting for Literature
 
 ```python
-# researchclaw/reasoner_bridge/context_vetting.py
+# berb/reasoner_bridge/context_vetting.py
 
 from dataclasses import dataclass
 from typing import Literal
@@ -1014,7 +1014,7 @@ reasoner_bridge:
 # tests/test_reasoner_bridge.py
 
 import pytest
-from researchclaw.reasoner_bridge import ReasonerAdapter, ExperimentStressTester
+from berb.reasoner_bridge import ReasonerAdapter, ExperimentStressTester
 
 @pytest.fixture
 def reasoner_adapter(config):
@@ -1129,7 +1129,7 @@ class TestReasonerIntegration:
 ## Next Steps
 
 1. **Decision:** Approve Phase 1 implementation
-2. **Setup:** Create `researchclaw/reasoner_bridge/` module
+2. **Setup:** Create `berb/reasoner_bridge/` module
 3. **Development:** Port multi-perspective, stress testing, JSON parsing
 4. **Testing:** Write comprehensive test suite
 5. **Benchmark:** Run A/B tests with/without Reasoner
@@ -1143,7 +1143,7 @@ class TestReasonerIntegration:
 - **Reasoner Repo:** `E:\Documents\Vibe-Coding\Reasoner`
 - **Reasoner GitHub:** (private repo)
 - **ARA Pipeline Docs:** `Reasoner/METHODS.md`, `Reasoner/ARCHITECTURE.md`
-- **AutoResearchClaw Pipeline:** `researchclaw/pipeline/`
+- **AutoResearchClaw Pipeline:** `berb/pipeline/`
 
 ---
 

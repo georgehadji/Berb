@@ -26,12 +26,12 @@ Pipeline 中多个阶段需要通过 API 调用外部论文数据库（arXiv、S
 
 | 文件 | 问题 | 影响 |
 |------|------|------|
-| `researchclaw/literature/arxiv_client.py` | 无显式 HTTP 429 检测 — URLError/OSError 统一捕获，无法区分限流和真正的网络错误 | 限流时无法做针对性处理 |
-| `researchclaw/literature/arxiv_client.py` | 无熔断器 (Circuit Breaker) — S2 有但 arXiv 没有 | 连续 429 时仍不停重试 |
-| `researchclaw/literature/arxiv_client.py` | 未解析 `Retry-After` 响应头 | 服务器建议的等待时间被忽略 |
-| `researchclaw/literature/semantic_scholar.py` | 虽有熔断器，但 Stage 23 的密集调用仍可能触发 | 一旦熔断，所有后续 S2 请求被跳过 |
-| `researchclaw/literature/verify.py` | Stage 23 逐条顺序验证 40+ 引用，每条间隔 1.5s | 总耗时 60-80s，集中 burst 可触发限流 |
-| `researchclaw/literature/search.py` | OpenAlex 仅用于 L3 title search fallback，未作为主搜索源 | 浪费了最宽松的 API 额度 |
+| `berb/literature/arxiv_client.py` | 无显式 HTTP 429 检测 — URLError/OSError 统一捕获，无法区分限流和真正的网络错误 | 限流时无法做针对性处理 |
+| `berb/literature/arxiv_client.py` | 无熔断器 (Circuit Breaker) — S2 有但 arXiv 没有 | 连续 429 时仍不停重试 |
+| `berb/literature/arxiv_client.py` | 未解析 `Retry-After` 响应头 | 服务器建议的等待时间被忽略 |
+| `berb/literature/semantic_scholar.py` | 虽有熔断器，但 Stage 23 的密集调用仍可能触发 | 一旦熔断，所有后续 S2 请求被跳过 |
+| `berb/literature/verify.py` | Stage 23 逐条顺序验证 40+ 引用，每条间隔 1.5s | 总耗时 60-80s，集中 burst 可触发限流 |
+| `berb/literature/search.py` | OpenAlex 仅用于 L3 title search fallback，未作为主搜索源 | 浪费了最宽松的 API 额度 |
 
 ### 2.2 各 API 官方限流策略
 
@@ -135,7 +135,7 @@ Pipeline 中多个阶段需要通过 API 调用外部论文数据库（arXiv、S
 
 ### Task 1: arXiv 客户端增强 — 显式 429 处理 + 熔断器
 
-**文件**: `researchclaw/literature/arxiv_client.py`
+**文件**: `berb/literature/arxiv_client.py`
 
 **改动**:
 - [x]1.1 改用 `urllib.request.urlopen` 的 `HTTPError` 子类捕获，区分 429 和其他错误
@@ -147,25 +147,25 @@ Pipeline 中多个阶段需要通过 API 调用外部论文数据库（arXiv、S
 
 ### Task 2: OpenAlex 提升为主搜索源
 
-**文件**: `researchclaw/literature/search.py`, 新建 `researchclaw/literature/openalex_client.py`
+**文件**: `berb/literature/search.py`, 新建 `berb/literature/openalex_client.py`
 
 **改动**:
 - [x]2.1 新建 `openalex_client.py`: 封装 OpenAlex Works API (`https://api.openalex.org/works`)
   - 支持 `title.search` / `default.search` 两种查询模式
   - 字段映射到 `Paper` 数据类 (title, abstract, year, venue, citation_count, authors, doi, arxiv_id)
-  - 配置 polite pool email (`researchclaw@users.noreply.github.com`)
+  - 配置 polite pool email (`berb@users.noreply.github.com`)
   - 指数退避 + 3 次重试
 - [x]2.2 在 `search.py` 的 `search_papers()` 中注册 OpenAlex 为第三个源
 - [x]2.3 调整 `search_papers_multi_query()` 的源顺序策略:
   - 默认: OpenAlex → Semantic Scholar → arXiv
   - 任一源 429 → 跳过该源，增加其他源的 limit
-- [x]2.4 在 `config.researchclaw.example.yaml` 中添加 `openalex_email` 配置项
+- [x]2.4 在 `config.berb.example.yaml` 中添加 `openalex_email` 配置项
 
 **预期效果**: 文献检索默认走 OpenAlex (10K/day)，arXiv 和 S2 作为补充和验证，大幅降低 429 风险
 
 ### Task 3: 搜索结果缓存增强
 
-**文件**: `researchclaw/literature/cache.py`
+**文件**: `berb/literature/cache.py`
 
 **改动**:
 - [x]3.1 arXiv 搜索结果 TTL 从 7 天改为 24 小时（arXiv 每天午夜更新一次）
@@ -176,7 +176,7 @@ Pipeline 中多个阶段需要通过 API 调用外部论文数据库（arXiv、S
 
 ### Task 4: S2 batch API + 去重优化
 
-**文件**: `researchclaw/literature/semantic_scholar.py`
+**文件**: `berb/literature/semantic_scholar.py`
 
 **改动**:
 - [x]4.1 新增 `batch_fetch_papers(paper_ids: list[str]) -> list[Paper]`
@@ -189,7 +189,7 @@ Pipeline 中多个阶段需要通过 API 调用外部论文数据库（arXiv、S
 
 ### Task 5: Stage 23 引用验证并行化 + 智能调度
 
-**文件**: `researchclaw/literature/verify.py`
+**文件**: `berb/literature/verify.py`
 
 **改动**:
 - [x]5.1 按源分组，相同源的验证串行（遵守限速），不同源的验证并行
@@ -201,7 +201,7 @@ Pipeline 中多个阶段需要通过 API 调用外部论文数据库（arXiv、S
 
 ### Task 6: 用户反馈 + 日志改善
 
-**文件**: `researchclaw/pipeline/executor.py`, `researchclaw/literature/search.py`
+**文件**: `berb/pipeline/executor.py`, `berb/literature/search.py`
 
 **改动**:
 - [x]6.1 文献检索阶段添加进度日志: `[literature] Searching OpenAlex... (1/3 sources)`
@@ -288,7 +288,7 @@ def search_openalex(
     query: str,
     limit: int = 50,
     year_min: int | None = None,
-    email: str = "researchclaw@users.noreply.github.com",
+    email: str = "berb@users.noreply.github.com",
 ) -> list[Paper]:
     """Search OpenAlex Works API with polite pool access."""
     ...

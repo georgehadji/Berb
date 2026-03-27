@@ -74,7 +74,7 @@
 ## ⚡ ワンコマンド。ワンペーパー。
 
 ```bash
-pip install -e . && researchclaw setup && researchclaw init && researchclaw run --topic "Your research idea here" --auto-approve
+pip install -e . && berb setup && berb init && berb run --topic "Your research idea here" --auto-approve
 ```
 
 
@@ -114,15 +114,15 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 
 # 2. セットアップ（対話式 — OpenCode Beast Modeのインストール、Docker/LaTeXの確認）
-researchclaw setup
+berb setup
 
 # 3. 設定
-researchclaw init          # 対話式：LLMプロバイダーを選択、config.arc.yamlを作成
-# または手動：cp config.researchclaw.example.yaml config.arc.yaml
+berb init          # 対話式：LLMプロバイダーを選択、config.arc.yamlを作成
+# または手動：cp config.berb.example.yaml config.arc.yaml
 
 # 4. 実行
 export OPENAI_API_KEY="sk-..."
-researchclaw run --config config.arc.yaml --topic "Your research idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your research idea" --auto-approve
 ```
 
 出力先 → `artifacts/rc-YYYYMMDD-HHMMSS-<hash>/deliverables/` — コンパイル可能なLaTeX、BibTeX、実験コード、チャート。
@@ -193,9 +193,9 @@ experiment:
 
 1. OpenClawが`RESEARCHCLAW_AGENTS.md`を読み取り → 研究オーケストレーターの役割を学習
 2. OpenClawが`README.md`を読み取り → インストールとパイプライン構造を理解
-3. OpenClawが`config.researchclaw.example.yaml` → `config.yaml`にコピー
+3. OpenClawが`config.berb.example.yaml` → `config.yaml`にコピー
 4. LLMのAPIキーを要求（または環境変数を使用）
-5. `pip install -e .` + `researchclaw run --topic "..." --auto-approve`を実行
+5. `pip install -e .` + `berb run --topic "..." --auto-approve`を実行
 6. 論文、LaTeX、実験、引用を返却
 
 </details>
@@ -242,17 +242,17 @@ llm:
 
 ```bash
 # そのまま実行 — エージェントは独自の認証情報を使用
-researchclaw run --config config.yaml --topic "Your research idea" --auto-approve
+berb run --config config.yaml --topic "Your research idea" --auto-approve
 ```
 
 ### 🛠️ その他の実行方法
 
 | 方法 | 手順 |
 |------|------|
-| **スタンドアロンCLI** | `researchclaw setup` → `researchclaw init` → `researchclaw run --topic "..." --auto-approve` |
-| **Python API** | `from researchclaw.pipeline import Runner; Runner(config).run()` |
+| **スタンドアロンCLI** | `berb setup` → `berb init` → `berb run --topic "..." --auto-approve` |
+| **Python API** | `from berb.pipeline import Runner; Runner(config).run()` |
 | **Claude Code** | `RESEARCHCLAW_CLAUDE.md`を読み取り — *「Run research on [トピック]」*と言うだけ |
-| **Copilot CLI** | `researchclaw run --topic "..."` で `llm.acp.agent: "gh"` を使用 |
+| **Copilot CLI** | `berb run --topic "..."` で `llm.acp.agent: "gh"` を使用 |
 | **OpenCode** | `.claude/skills/`を読み取り — 同じ自然言語インターフェース |
 | **任意のAI CLI** | `RESEARCHCLAW_AGENTS.md`をコンテキストとして提供 → エージェントが自動ブートストラップ |
 
@@ -312,7 +312,7 @@ researchclaw run --config config.yaml --topic "Your research idea" --auto-approv
 | **📚 マルチソース文献** | OpenAlex、Semantic Scholar、arXivからの実際の論文 — クエリ拡張、重複排除、三状態サーキットブレーカーとグレースフルデグラデーション |
 | **🔍 4層引用検証** | arXiv IDチェック → CrossRef/DataCite DOI → Semantic Scholarタイトルマッチ → LLM関連性スコアリング。幻覚された参考文献は自動削除。 |
 | **🖥️ ハードウェア対応実行** | GPU（NVIDIA CUDA / Apple MPS / CPUのみ）を自動検出し、コード生成、インポート、実験スケールを適応 |
-| **🦾 OpenCode Beast Mode** | 複雑な実験を自動的に[OpenCode](https://github.com/anomalyco/opencode)にルーティング — カスタムアーキテクチャ、トレーニングループ、アブレーション研究を含むマルチファイルプロジェクトを生成。`researchclaw setup`でインストール。 |
+| **🦾 OpenCode Beast Mode** | 複雑な実験を自動的に[OpenCode](https://github.com/anomalyco/opencode)にルーティング — カスタムアーキテクチャ、トレーニングループ、アブレーション研究を含むマルチファイルプロジェクトを生成。`berb setup`でインストール。 |
 | **🧪 サンドボックス実験** | AST検証済みコード、不変ハーネス、NaN/Inf早期停止、自己修復、反復的改良（最大10ラウンド）、部分結果の保持 |
 | **📝 学会グレード執筆** | NeurIPS/ICML/ICLRテンプレート、セクション別ドラフト（5,000〜6,500語）、捏造防止ガード、改訂文字数ガード、免責事項抑制 |
 | **📐 テンプレート切り替え** | `neurips_2025`、`iclr_2026`、`icml_2026` — Markdown → LaTeX（数式、表、図、相互参照、`\cite{}`対応） |
@@ -365,7 +365,7 @@ metaclaw_bridge:
 
 ```bash
 # 3. 通常通り実行 — MetaClawは透過的に動作
-researchclaw run --config config.arc.yaml --topic "Your idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your idea" --auto-approve
 ```
 
 各実行後、`~/.metaclaw/skills/arc-*/SKILL.md`を確認して、パイプラインが学習したスキルを確認できます。
@@ -442,7 +442,7 @@ experiment:
     allowed_imports: [math, random, json, csv, numpy, torch, sklearn]
     max_memory_mb: 4096
   docker:
-    image: "researchclaw/experiment:latest"
+    image: "berb/experiment:latest"
     network_policy: "setup_only"   # none | setup_only | pip_only | full
     gpu_enabled: true
     memory_limit_mb: 8192
@@ -450,8 +450,8 @@ experiment:
   ssh_remote:
     host: ""                       # GPUサーバーのホスト名
     gpu_ids: []                    # 利用可能なGPU ID
-    remote_workdir: "/tmp/researchclaw_experiments"
-  opencode:                          # OpenCode Beast Mode（`researchclaw setup`で自動インストール）
+    remote_workdir: "/tmp/berb_experiments"
+  opencode:                          # OpenCode Beast Mode（`berb setup`で自動インストール）
     enabled: true                    # マスタースイッチ（デフォルト: true）
     auto: true                       # 確認なしで自動トリガー（デフォルト: true）
     complexity_threshold: 0.2        # 0.0-1.0 — 高い = 複雑な実験のみトリガー
@@ -533,7 +533,7 @@ MIT — 詳細は[LICENSE](../LICENSE)をご覧ください。
 AutoResearchClawが役に立った場合は、以下を引用してください：
 
 ```bibtex
-@misc{liu2026autoresearchclaw,
+@misc{liu2026autoberb,
   author       = {Liu, Jiaqi and Xia, Peng and Han, Siwei and Qiu, Shi and Zhang, Letian and Chen, Guiming  and Tu, Haoqin and Yang, Xinyu and and Zhou, Jiawei and Zhu, Hongtu and Li, Yun and Zhou, Yuyin and Zheng, Zeyu and Xie, Cihang and Ding, Mingyu and Yao, Huaxiu},
   title        = {AutoResearchClaw: Fully Autonomous Research from Idea to Paper},
   year         = {2026},

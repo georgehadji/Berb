@@ -74,7 +74,7 @@
 ## ⚡ أمر واحد. ورقة واحدة.
 
 ```bash
-pip install -e . && researchclaw setup && researchclaw init && researchclaw run --topic "Your research idea here" --auto-approve
+pip install -e . && berb setup && berb init && berb run --topic "Your research idea here" --auto-approve
 ```
 
 
@@ -114,15 +114,15 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 
 # 2. الإعداد (تفاعلي — يثبّت OpenCode beast mode، يتحقق من Docker/LaTeX)
-researchclaw setup
+berb setup
 
 # 3. التهيئة
-researchclaw init          # تفاعلي: اختر مزوّد LLM، ينشئ config.arc.yaml
-# أو يدوياً: cp config.researchclaw.example.yaml config.arc.yaml
+berb init          # تفاعلي: اختر مزوّد LLM، ينشئ config.arc.yaml
+# أو يدوياً: cp config.berb.example.yaml config.arc.yaml
 
 # 4. التشغيل
 export OPENAI_API_KEY="sk-..."
-researchclaw run --config config.arc.yaml --topic "Your research idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your research idea" --auto-approve
 ```
 
 المخرجات → `artifacts/rc-YYYYMMDD-HHMMSS-<hash>/deliverables/` — LaTeX و BibTeX وكود التجارب والرسوم البيانية جاهزة للترجمة.
@@ -193,9 +193,9 @@ experiment:
 
 1. يقرأ OpenClaw ملف `RESEARCHCLAW_AGENTS.md` → يتعلم دور منسّق البحث
 2. يقرأ OpenClaw ملف `README.md` → يفهم التثبيت وبنية خط الأنابيب
-3. يقرأ OpenClaw ملف `config.researchclaw.example.yaml` → `config.yaml`
+3. يقرأ OpenClaw ملف `config.berb.example.yaml` → `config.yaml`
 4. يسأل عن مفتاح API لنموذج اللغة (أو يستخدم متغير البيئة)
-5. يشغّل `pip install -e .` + `researchclaw run --topic "..." --auto-approve`
+5. يشغّل `pip install -e .` + `berb run --topic "..." --auto-approve`
 6. يعيد الورقة و LaTeX والتجارب والاستشهادات
 
 </details>
@@ -242,17 +242,17 @@ llm:
 
 ```bash
 # فقط شغّل — الوكيل يستخدم بيانات اعتماده الخاصة
-researchclaw run --config config.yaml --topic "Your research idea" --auto-approve
+berb run --config config.yaml --topic "Your research idea" --auto-approve
 ```
 
 ### 🛠️ طرق أخرى للتشغيل
 
 | الطريقة | الكيفية |
 |--------|-----|
-| **سطر أوامر مستقل** | `researchclaw setup` → `researchclaw init` → `researchclaw run --topic "..." --auto-approve` |
-| **واجهة Python البرمجية** | `from researchclaw.pipeline import Runner; Runner(config).run()` |
+| **سطر أوامر مستقل** | `berb setup` → `berb init` → `berb run --topic "..." --auto-approve` |
+| **واجهة Python البرمجية** | `from berb.pipeline import Runner; Runner(config).run()` |
 | **Claude Code** | يقرأ `RESEARCHCLAW_CLAUDE.md` — فقط قل *"شغّل بحثاً عن [موضوع]"* |
-| **Copilot CLI** | `researchclaw run --topic "..."` مع `llm.acp.agent: "gh"` |
+| **Copilot CLI** | `berb run --topic "..."` مع `llm.acp.agent: "gh"` |
 | **OpenCode** | يقرأ `.claude/skills/` — نفس واجهة اللغة الطبيعية |
 | **أي واجهة ذكاء اصطناعي** | قدّم `RESEARCHCLAW_AGENTS.md` كسياق → الوكيل يبدأ تلقائياً |
 
@@ -312,7 +312,7 @@ Phase D: تصميم التجارب            Phase H: الإنهاء
 | **📚 أدبيات متعددة المصادر** | أوراق حقيقية من OpenAlex و Semantic Scholar و arXiv — توسيع الاستعلام، إزالة التكرار، قاطع دائرة مع تدهور أنيق |
 | **🔍 تحقق من الاستشهادات على 4 طبقات** | فحص arXiv ID → CrossRef/DataCite DOI → مطابقة عنوان Semantic Scholar → تقييم صلة LLM. المراجع المُلفّقة تُزال تلقائياً. |
 | **🖥️ تنفيذ واعٍ بالعتاد** | كشف تلقائي لـ GPU (NVIDIA CUDA / Apple MPS / CPU فقط) مع تكييف توليد الكود والاستيرادات ونطاق التجارب |
-| **🦾 OpenCode Beast Mode** | التجارب المعقدة تُوجّه تلقائياً إلى [OpenCode](https://github.com/anomalyco/opencode) — يولّد مشاريع متعددة الملفات مع بنى مخصصة وحلقات تدريب ودراسات استئصال. التثبيت عبر `researchclaw setup`. |
+| **🦾 OpenCode Beast Mode** | التجارب المعقدة تُوجّه تلقائياً إلى [OpenCode](https://github.com/anomalyco/opencode) — يولّد مشاريع متعددة الملفات مع بنى مخصصة وحلقات تدريب ودراسات استئصال. التثبيت عبر `berb setup`. |
 | **🧪 تجارب في بيئة معزولة** | كود مُتحقق بـ AST، إطار غير قابل للتعديل، فشل سريع عند NaN/Inf، إصلاح ذاتي، تحسين تكراري (حتى 10 جولات)، التقاط نتائج جزئية |
 | **📝 كتابة بمستوى المؤتمرات** | قوالب NeurIPS/ICML/ICLR، صياغة قسم بقسم (5,000-6,500 كلمة)، حماية ضد التلفيق، حماية طول المراجعة، فرض مضاد لإخلاءات المسؤولية |
 | **📐 تبديل القوالب** | `neurips_2025`، `iclr_2026`، `icml_2026` — Markdown → LaTeX مع رياضيات وجداول وأشكال ومراجع تبادلية و `\cite{}` |
@@ -365,7 +365,7 @@ metaclaw_bridge:
 
 ```bash
 # 3. شغّل كالمعتاد — MetaClaw يعمل بشفافية
-researchclaw run --config config.arc.yaml --topic "Your idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your idea" --auto-approve
 ```
 
 بعد كل تشغيل، تحقق من `~/.metaclaw/skills/arc-*/SKILL.md` لمشاهدة المهارات التي تعلّمها خط أنابيبك.
@@ -442,7 +442,7 @@ experiment:
     allowed_imports: [math, random, json, csv, numpy, torch, sklearn]
     max_memory_mb: 4096
   docker:
-    image: "researchclaw/experiment:latest"
+    image: "berb/experiment:latest"
     network_policy: "setup_only"   # none | setup_only | pip_only | full
     gpu_enabled: true
     memory_limit_mb: 8192
@@ -450,8 +450,8 @@ experiment:
   ssh_remote:
     host: ""                       # اسم مضيف خادم GPU
     gpu_ids: []                    # معرّفات GPU المتاحة
-    remote_workdir: "/tmp/researchclaw_experiments"
-  opencode:                          # OpenCode Beast Mode (يُثبّت تلقائياً عبر `researchclaw setup`)
+    remote_workdir: "/tmp/berb_experiments"
+  opencode:                          # OpenCode Beast Mode (يُثبّت تلقائياً عبر `berb setup`)
     enabled: true                    # المفتاح الرئيسي (الافتراضي: true)
     auto: true                       # تشغيل تلقائي بدون تأكيد (الافتراضي: true)
     complexity_threshold: 0.2        # 0.0-1.0 — أعلى = فقط للتجارب المعقدة
@@ -533,7 +533,7 @@ MIT — راجع [LICENSE](../LICENSE) للتفاصيل.
 إذا وجدت AutoResearchClaw مفيداً، يرجى الاستشهاد:
 
 ```bibtex
-@misc{liu2026autoresearchclaw,
+@misc{liu2026autoberb,
   author       = {Liu, Jiaqi and Xia, Peng and Han, Siwei and Qiu, Shi and Zhang, Letian and Chen, Guiming  and Tu, Haoqin and Yang, Xinyu and and Zhou, Jiawei and Zhu, Hongtu and Li, Yun and Zhou, Yuyin and Zheng, Zeyu and Xie, Cihang and Ding, Mingyu and Yao, Huaxiu},
   title        = {AutoResearchClaw: Fully Autonomous Research from Idea to Paper},
   year         = {2026},

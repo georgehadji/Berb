@@ -44,7 +44,7 @@ If you use [OpenClaw](https://github.com/openclaw/openclaw) as your AI assistant
 4. OpenClaw will:
    - Clone the repo
    - Create a virtual environment and install dependencies (`pip install -e .`)
-   - Copy `config.researchclaw.example.yaml` → `config.yaml`
+   - Copy `config.berb.example.yaml` → `config.yaml`
    - Ask you for an OpenAI API key (or use your environment variable)
    - Run the full 23-stage pipeline
    - Return the paper, experiment code, charts, and citations
@@ -95,10 +95,10 @@ pip install -e .
 
 ```bash
 # Check the CLI is available
-researchclaw --help
+berb --help
 
 # Validate your configuration
-researchclaw validate --config config.yaml
+berb validate --config config.yaml
 ```
 
 ---
@@ -108,7 +108,7 @@ researchclaw validate --config config.yaml
 Start from the provided template:
 
 ```bash
-cp config.researchclaw.example.yaml config.yaml
+cp config.berb.example.yaml config.yaml
 ```
 
 Open `config.yaml` in your editor. Here's what each section does:
@@ -229,22 +229,22 @@ knowledge_base:
 
 ```bash
 # Run with topic from config.yaml
-researchclaw run --config config.yaml --auto-approve
+berb run --config config.yaml --auto-approve
 
 # Override topic from command line
-researchclaw run --config config.yaml --topic "Transformer attention for time series" --auto-approve
+berb run --config config.yaml --topic "Transformer attention for time series" --auto-approve
 ```
 
 ### CLI Commands
 
 | Command | What It Does |
 |---------|-------------|
-| `researchclaw setup` | Interactive first-time setup (installs OpenCode Beast Mode, checks Docker/LaTeX) |
-| `researchclaw init` | Interactive config creation (choose LLM provider, creates `config.arc.yaml`) |
-| `researchclaw run` | Run the full 23-stage pipeline |
-| `researchclaw validate` | Check your config file for errors |
-| `researchclaw doctor` | Diagnose environment issues (Python, dependencies, API connectivity) |
-| `researchclaw report --run-dir <path>` | Generate a human-readable summary of a completed run |
+| `berb setup` | Interactive first-time setup (installs OpenCode Beast Mode, checks Docker/LaTeX) |
+| `berb init` | Interactive config creation (choose LLM provider, creates `config.arc.yaml`) |
+| `berb run` | Run the full 23-stage pipeline |
+| `berb validate` | Check your config file for errors |
+| `berb doctor` | Diagnose environment issues (Python, dependencies, API connectivity) |
+| `berb report --run-dir <path>` | Generate a human-readable summary of a completed run |
 
 ### Run Flags
 
@@ -264,16 +264,16 @@ researchclaw run --config config.yaml --topic "Transformer attention for time se
 
 ```bash
 # Full autonomous run — no human intervention
-researchclaw run -c config.yaml -t "Graph neural networks for protein folding" --auto-approve
+berb run -c config.yaml -t "Graph neural networks for protein folding" --auto-approve
 
 # Resume a failed run from where it stopped
-researchclaw run -c config.yaml --resume --auto-approve
+berb run -c config.yaml --resume --auto-approve
 
 # Re-run just the paper writing stages
-researchclaw run -c config.yaml --from-stage PAPER_OUTLINE --auto-approve
+berb run -c config.yaml --from-stage PAPER_OUTLINE --auto-approve
 
 # Check your setup before running
-researchclaw doctor -c config.yaml
+berb doctor -c config.yaml
 ```
 
 ---
@@ -460,7 +460,7 @@ The pipeline **generates Python code and actually runs it** in a subprocess. The
 experiment:
   mode: "docker"
   docker:
-    image: "researchclaw/experiment:latest"
+    image: "berb/experiment:latest"
     gpu_enabled: true
     memory_limit_mb: 8192
     network_policy: "setup_only"   # none | setup_only | pip_only | full
@@ -486,7 +486,7 @@ The pipeline runs generated code inside a **Docker container** with GPU passthro
 
 **Setup**: Build the image first:
 ```bash
-docker build -t researchclaw/experiment:latest researchclaw/docker/
+docker build -t berb/experiment:latest berb/docker/
 ```
 
 ### SSH Remote
@@ -497,7 +497,7 @@ experiment:
   ssh_remote:
     host: "gpu-server.example.com"
     gpu_ids: [0, 1]
-    remote_workdir: "/tmp/researchclaw_experiments"
+    remote_workdir: "/tmp/berb_experiments"
 ```
 
 The pipeline sends generated code to a remote GPU server for execution.
@@ -656,13 +656,13 @@ metaclaw_bridge:
 
 ```bash
 # First run — captures lessons, generates initial skills
-researchclaw run --config config.arc.yaml --topic "Your idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your idea" --auto-approve
 
 # Check generated skills
 ls ~/.metaclaw/skills/arc-*/SKILL.md
 
 # Second run — skills from Run 1 are automatically injected
-researchclaw run --config config.arc.yaml --topic "Your idea" --auto-approve
+berb run --config config.arc.yaml --topic "Your idea" --auto-approve
 ```
 
 #### Optional: Start MetaClaw Proxy
@@ -694,9 +694,9 @@ In controlled A/B experiments (same topic, same LLM, same configuration):
 
 | File | Purpose |
 |------|---------|
-| `researchclaw/metaclaw_bridge/` | Integration module (config, session, lesson_to_skill, prm_gate, skill_feedback) |
-| `researchclaw/evolution.py` | `build_overlay()` — reads intra-run lessons + cross-run arc-* skills |
-| `researchclaw/llm/client.py` | Proxy routing with automatic fallback |
+| `berb/metaclaw_bridge/` | Integration module (config, session, lesson_to_skill, prm_gate, skill_feedback) |
+| `berb/evolution.py` | `build_overlay()` — reads intra-run lessons + cross-run arc-* skills |
+| `berb/llm/client.py` | Proxy routing with automatic fallback |
 | `~/.metaclaw/skills/arc-*/SKILL.md` | Learned skill files (auto-generated) |
 | `scripts/metaclaw_start.sh` | Helper script to launch MetaClaw proxy |
 
@@ -714,9 +714,9 @@ AutoResearchClaw works with any AI coding assistant that can read project contex
 
 ### Claude Code
 
-Claude Code automatically reads `RESEARCHCLAW_CLAUDE.md` (if present) when you open the project. It also loads the skill definition from `.claude/skills/researchclaw/SKILL.md`.
+Claude Code automatically reads `RESEARCHCLAW_CLAUDE.md` (if present) when you open the project. It also loads the skill definition from `.claude/skills/berb/SKILL.md`.
 
-> **Note:** `RESEARCHCLAW_CLAUDE.md` is generated locally and listed in `.gitignore`. The `.claude/skills/researchclaw/SKILL.md` file is always available in the repo.
+> **Note:** `RESEARCHCLAW_CLAUDE.md` is generated locally and listed in `.gitignore`. The `.claude/skills/berb/SKILL.md` file is always available in the repo.
 
 ```
 You: Research the impact of attention mechanisms on speech recognition
@@ -742,7 +742,7 @@ Prerequisites:
 
 ### OpenCode
 
-OpenCode loads skills from `.claude/skills/`. The `researchclaw` skill activates on research-related queries and guides the agent through the pipeline.
+OpenCode loads skills from `.claude/skills/`. The `berb` skill activates on research-related queries and guides the agent through the pipeline.
 
 ### Any AI CLI
 
@@ -752,7 +752,7 @@ Provide `RESEARCHCLAW_AGENTS.md` (if generated locally) or `README.md` as contex
 - Pipeline stage reference
 - Decision guide for common scenarios
 
-The agent reads this file and knows how to install, configure, and run the pipeline. If the file is not present, the `README.md` and `.claude/skills/researchclaw/SKILL.md` provide sufficient context for any AI assistant to operate the pipeline.
+The agent reads this file and knows how to install, configure, and run the pipeline. If the file is not present, the `README.md` and `.claude/skills/berb/SKILL.md` provide sufficient context for any AI assistant to operate the pipeline.
 
 ---
 
@@ -761,9 +761,9 @@ The agent reads this file and knows how to install, configure, and run the pipel
 For programmatic use or custom integrations:
 
 ```python
-from researchclaw.pipeline.runner import execute_pipeline
-from researchclaw.config import RCConfig
-from researchclaw.adapters import AdapterBundle
+from berb.pipeline.runner import execute_pipeline
+from berb.config import RCConfig
+from berb.adapters import AdapterBundle
 from pathlib import Path
 
 # Load configuration
@@ -786,7 +786,7 @@ for result in results:
 ### Iterative Pipeline (Multiple Paper Revisions)
 
 ```python
-from researchclaw.pipeline.runner import execute_iterative_pipeline
+from berb.pipeline.runner import execute_iterative_pipeline
 
 results = execute_iterative_pipeline(
     run_dir=Path("artifacts/my-run"),
@@ -801,7 +801,7 @@ results = execute_iterative_pipeline(
 ### Literature Search Only
 
 ```python
-from researchclaw.literature.search import search_papers
+from berb.literature.search import search_papers
 
 papers = search_papers("transformer attention mechanisms", limit=20)
 for p in papers:
@@ -817,7 +817,7 @@ for p in papers:
 
 ```bash
 # Check everything: Python version, dependencies, API connectivity, config validity
-researchclaw doctor --config config.yaml
+berb doctor --config config.yaml
 ```
 
 ### Common Issues
@@ -825,7 +825,7 @@ researchclaw doctor --config config.yaml
 | Problem | Cause | Solution |
 |---------|-------|----------|
 | `Missing required field: llm.base_url` | Config incomplete | Set `llm.base_url` and `llm.api_key` (or `api_key_env`) |
-| `Config validation FAILED` | Invalid YAML or missing fields | Run `researchclaw validate -c config.yaml` for details |
+| `Config validation FAILED` | Invalid YAML or missing fields | Run `berb validate -c config.yaml` for details |
 | `Preflight check... FAILED` | LLM API unreachable | Check `base_url`, API key, and network connectivity |
 | Sandbox execution fails | Python path wrong or missing packages | Verify `experiment.sandbox.python_path` exists; ensure numpy is installed |
 | Code validation rejects all attempts | LLM generates unsafe code | Switch to `simulated` mode, or try a more capable model |
@@ -838,16 +838,16 @@ researchclaw doctor --config config.yaml
 
 ```bash
 # Resume from the exact point of failure
-researchclaw run -c config.yaml --resume --auto-approve
+berb run -c config.yaml --resume --auto-approve
 
 # Or restart from a specific stage
-researchclaw run -c config.yaml --from-stage EXPERIMENT_RUN --auto-approve --output artifacts/<run-id>
+berb run -c config.yaml --from-stage EXPERIMENT_RUN --auto-approve --output artifacts/<run-id>
 ```
 
 ### Reading a Run Report
 
 ```bash
-researchclaw report --run-dir artifacts/rc-20260310-143200-a1b2c3
+berb report --run-dir artifacts/rc-20260310-143200-a1b2c3
 ```
 
 This prints a human-readable summary: which stages passed, which failed, key metrics, and paper quality scores.

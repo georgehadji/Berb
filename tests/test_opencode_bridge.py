@@ -130,17 +130,17 @@ class TestOpenCodeBridge:
 
     def test_check_available_returns_false_when_not_installed(self):
         with patch(
-            "researchclaw.pipeline.opencode_bridge.shutil.which",
+            "berb.pipeline.opencode_bridge.shutil.which",
             return_value=None,
         ):
             assert OpenCodeBridge.check_available() is False
 
     def test_check_available_returns_false_on_timeout(self):
         with patch(
-            "researchclaw.pipeline.opencode_bridge.shutil.which",
+            "berb.pipeline.opencode_bridge.shutil.which",
             return_value=r"C:\Users\tester\AppData\Roaming\npm\opencode.cmd",
         ), patch(
-            "researchclaw.pipeline.opencode_bridge.subprocess.run",
+            "berb.pipeline.opencode_bridge.subprocess.run",
             side_effect=subprocess.TimeoutExpired(cmd="opencode", timeout=15),
         ):
             assert OpenCodeBridge.check_available() is False
@@ -149,10 +149,10 @@ class TestOpenCodeBridge:
         mock_result = MagicMock()
         mock_result.returncode = 0
         with patch(
-            "researchclaw.pipeline.opencode_bridge.shutil.which",
+            "berb.pipeline.opencode_bridge.shutil.which",
             return_value=r"C:\Users\tester\AppData\Roaming\npm\opencode.cmd",
         ), patch(
-            "researchclaw.pipeline.opencode_bridge.subprocess.run",
+            "berb.pipeline.opencode_bridge.subprocess.run",
             return_value=mock_result,
         ) as run_mock:
             assert OpenCodeBridge.check_available() is True
@@ -372,10 +372,10 @@ class TestOpenCodeBridge:
         mock_result.stderr = ""
 
         with patch(
-            "researchclaw.pipeline.opencode_bridge.shutil.which",
+            "berb.pipeline.opencode_bridge.shutil.which",
             return_value=r"C:\Users\tester\AppData\Roaming\npm\opencode.cmd",
         ), patch(
-            "researchclaw.pipeline.opencode_bridge.subprocess.run",
+            "berb.pipeline.opencode_bridge.subprocess.run",
             return_value=mock_result,
         ) as run_mock:
             success, _log, _elapsed = bridge._invoke_opencode(tmp_path, "test prompt")

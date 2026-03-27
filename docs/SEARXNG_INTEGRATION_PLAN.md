@@ -30,9 +30,9 @@
 
 | Component | File | Purpose | AutoResearchClaw Integration Point |
 |-----------|------|---------|-----------------------------------|
-| **Search Engine** | `searx/search/__init__.py` | Main search orchestrator | Replace `researchclaw/literature/search.py` |
+| **Search Engine** | `searx/search/__init__.py` | Main search orchestrator | Replace `berb/literature/search.py` |
 | **Engine Loader** | `searx/engines/__init__.py` | Dynamic engine loading | Use for custom academic engines |
-| **Result Types** | `searx/result_types.py` | Typed result containers | Enhance `researchclaw/literature/models.py` |
+| **Result Types** | `searx/result_types.py` | Typed result containers | Enhance `berb/literature/models.py` |
 | **Web App** | `searx/webapp.py` | HTTP API + UI | Use JSON API for programmatic access |
 | **Settings** | `searx/settings.yml` | Engine configuration | Template for academic search config |
 | **Engines** | `searx/engines/*.py` | Individual search backends | Reuse google_scholar, arxiv, crossref |
@@ -80,7 +80,7 @@
 
 **Option 2: Extract Engine Code**
 - Copy engine implementations (`arxiv.py`, `crossref.py`, `google_scholar.py`)
-- Integrate into `researchclaw/literature/`
+- Integrate into `berb/literature/`
 - Adapt to AutoResearchClaw patterns
 - Maintain separately
 
@@ -102,7 +102,7 @@ AutoResearchClaw Stage 3-4
          ▼
 ┌─────────────────────────┐
 │  SearXNG API Client     │
-│  (researchclaw/searxng) │
+│  (berb/searxng) │
 │  - search()             │
 │  - get_config()         │
 │  - health_check()       │
@@ -125,7 +125,7 @@ AutoResearchClaw Stage 3-4
 
 **Implementation:**
 ```python
-# researchclaw/literature/searxng_client.py
+# berb/literature/searxng_client.py
 
 import httpx
 from typing import Literal
@@ -231,7 +231,7 @@ class SearXNGClient:
 
 **Usage in AutoResearchClaw:**
 ```python
-# researchclaw/literature/search.py
+# berb/literature/search.py
 
 from .searxng_client import SearXNGClient
 
@@ -418,7 +418,7 @@ plugins:
 **Copy engine implementations directly:**
 
 ```python
-# researchclaw/literature/searxng_engines/arxiv.py
+# berb/literature/searxng_engines/arxiv.py
 # Copied from SearXNG with adaptations
 
 from typing import TypedDict
@@ -427,7 +427,7 @@ from datetime import datetime
 from lxml import etree
 import httpx
 
-from researchclaw.literature.models import Paper, Author
+from berb.literature.models import Paper, Author
 
 class SearXNGArxivConfig(TypedDict):
     base_url: str
@@ -520,7 +520,7 @@ async def search_arxiv_searxng(
 **Goal:** Basic SearXNG integration working
 
 **Tasks:**
-- [ ] **P0** Create `researchclaw/literature/searxng_client.py`
+- [ ] **P0** Create `berb/literature/searxng_client.py`
   - [ ] SearXNGClient class with async HTTP
   - [ ] `search()` method with all parameters
   - [ ] `get_config()` for engine discovery
@@ -553,13 +553,13 @@ async def search_arxiv_searxng(
 
 **Tasks:**
 - [ ] **P1** Create OpenAlex engine for SearXNG
-  - [ ] Copy `researchclaw/literature/openalex_client.py` logic
+  - [ ] Copy `berb/literature/openalex_client.py` logic
   - [ ] Adapt to SearXNG engine interface
   - [ ] Add to SearXNG config
   - [ ] Test with real queries
 
 - [ ] **P1** Create Semantic Scholar engine for SearXNG
-  - [ ] Copy `researchclaw/literature/semantic_scholar.py` logic
+  - [ ] Copy `berb/literature/semantic_scholar.py` logic
   - [ ] Adapt to SearXNG engine interface
   - [ ] Add to SearXNG config
   - [ ] Test with real queries
@@ -848,7 +848,7 @@ plugins:
 ### Example 1: Hybrid Search (SearXNG + Direct APIs)
 
 ```python
-# researchclaw/literature/hybrid_search.py
+# berb/literature/hybrid_search.py
 
 import asyncio
 from typing import Literal
@@ -986,7 +986,7 @@ class HybridLiteratureSearch:
 # tests/test_searxng_client.py
 
 import pytest
-from researchclaw.literature.searxng_client import SearXNGClient
+from berb.literature.searxng_client import SearXNGClient
 
 @pytest.fixture
 async def searxng_client():
@@ -1086,7 +1086,7 @@ class TestSearXNGIntegration:
 - **SearXNG GitHub:** https://github.com/searxng/searxng
 - **SearXNG Docs:** https://docs.searxng.org
 - **SearXNG Instances:** https://searx.space
-- **AutoResearchClaw Literature:** `researchclaw/literature/`
+- **AutoResearchClaw Literature:** `berb/literature/`
 
 ---
 

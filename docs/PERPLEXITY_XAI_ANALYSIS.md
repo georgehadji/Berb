@@ -229,7 +229,7 @@ AutoResearchClaw currently supports:
 
 **With Sonar Deep Research:**
 ```python
-# researchclaw/literature/perplexity_client.py
+# berb/literature/perplexity_client.py
 
 class PerplexityClient:
     async def deep_research(self, topic: str) -> LiteratureReview:
@@ -315,7 +315,7 @@ async def verify_citation_sonar(self, citation: Citation) -> VerificationResult:
 
 **With Grok 4.20 (2M tokens):**
 ```python
-# researchclaw/literature/grok_client.py
+# berb/literature/grok_client.py
 
 class GrokClient:
     async def analyze_full_paper(self, paper_pdf_text: str) -> PaperAnalysis:
@@ -483,13 +483,13 @@ async def generate_full_draft(self, all_content: dict) -> FullPaperDraft:
 **Goal:** Add Perplexity and xAI as model providers
 
 - [ ] **P1.1** Add Perplexity provider preset
-  - [ ] `researchclaw/llm/__init__.py` — Add `perplexity` to `PROVIDER_PRESETS`
+  - [ ] `berb/llm/__init__.py` — Add `perplexity` to `PROVIDER_PRESETS`
   - [ ] `base_url`: `https://api.perplexity.ai`
   - [ ] API key config: `PERPLEXITY_API_KEY`
   - [ ] Test connectivity
 
 - [ ] **P1.2** Add xAI provider preset
-  - [ ] `researchclaw/llm/__init__.py` — Add `xai` to `PROVIDER_PRESETS`
+  - [ ] `berb/llm/__init__.py` — Add `xai` to `PROVIDER_PRESETS`
   - [ ] `base_url`: `https://api.x.ai/v1`
   - [ ] API key config: `XAI_API_KEY`
   - [ ] Test connectivity
@@ -513,13 +513,13 @@ async def generate_full_draft(self, all_content: dict) -> FullPaperDraft:
 **Goal:** Create specialized clients for Sonar Deep Research and Grok 4.20
 
 - [ ] **P2.1** Create Perplexity client
-  - [ ] `researchclaw/literature/perplexity_client.py`
+  - [ ] `berb/literature/perplexity_client.py`
   - [ ] `PerplexityClient` class
   - [ ] `deep_research()` method for literature review
   - [ ] `verify_citation()` method for verification
 
 - [ ] **P2.2** Create Grok client
-  - [ ] `researchclaw/literature/grok_client.py`
+  - [ ] `berb/literature/grok_client.py`
   - [ ] `GrokClient` class
   - [ ] `analyze_full_paper()` method (2M context)
   - [ ] `synthesize_papers()` method (cross-paper synthesis)

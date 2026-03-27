@@ -57,7 +57,7 @@ class ScholarPaper:
         }
 
     def to_literature_paper(self) -> Any:
-        """Convert to researchclaw.literature.models.Paper."""
+        """Convert to berb.literature.models.Paper."""
         from berb.literature.models import Author, Paper
         authors_tuple = tuple(Author(name=a) for a in self.authors)
         return Paper(
@@ -93,7 +93,7 @@ class GoogleScholarClient:
         if not HAS_SCHOLARLY:
             raise ImportError(
                 "scholarly is required for Google Scholar search. "
-                "Install: pip install 'researchclaw[web]'"
+                "Install: pip install 'berb[web]'"
             )
         self.delay = inter_request_delay
         self._last_request_time: float = 0.0

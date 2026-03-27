@@ -367,7 +367,7 @@ def verify_by_doi(doi: str, expected_title: str) -> CitationResult | None:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "ResearchClaw/0.1 (mailto:researchclaw@example.com)",
+                "User-Agent": "ResearchClaw/0.1 (mailto:berb@example.com)",
                 "Accept": "application/json",
             },
         )
@@ -448,7 +448,7 @@ def verify_by_doi(doi: str, expected_title: str) -> CitationResult | None:
 
 _OPENALEX_API = "https://api.openalex.org/works"
 _OPENALEX_TIMEOUT = 15
-_OPENALEX_EMAIL = "researchclaw@users.noreply.github.com"
+_OPENALEX_EMAIL = "berb@users.noreply.github.com"
 
 
 def verify_by_openalex(title: str) -> CitationResult | None:
@@ -534,7 +534,7 @@ def verify_by_openalex(title: str) -> CitationResult | None:
 import hashlib
 from pathlib import Path
 
-_CACHE_DIR = Path.home() / ".cache" / "researchclaw" / "citation_verify"
+_CACHE_DIR = Path.home() / ".cache" / "berb" / "citation_verify"
 
 
 def _cache_key(title: str) -> str:

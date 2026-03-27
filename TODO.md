@@ -70,11 +70,11 @@
 
 ### P0 Tasks (This Week)
 
-- [ ] **Mnemo P0.1** Create `researchclaw/mnemo_bridge/` module
-- [ ] **Reasoner P0.2** Create `researchclaw/reasoner_bridge/` module
-- [ ] **SearXNG P0.3** Create `researchclaw/literature/searxng_client.py`
-- [ ] **RTK P0.4** Create `researchclaw/utils/token_tracker.py`
-- [ ] **NadirClaw P0.5** Create `researchclaw/llm/nadirclaw_router.py`
+- [ ] **Mnemo P0.1** Create `berb/mnemo_bridge/` module
+- [ ] **Reasoner P0.2** Create `berb/reasoner_bridge/` module
+- [ ] **SearXNG P0.3** Create `berb/literature/searxng_client.py`
+- [ ] **RTK P0.4** Create `berb/utils/token_tracker.py`
+- [ ] **NadirClaw P0.5** Create `berb/llm/nadirclaw_router.py`
 - [ ] **All P0.6** Deploy infrastructure (Mnemo, SearXNG, RTK, NadirClaw)
 - [ ] **All P0.7** Config schema updates for all five
 - [ ] **All P0.8** Write unit tests for all five
@@ -122,13 +122,13 @@
 
 ### Phase 1: Core Bridge Adapter (Week 1) - P0
 
-- [ ] **P0** Create `researchclaw/mnemo_bridge/` module structure
+- [ ] **P0** Create `berb/mnemo_bridge/` module structure
   - [ ] `__init__.py` - MnemoBridge class with 4 core methods
   - [ ] `client.py` - Async HTTP client for Mnemo endpoints
   - [ ] `config.py` - Config validation & schema
   - [ ] `prompts.py` - Context injection templates
 
-- [ ] **P0** Add Mnemo config schema to `researchclaw/config.py`
+- [ ] **P0** Add Mnemo config schema to `berb/config.py`
   - [ ] Add `mnemo_bridge` section to RCConfig dataclass
   - [ ] Add validation for server_url, agent_id, personas
   - [ ] Add fallback behavior config
@@ -137,7 +137,7 @@
   - [ ] Add `mnemo-cortex` to optional dependencies
   - [ ] Add `httpx` if not already present
 
-- [ ] **P1** Implement context injection in `researchclaw/pipeline/runner.py`
+- [ ] **P1** Implement context injection in `berb/pipeline/runner.py`
   - [ ] Call `/context` before each stage execution
   - [ ] Inject retrieved chunks into stage prompts
   - [ ] Add `mnemo_context` to stage kwargs
@@ -160,7 +160,7 @@
   - [ ] Test persona switching
 
 - [ ] **P1** Add config example: `config.mnemo.example.yaml`
-- [ ] **P1** Update `researchclaw/health.py` (doctor command)
+- [ ] **P1** Update `berb/health.py` (doctor command)
 - [ ] **P1** Write integration guide: `docs/mnemo-integration.md`
 
 ---
@@ -199,7 +199,7 @@
 
 ### Phase 1: Core Reasoning Patterns (Week 1) - P0
 
-- [ ] **P0** Create `researchclaw/reasoner_bridge/` module
+- [ ] **P0** Create `berb/reasoner_bridge/` module
   - [ ] `__init__.py` - ReasonerAdapter class
   - [ ] `pipeline_adapter.py` - ARA pipeline wrapper
   - [ ] `state.py` - Enhanced PipelineState dataclass
@@ -256,21 +256,21 @@
   - [ ] Write tests: `test_critique_scoring()`
 
 - [ ] **P1** Add circuit breaker to LLM providers
-  - [ ] Copy `circuit_breaker.py` to `researchclaw/utils/`
+  - [ ] Copy `circuit_breaker.py` to `berb/utils/`
   - [ ] Wrap all provider calls
   - [ ] Implement 3 states: CLOSED/OPEN/HALF_OPEN
   - [ ] Add health check endpoint
   - [ ] Write tests: `test_circuit_breaker_transitions()`
 
 - [ ] **P1** Implement token caching
-  - [ ] Create `researchclaw/llm/cache.py`
+  - [ ] Create `berb/llm/cache.py`
   - [ ] Add response cache with TTL (24 hours)
   - [ ] Implement phase-specific token budgets
   - [ ] Track token usage per stage
   - [ ] Write tests: `test_token_caching()`
 
 - [ ] **P1** Enhance state management
-  - [ ] Create `researchclaw/pipeline/state.py`
+  - [ ] Create `berb/pipeline/state.py`
   - [ ] Add event logging for stage transitions
   - [ ] Implement event types
   - [ ] Improve checkpoint/resume
@@ -282,7 +282,7 @@
 ### Phase 3: Advanced Features (Week 3) - P2
 
 - [ ] **P2** Port self-healing engine to Stage 13
-  - [ ] Create `researchclaw/healing/` module
+  - [ ] Create `berb/healing/` module
   - [ ] Implement introspection engine
   - [ ] Generate recovery paths
   - [ ] Auto-retry with fixes
@@ -319,7 +319,7 @@
 
 ### Phase 1: SearXNG Client (Week 1) - P0
 
-- [ ] **P0** Create `researchclaw/literature/searxng_client.py`
+- [ ] **P0** Create `berb/literature/searxng_client.py`
   - [ ] SearXNGClient class with async HTTP
   - [ ] `search()` method with all parameters
   - [ ] `get_config()` for engine discovery
@@ -451,7 +451,7 @@
 
 ### Phase 1: Token Tracking (Week 1) - P0
 
-- [ ] **P0** Create `researchclaw/utils/token_tracker.py`
+- [ ] **P0** Create `berb/utils/token_tracker.py`
   - [ ] TokenTracker class with SQLite backend
   - [ ] `track()` method for recording usage
   - [ ] `get_summary()` for analytics
@@ -459,7 +459,7 @@
   - [ ] Project-scoped tracking
 
 - [ ] **P0** Integrate with LLM calls
-  - [ ] Track tokens in `researchclaw/llm/base.py`
+  - [ ] Track tokens in `berb/llm/base.py`
   - [ ] Record input/output for each call
   - [ ] Calculate estimated costs
   - [ ] Add to stage execution results
@@ -476,7 +476,7 @@
   - [ ] Test summary queries
 
 - [ ] **P1** Create token dashboard widget
-  - [ ] Display in researchclaw dashboard
+  - [ ] Display in berb dashboard
   - [ ] Show daily/weekly trends
   - [ ] Display cost savings
   - [ ] Budget alerts
@@ -485,20 +485,20 @@
 
 ### Phase 2: Output Filtering (Week 2) - P1
 
-- [ ] **P1** Create `researchclaw/experiment/output_filter.py`
+- [ ] **P1** Create `berb/experiment/output_filter.py`
   - [ ] FilterLevel enum (none/minimal/aggressive)
   - [ ] Language-aware filtering
   - [ ] Test output summarization
   - [ ] Code signature extraction
 
 - [ ] **P1** Integrate with experiment execution
-  - [ ] Apply filtering in `researchclaw/experiment/sandbox.py`
+  - [ ] Apply filtering in `berb/experiment/sandbox.py`
   - [ ] Filter stdout/stderr
   - [ ] Preserve error messages
   - [ ] Keep summary statistics
 
 - [ ] **P1** Add RTK CLI wrapper
-  - [ ] Create `researchclaw/utils/rtk_cli.py`
+  - [ ] Create `berb/utils/rtk_cli.py`
   - [ ] Wrap common commands (git, pytest, etc.)
   - [ ] Use RTK binary if available
   - [ ] Fallback to internal filtering
@@ -534,7 +534,7 @@
 
 ### Phase 1: Basic Router Integration (Week 1) - P0
 
-- [ ] **P0** Create `researchclaw/llm/nadirclaw_router.py`
+- [ ] **P0** Create `berb/llm/nadirclaw_router.py`
   - [ ] NadirClawRouter class
   - [ ] `select_model()` method (3-tier routing)
   - [ ] `optimize_context()` method
@@ -542,7 +542,7 @@
   - [ ] Tier-based model selection
 
 - [ ] **P0** Integrate with LLM providers
-  - [ ] Wrap `researchclaw/llm/base.py`
+  - [ ] Wrap `berb/llm/base.py`
   - [ ] Add model selection before each call
   - [ ] Track routing decisions
   - [ ] Log cost savings
@@ -571,7 +571,7 @@
 
 ### Phase 2: Context Optimization (Week 2) - P1
 
-- [ ] **P1** Create `researchclaw/llm/context_optimizer.py`
+- [ ] **P1** Create `berb/llm/context_optimizer.py`
   - [ ] Stage-specific optimization
   - [ ] System prompt deduplication
   - [ ] JSON/schema compaction
@@ -703,7 +703,7 @@
 
 - [ ] **P0.1.1** Create `OUTPUT_TOKEN_LIMITS` configuration
   - [ ] Define limits for all 23 stages (see OPTIMIZATIONS_ANALYSIS.md)
-  - [ ] Add to `researchclaw/llm/output_limits.py`
+  - [ ] Add to `berb/llm/output_limits.py`
   - [ ] Key limits:
     - `decomposition`: 2000 tokens
     - `hypothesis_gen`: 2000 tokens
@@ -712,7 +712,7 @@
     - `paper_draft`: 8000 tokens
 
 - [ ] **P0.1.2** Apply limits in LLM client
-  - [ ] Modify `researchclaw/llm/client.py` to accept `stage` parameter
+  - [ ] Modify `berb/llm/client.py` to accept `stage` parameter
   - [ ] Auto-apply `max_tokens` from config
   - [ ] Add logging for token usage
   - [ ] Expected: -10-15% total cost
@@ -727,7 +727,7 @@
 #### 2. Structured Output Enforcement (3h) - Eliminate Parse Failures
 
 - [ ] **P0.2.1** Create Pydantic models
-  - [ ] `researchclaw/pipeline/structured_outputs.py`
+  - [ ] `berb/pipeline/structured_outputs.py`
   - [ ] Models for critical stages:
     - `DecompositionOutput` (Stage 2)
     - `HypothesisOutput` (Stage 8)
@@ -735,7 +735,7 @@
     - `ResearchDecisionOutput` (Stage 15)
 
 - [ ] **P0.2.2** Add tool_use support to LLM client
-  - [ ] Modify `researchclaw/llm/client.py` for Anthropic tool_use
+  - [ ] Modify `berb/llm/client.py` for Anthropic tool_use
   - [ ] Add `response_format` support for OpenAI
   - [ ] Auto-parse tool calls to Pydantic models
 
@@ -755,12 +755,12 @@
 #### 3. Dependency Context Injection (3h) - Reduce Repair Cycles
 
 - [ ] **P0.3.1** Track completed task outputs
-  - [ ] Add `completed_outputs` dict to `researchclaw/pipeline/runner.py`
+  - [ ] Add `completed_outputs` dict to `berb/pipeline/runner.py`
   - [ ] Store code/results from each task
   - [ ] Track dependencies between tasks
 
 - [ ] **P0.3.2** Inject context for code generation
-  - [ ] Modify `researchclaw/pipeline/code_agent.py`
+  - [ ] Modify `berb/pipeline/code_agent.py`
   - [ ] Build dependency context from completed tasks
   - [ ] Add to prompt: "## Context: Previously generated code"
   - [ ] Include import statements from dependencies
@@ -775,7 +775,7 @@
 #### 4. Provider Prompt Caching (3h) - 80-90% Input Cost Reduction
 
 - [ ] **P0.4.1** Add cache_control support for Anthropic
-  - [ ] Modify `researchclaw/llm/client.py`
+  - [ ] Modify `berb/llm/client.py`
   - [ ] Add `cache_control: {"type": "ephemeral"}` to system prompts
   - [ ] Test with Anthropic API
 
@@ -795,7 +795,7 @@
 #### 5. Model Cascading (5h) - 40-60% Per Task Savings
 
 - [ ] **P0.5.1** Create `CascadingLLMClient` class
-  - [ ] `researchclaw/llm/cascading_client.py`
+  - [ ] `berb/llm/cascading_client.py`
   - [ ] Inherit from base LLM client
   - [ ] Add cascade configuration per stage
 
@@ -824,7 +824,7 @@
 #### 6. Batch API for Non-Critical (5h)
 
 - [ ] **P1.6.1** Create `BatchOptimizedClient` class
-  - [ ] `researchclaw/llm/batch_client.py`
+  - [ ] `berb/llm/batch_client.py`
   - [ ] Implement batch submission
   - [ ] Implement polling for completion
 
@@ -843,7 +843,7 @@
 #### 7. Speculative Generation (5h)
 
 - [ ] **P1.7.1** Create `SpeculativeLLMClient` class
-  - [ ] `researchclaw/llm/speculative_client.py`
+  - [ ] `berb/llm/speculative_client.py`
   - [ ] Implement parallel cheap+premium race
 
 - [ ] **P1.7.2** Mark critical stages
@@ -861,8 +861,8 @@
 #### 8. Automated Eval Dataset (2h)
 
 - [ ] **P1.8.1** Create `EvalDatasetBuilder` class
-  - [ ] `researchclaw/eval/dataset_builder.py`
-  - [ ] Record failures to `.researchclaw/eval_dataset.jsonl`
+  - [ ] `berb/eval/dataset_builder.py`
+  - [ ] Record failures to `.berb/eval_dataset.jsonl`
 
 - [ ] **P1.8.2** Add regression test runner
   - [ ] Load test cases from dataset
@@ -876,7 +876,7 @@
 - [ ] **P1.9.1** Create `TEMPERATURE_STRATEGY` dict
   - [ ] Per-stage temperature config
   - [ ] Per-retry temperature increase
-  - [ ] Add to `researchclaw/llm/temperature_strategy.py`
+  - [ ] Add to `berb/llm/temperature_strategy.py`
 
 - [ ] **P1.9.2** Apply per stage + retry count
   - [ ] Modify LLM client to accept retry count
@@ -890,7 +890,7 @@
 #### 10. Streaming Early-Abort (5h)
 
 - [ ] **P2.10.1** Add streaming support
-  - [ ] Modify `researchclaw/llm/client.py` for streaming
+  - [ ] Modify `berb/llm/client.py` for streaming
   - [ ] Yield chunks as they arrive
 
 - [ ] **P2.10.2** Implement early failure detection
@@ -916,7 +916,7 @@
 #### 12. GitHub Auto-Push (5h)
 
 - [ ] **P3.12.1** Create `GitIntegration` class
-  - [ ] `researchclaw/utils/git_integration.py`
+  - [ ] `berb/utils/git_integration.py`
   - [ ] Implement auto-push logic
 
 - [ ] **P3.12.2** Implement conventional commits
@@ -964,7 +964,7 @@
 #### 1. TDD-First Generation (6-8h) — Tests as Success Criteria
 
 - [ ] **P0.1.1** Add Stage 10a: TEST_GENERATION
-  - [ ] Create `researchclaw/pipeline/stage_impls/test_generation.py`
+  - [ ] Create `berb/pipeline/stage_impls/test_generation.py`
   - [ ] Generate pytest tests before implementation
   - [ ] Include edge cases, error handling, type checking
   - [ ] Expected: 80%+ test coverage
@@ -989,7 +989,7 @@
 #### 2. Diff-Based Revisions (4-6h) — 60-80% Token Reduction
 
 - [ ] **P0.2.1** Create diff generation module
-  - [ ] `researchclaw/pipeline/stage_impls/diff_revision.py`
+  - [ ] `berb/pipeline/stage_impls/diff_revision.py`
   - [ ] Generate unified diffs instead of full files
   - [ ] Support Stage 13 (ITERATIVE_REFINE), Stage 19 (PAPER_REVISION)
 
@@ -1008,7 +1008,7 @@
 #### 3. Cross-Project Transfer Learning (10-12h) — Unique Competitive Moat
 
 - [ ] **P0.3.1** Create `CrossProjectLearning` class
-  - [ ] `researchclaw/learning/cross_project_learning.py`
+  - [ ] `berb/learning/cross_project_learning.py`
   - [ ] Load all completed run traces
   - [ ] Extract patterns from historical data
 
@@ -1048,7 +1048,7 @@
   - [ ] Examples: hypothesis-generation, experiment-design, literature-review
 
 - [ ] **P1.4.2** Create `BenchmarkRunner` class
-  - [ ] `researchclaw/benchmarks/runner.py`
+  - [ ] `berb/benchmarks/runner.py`
   - [ ] Run full benchmark suite
   - [ ] Generate benchmark reports
 
@@ -1062,7 +1062,7 @@
 #### 5. Plugin Marketplace Architecture (12-15h)
 
 - [ ] **P1.5.1** Create plugin manager
-  - [ ] `researchclaw/plugins/manager.py`
+  - [ ] `berb/plugins/manager.py`
   - [ ] Plugin discovery + loading
   - [ ] Hook system (pre/post stage hooks)
 
@@ -1100,7 +1100,7 @@
 #### 7. SaaS Monetization Layer (15-20h) — If Commercializing
 
 - [ ] **P2.7.1** Create tenant manager
-  - [ ] `researchclaw/saas/tenant_manager.py`
+  - [ ] `berb/saas/tenant_manager.py`
   - [ ] Multi-tenant support
   - [ ] Usage tracking per tenant
 
@@ -1179,7 +1179,7 @@
 **Expected Impact:** +60-80% more papers | **Effort:** ~12-15 hours
 
 - [ ] **P1.1.1** Create grey literature module
-  - [ ] `researchclaw/literature/grey_literature/__init__.py`
+  - [ ] `berb/literature/grey_literature/__init__.py`
   - [ ] `base.py` — Base grey literature client
   - [ ] `quality.py` — Multi-layer quality verification
 
@@ -1206,7 +1206,7 @@
   - [ ] Minimum quality threshold: 0.70
 
 - [ ] **P1.1.6** Integrate with literature search
-  - [ ] Modify `researchclaw/literature/search.py`
+  - [ ] Modify `berb/literature/search.py`
   - [ ] Add grey literature as optional sources
   - [ ] Domain-specific activation (medical → medRxiv)
   - [ ] Quality filtering (min score 0.70)
@@ -1348,14 +1348,14 @@
 **Expected Impact:** Foundation for self-improving system | **Effort:** ~12-15 hours
 
 - [ ] **P0.1** Create Hyperagent base class
-  - [ ] `researchclaw/hyperagent/__init__.py`
-  - [ ] `researchclaw/hyperagent/base.py` — Hyperagent base class
-  - [ ] `researchclaw/hyperagent/task_agent.py` — Wraps existing 23-stage pipeline
-  - [ ] `researchclaw/hyperagent/meta_agent.py` — Self-improvement logic
-  - [ ] `researchclaw/hyperagent/memory.py` — Persistent memory for cross-run storage
+  - [ ] `berb/hyperagent/__init__.py`
+  - [ ] `berb/hyperagent/base.py` — Hyperagent base class
+  - [ ] `berb/hyperagent/task_agent.py` — Wraps existing 23-stage pipeline
+  - [ ] `berb/hyperagent/meta_agent.py` — Self-improvement logic
+  - [ ] `berb/hyperagent/memory.py` — Persistent memory for cross-run storage
 
 - [ ] **P0.2** Implement self-improvement loop
-  - [ ] `researchclaw/hyperagent/improvement_loop.py`
+  - [ ] `berb/hyperagent/improvement_loop.py`
   - [ ] Performance analysis module
   - [ ] Diff generation for code improvements
   - [ ] Evaluation and selection logic
@@ -1380,7 +1380,7 @@
 **Expected Impact:** Self-accelerating improvement, cross-domain transfer | **Effort:** ~14-16 hours
 
 - [ ] **P1.1** Make modification procedure editable
-  - [ ] `researchclaw/hyperagent/meta_modify.py`
+  - [ ] `berb/hyperagent/meta_modify.py`
   - [ ] Meta-agent can modify its own `generate_improvements()` method
   - [ ] Track meta-level improvements separately
 
@@ -1406,7 +1406,7 @@
 **Expected Impact:** Production-ready self-improving system | **Effort:** ~12-15 hours
 
 - [ ] **P1.5** Add safety mechanisms
-  - [ ] `researchclaw/hyperagent/safety.py`
+  - [ ] `berb/hyperagent/safety.py`
   - [ ] Prevent destructive self-modifications
   - [ ] Rollback capability
   - [ ] Human-in-the-loop for major changes
@@ -1503,13 +1503,13 @@
 **Expected Impact:** Foundation for new providers | **Effort:** ~4-6 hours
 
 - [ ] **P1.1** Add Perplexity provider preset
-  - [ ] `researchclaw/llm/__init__.py` — Add `perplexity` to `PROVIDER_PRESETS`
+  - [ ] `berb/llm/__init__.py` — Add `perplexity` to `PROVIDER_PRESETS`
   - [ ] `base_url`: `https://api.perplexity.ai`
   - [ ] API key config: `PERPLEXITY_API_KEY`
   - [ ] Test connectivity
 
 - [ ] **P1.2** Add xAI provider preset
-  - [ ] `researchclaw/llm/__init__.py` — Add `xai` to `PROVIDER_PRESETS`
+  - [ ] `berb/llm/__init__.py` — Add `xai` to `PROVIDER_PRESETS`
   - [ ] `base_url`: `https://api.x.ai/v1`
   - [ ] API key config: `XAI_API_KEY`
   - [ ] Test connectivity
@@ -1531,13 +1531,13 @@
 **Expected Impact:** +67% literature coverage, +18% hypothesis quality | **Effort:** ~10-12 hours
 
 - [ ] **P2.1** Create Perplexity client
-  - [ ] `researchclaw/literature/perplexity_client.py`
+  - [ ] `berb/literature/perplexity_client.py`
   - [ ] `PerplexityClient` class
   - [ ] `deep_research()` method for literature review
   - [ ] `verify_citation()` method for verification
 
 - [ ] **P2.2** Create Grok client
-  - [ ] `researchclaw/literature/grok_client.py`
+  - [ ] `berb/literature/grok_client.py`
   - [ ] `GrokClient` class
   - [ ] `analyze_full_paper()` method (2M context)
   - [ ] `synthesize_papers()` method (cross-paper synthesis)

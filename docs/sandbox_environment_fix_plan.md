@@ -58,7 +58,7 @@ the pipeline fails to use them because:
 ## 2. Issues Identified
 
 ### E1: `pkg_hint` doesn't list most installed packages [CRITICAL]
-**File:** `researchclaw/pipeline/executor.py:2062-2073`
+**File:** `berb/pipeline/executor.py:2062-2073`
 **Current:**
 ```python
 pkg_extras = ", torchdiffeq, gymnasium, networkx, and pip-installable packages"
@@ -68,26 +68,26 @@ pkg_extras = ", torchdiffeq, gymnasium, networkx, and pip-installable packages"
 **Impact:** LLM thinks torchvision isn't available → avoids it → generates synthetic data instead of using CIFAR-10
 
 ### E2: Phase 1/Phase 2 container isolation BUG [CRITICAL]
-**File:** `researchclaw/experiment/docker_sandbox.py:169-181, 317-354`
+**File:** `berb/experiment/docker_sandbox.py:169-181, 317-354`
 **Bug:** Phase 1 runs `docker run --rm` (installs packages, then container is removed). Phase 2 runs a NEW `docker run --rm` from the same base image. Packages installed in Phase 1 are **completely lost** because the container was deleted.
 **Impact:** `auto_install_deps` and `pip_pre_install` features are entirely non-functional. Any package not in the base Docker image is unavailable during experiment execution.
 
 ### E3: Default `network_policy` is `"none"` [HIGH]
-**File:** `researchclaw/config.py:163`
+**File:** `berb/config.py:163`
 **Current:** `network_policy: str = "none"`
 **Impact:** Even with `auto_install_deps: True`, Phase 1 never executes because it requires `network_policy == "pip_only"`. No runtime installation or download is possible by default.
 
 ### E4: No dataset download phase [HIGH]
-**File:** `researchclaw/experiment/docker_sandbox.py` (no implementation exists)
+**File:** `berb/experiment/docker_sandbox.py` (no implementation exists)
 **Missing:** There is no mechanism for downloading datasets before experiment execution. The only datasets available are the 4 pre-cached in the Docker image.
 **Impact:** Experiments requiring any dataset beyond CIFAR-10/100, MNIST, FashionMNIST cannot use real data.
 
 ### E5: Pre-cached dataset list inconsistent [MEDIUM]
-**File:** `researchclaw/docker/Dockerfile:27-30` vs `researchclaw/prompts.py:328-332`
+**File:** `berb/docker/Dockerfile:27-30` vs `berb/prompts.py:328-332`
 **Bug:** Dockerfile only pre-caches CIFAR-10 and FashionMNIST, but the `dataset_guidance` prompt also lists CIFAR-100 and MNIST as pre-cached. If LLM uses `download=False` for CIFAR-100/MNIST, it will get a FileNotFoundError.
 
 ### E6: Dockerfile missing commonly-needed ML packages [MEDIUM]
-**File:** `researchclaw/docker/Dockerfile:20-24`
+**File:** `berb/docker/Dockerfile:20-24`
 **Missing packages:**
 - Vision: `timm`, `albumentations`, `kornia`, `Pillow`
 - General ML: `einops`, `torchmetrics`, `lightning`
@@ -96,20 +96,20 @@ pkg_extras = ", torchdiffeq, gymnasium, networkx, and pip-installable packages"
 - Utilities: `h5py`, `tensorboard`, `wandb`
 
 ### E7: `dataset_guidance` prompt is misleading [MEDIUM]
-**File:** `researchclaw/prompts.py:333`
+**File:** `berb/prompts.py:333`
 **Current:** "For other torchvision datasets: use `download=True` (network available during setup)"
 **Reality:** With default `network_policy: "none"`, network is NOT available at any point. This guidance causes the LLM to generate code with `download=True` that fails with DNS resolution errors.
 
 ### E8: No `requirements.txt` generation or processing [LOW]
-**File:** `researchclaw/pipeline/executor.py` (code_generation stage)
+**File:** `berb/pipeline/executor.py` (code_generation stage)
 **Missing:** The LLM is not guided to declare its package requirements. No `requirements.txt` is generated alongside experiment code.
 
 ### E9: No LLM-generated setup script support [LOW]
-**File:** `researchclaw/experiment/docker_sandbox.py`
+**File:** `berb/experiment/docker_sandbox.py`
 **Missing:** No support for a `setup.py` or `download_data.py` script that runs before `main.py` to prepare the environment (download datasets, install packages, etc.).
 
 ### E10: No dataset registry / availability matrix [LOW]
-**File:** `researchclaw/prompts.py`
+**File:** `berb/prompts.py`
 **Missing:** The LLM has no knowledge of which datasets are downloadable (and how), which are too large, and what fallback alternatives exist. It should know: "ImageNet is 168GB — use Tiny-ImageNet (200 classes, 500/class) or ImageNet-1k subset instead."
 
 ---
@@ -156,7 +156,7 @@ Replace the broken two-container model with a **single container** running a **w
 ## 4. Implementation Plan
 
 ### Task E1: Fix `pkg_hint` to list all installed packages [CRITICAL]
-**File:** `researchclaw/pipeline/executor.py:2062`
+**File:** `berb/pipeline/executor.py:2062`
 **Change:** Update `pkg_extras` string for docker mode to include ALL pre-installed packages.
 ```python
 # Before:
@@ -173,11 +173,11 @@ pkg_extras = (
 
 ### Task E2: Fix Phase 1/Phase 2 container isolation — single-container execution [CRITICAL]
 **Files:**
-- `researchclaw/docker/entrypoint.sh` (NEW) — wrapper script
-- `researchclaw/docker/Dockerfile` (MODIFY) — new entrypoint
-- `researchclaw/experiment/docker_sandbox.py` (MODIFY) — refactor execution model
+- `berb/docker/entrypoint.sh` (NEW) — wrapper script
+- `berb/docker/Dockerfile` (MODIFY) — new entrypoint
+- `berb/experiment/docker_sandbox.py` (MODIFY) — refactor execution model
 
-**E2.1: Create wrapper entrypoint script** (`researchclaw/docker/entrypoint.sh`)
+**E2.1: Create wrapper entrypoint script** (`berb/docker/entrypoint.sh`)
 ```bash
 #!/bin/bash
 set -e
@@ -273,7 +273,7 @@ def _build_run_command(self, staging_dir, *, entry_point, container_name, networ
 **Effort:** 3-4 hours
 
 ### Task E3: Change default `network_policy` to `"setup_only"` [HIGH]
-**File:** `researchclaw/config.py:163`
+**File:** `berb/config.py:163`
 ```python
 # Before:
 network_policy: str = "none"
@@ -286,8 +286,8 @@ Also update docstring and config examples.
 
 ### Task E4: Add LLM-generated `setup.py` for dataset downloads [HIGH]
 **Files:**
-- `researchclaw/prompts.py` — add `setup_script_guidance` block
-- `researchclaw/pipeline/executor.py` — code generation stage generates setup.py alongside main.py
+- `berb/prompts.py` — add `setup_script_guidance` block
+- `berb/pipeline/executor.py` — code generation stage generates setup.py alongside main.py
 
 **E4.1: Add `setup_script_guidance` prompt block**
 ```
@@ -313,7 +313,7 @@ In the code generation prompt, instruct the LLM to produce a second file `setup.
 **Effort:** 2 hours
 
 ### Task E5: Fix pre-cached dataset list — expand + sync with prompt [MEDIUM]
-**File:** `researchclaw/docker/Dockerfile:27-30`
+**File:** `berb/docker/Dockerfile:27-30`
 
 **Add to Dockerfile:**
 ```dockerfile
@@ -341,7 +341,7 @@ torchvision.datasets.SVHN(root='/opt/datasets', split='test', download=True); \
 **Effort:** 30 min
 
 ### Task E6: Expand Dockerfile with commonly-needed ML packages [MEDIUM]
-**File:** `researchclaw/docker/Dockerfile`
+**File:** `berb/docker/Dockerfile`
 
 **Add package groups:**
 ```dockerfile
@@ -364,7 +364,7 @@ RUN python3 -m pip install \
 **Effort:** 30 min
 
 ### Task E7: Fix misleading `dataset_guidance` prompt [MEDIUM]
-**File:** `researchclaw/prompts.py:323-369`
+**File:** `berb/prompts.py:323-369`
 
 **Changes:**
 1. Accurately reflect which datasets are pre-cached vs. need downloading
@@ -400,8 +400,8 @@ ImageNet (168GB), LAION (>1TB), etc.
 
 ### Task E8: Add `requirements.txt` generation support [LOW]
 **Files:**
-- `researchclaw/prompts.py` — add requirement to code_generation prompt
-- `researchclaw/experiment/docker_sandbox.py` — auto-generate from detected imports
+- `berb/prompts.py` — add requirement to code_generation prompt
+- `berb/experiment/docker_sandbox.py` — auto-generate from detected imports
 
 **E8.1: LLM generates `requirements.txt`**
 Add to code_generation prompt:
@@ -416,7 +416,7 @@ In `docker_sandbox.py`, before container execution, auto-detect imports and writ
 **Effort:** 1 hour
 
 ### Task E9: Add dataset registry for LLM guidance [LOW]
-**File:** `researchclaw/data/dataset_registry.yaml` (NEW)
+**File:** `berb/data/dataset_registry.yaml` (NEW)
 **Content:** Structured registry of common ML datasets with:
 - Name, domain, size, download method
 - Availability tier (pre-cached / downloadable / host-only)
@@ -427,7 +427,7 @@ In `docker_sandbox.py`, before container execution, auto-detect imports and writ
 **Effort:** 1 hour
 
 ### Task E10: Add `entrypoint.sh` non-root pip install support [LOW]
-**File:** `researchclaw/docker/Dockerfile`
+**File:** `berb/docker/Dockerfile`
 **Issue:** Container runs as `researcher` (non-root) but pip install needs root (or `--break-system-packages --user`).
 **Fix:** In `entrypoint.sh`, use `--user` flag for pip install, or run as root and drop privileges before Phase 2.
 **Alternative:** Use `--user 0:0` for the container and run experiment code under `researcher` via `su -c`.
@@ -502,13 +502,13 @@ E9 (dataset registry)      ─────────── Last (enhancement)
 
 | Action | File | Tasks |
 |--------|------|-------|
-| CREATE | `researchclaw/docker/entrypoint.sh` | E2 |
-| CREATE | `researchclaw/data/dataset_registry.yaml` | E9 |
-| MODIFY | `researchclaw/docker/Dockerfile` | E2, E5, E6, E10 |
-| MODIFY | `researchclaw/experiment/docker_sandbox.py` | E2, E3, E8 |
-| MODIFY | `researchclaw/config.py` | E3 |
-| MODIFY | `researchclaw/pipeline/executor.py` | E1, E4 |
-| MODIFY | `researchclaw/prompts.py` | E4, E7 |
+| CREATE | `berb/docker/entrypoint.sh` | E2 |
+| CREATE | `berb/data/dataset_registry.yaml` | E9 |
+| MODIFY | `berb/docker/Dockerfile` | E2, E5, E6, E10 |
+| MODIFY | `berb/experiment/docker_sandbox.py` | E2, E3, E8 |
+| MODIFY | `berb/config.py` | E3 |
+| MODIFY | `berb/pipeline/executor.py` | E1, E4 |
+| MODIFY | `berb/prompts.py` | E4, E7 |
 | MODIFY | `tests/test_docker_sandbox.py` | Tests |
 
 ---

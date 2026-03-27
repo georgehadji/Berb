@@ -1,4 +1,4 @@
-"""Tests for researchclaw.web.search — WebSearchClient."""
+"""Tests for berb.web.search — WebSearchClient."""
 
 from __future__ import annotations
 
@@ -88,7 +88,7 @@ class TestDDGParsing:
 
 
 class TestWebSearchClient:
-    @patch("researchclaw.web.search.urlopen")
+    @patch("berb.web.search.urlopen")
     def test_search_ddg_fallback_no_api_key(self, mock_urlopen):
         """When no API key is set, uses DuckDuckGo fallback."""
         mock_resp = MagicMock()
@@ -102,7 +102,7 @@ class TestWebSearchClient:
         response = client.search("test query")
         assert response.source == "duckduckgo"
 
-    @patch("researchclaw.web.search.urlopen")
+    @patch("berb.web.search.urlopen")
     def test_search_ddg_error_graceful(self, mock_urlopen):
         mock_urlopen.side_effect = Exception("Network error")
 
@@ -138,7 +138,7 @@ class TestWebSearchClient:
             assert response.results[0].title == "Tavily Result"
             assert response.answer == "AI summary answer"
 
-    @patch("researchclaw.web.search.urlopen")
+    @patch("berb.web.search.urlopen")
     def test_search_multi_deduplication(self, mock_urlopen):
         mock_resp = MagicMock()
         mock_resp.read.return_value = b"""

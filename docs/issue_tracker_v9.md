@@ -31,14 +31,14 @@
 - **Root Cause**: `_extract_paper_title()` in `executor.py:242` only matched `# ` (H1). When LLM generates `## Title ...` (H2), no candidates were found → returned `"Untitled Paper"`.
 - **Affected Runs**: Run 12 (`\title{Untitled Paper}`)
 - **Files**:
-  - `researchclaw/pipeline/executor.py:240-253` — regex now matches `#{1,2}`, strips "Title " prefix
-  - `researchclaw/templates/converter.py:429-451` — `_extract_title()` now handles level 1 and 2
+  - `berb/pipeline/executor.py:240-253` — regex now matches `#{1,2}`, strips "Title " prefix
+  - `berb/templates/converter.py:429-451` — `_extract_title()` now handles level 1 and 2
 - **Fix**: Added H2 fallback; handles `## Title <actual title>` pattern by stripping literal "Title " prefix.
 
 ### I-02: Converter `_extract_title` also level-1 only (FIXED)
 - **Severity**: Medium
 - **Status**: FIXED — v9 patch (same fix as I-01)
-- **File**: `researchclaw/templates/converter.py:434,442,447` — `sec.level in (1, 2)` + "Title " prefix strip
+- **File**: `berb/templates/converter.py:434,442,447` — `sec.level in (1, 2)` + "Title " prefix strip
 - **Note**: Both I-01 and I-02 fixed together.
 
 ### I-03: LaTeX outer fence not stripped (FIXED)
@@ -174,7 +174,7 @@
 
 ### I-23: Missing seminal papers (FIXED)
 - **Status**: FIXED — `data/seminal_papers.yaml` seed library
-- **File**: `researchclaw/data/seminal_papers.yaml`
+- **File**: `berb/data/seminal_papers.yaml`
 
 ### I-24: Rate-limited API searches (FIXED)
 - **Status**: FIXED — commit `63c5a7d`
@@ -239,7 +239,7 @@
   4. Generate code that correctly uses the framework APIs
 - **Current Problem**: Generated training code may use incorrect or outdated API calls, leading to experiment failures (e.g., Run 11 QLoRA training diverged)
 - **Proposed Approaches**:
-  - **Option A: Static doc snippets** — Bundle curated API reference snippets for common frameworks in `researchclaw/data/framework_docs/`. Simple, fast, but requires manual updates.
+  - **Option A: Static doc snippets** — Bundle curated API reference snippets for common frameworks in `berb/data/framework_docs/`. Simple, fast, but requires manual updates.
   - **Option B: Context7-style MCP** — Use Context7 (upstash/context7) to fetch live documentation at runtime via MCP protocol. Always up-to-date, but adds network dependency.
   - **Option C: Git clone + extract** — Clone framework repos at pipeline startup, extract README/docs/examples, summarize via LLM, inject into prompts. Most complete, but slow and requires network.
   - **Option D: Hybrid** — Bundle static docs for top frameworks + fallback to web fetch for unknown ones.
@@ -290,7 +290,7 @@ Evidence: Run 11 (QLoRA) — all 8 methods diverged; likely caused by incorrect 
 #### Recommended Implementation: Hybrid Static + Web Fetch
 
 **Phase 1 (Static — immediate):**
-- Create `researchclaw/data/framework_docs/` directory
+- Create `berb/data/framework_docs/` directory
 - Bundle curated API snippets for top 5 frameworks:
   - `trl.md` — SFTTrainer, DPOTrainer, PPOTrainer usage + config
   - `llamafactory.md` — YAML config format, CLI usage, dataset format
@@ -302,12 +302,12 @@ Evidence: Run 11 (QLoRA) — all 8 methods diverged; likely caused by incorrect 
 - **Effort**: ~4 hours, no network dependency
 
 **Phase 2 (Web Fetch — later):**
-- Add `FrameworkDocFetcher` class in `researchclaw/literature/framework_docs.py`
+- Add `FrameworkDocFetcher` class in `berb/literature/framework_docs.py`
 - On experiment_design detection of framework name:
   1. Check if `llms.txt` exists at framework's docs URL
   2. If yes, fetch and extract relevant sections
   3. If no, fall back to static bundle
-- Cache fetched docs locally (`.researchclaw_cache/framework_docs/`)
+- Cache fetched docs locally (`.berb_cache/framework_docs/`)
 - TTL: 7 days (frameworks don't change API that often)
 - **Effort**: ~8 hours, requires network during code gen stage
 
@@ -319,13 +319,13 @@ Evidence: Run 11 (QLoRA) — all 8 methods diverged; likely caused by incorrect 
 
 #### Phase 1 Implementation (COMPLETED — v9 patch)
 
-- Created `researchclaw/data/framework_docs/` with 5 curated API reference files:
+- Created `berb/data/framework_docs/` with 5 curated API reference files:
   - `trl.md` — SFTTrainer, DPOTrainer, GRPOTrainer, PPOTrainer, PEFT integration
   - `peft.md` — LoRA, QLoRA, DoRA configs, save/load, target_modules by model
   - `transformers_training.md` — TrainingArguments, Trainer, tokenization, causal LM
   - `llamafactory.md` — YAML config, CLI, dataset formats, DPO, export
   - `axolotl.md` — YAML config, dataset formats, DPO, multi-GPU
-- Added `detect_frameworks()` and `load_framework_docs()` in `researchclaw/data/__init__.py`
+- Added `detect_frameworks()` and `load_framework_docs()` in `berb/data/__init__.py`
 - Injected into both `experiment_design` and `code_generation` stages in `executor.py`
 - Auto-detection based on topic + hypothesis + experiment plan keywords
 - Max 8000 chars for code_generation, 4000 chars for experiment_design (to avoid context overflow)
@@ -406,27 +406,27 @@ FRAMEWORK_KEYWORDS = {
 - Add architecture planning substage before code generation
 - LLM produces file structure, class hierarchy, data flow diagram
 - Code generation uses architecture spec as constraint
-- Files: `researchclaw/pipeline/executor.py` (new substage), `researchclaw/prompts.py` (architecture prompt)
+- Files: `berb/pipeline/executor.py` (new substage), `berb/prompts.py` (architecture prompt)
 
 **Phase 2: Execution-in-the-Loop** (Priority: HIGH)
 - After initial code generation, run code in sandbox
 - Parse stderr/stdout for errors
 - Feed errors back to LLM for iterative fix (max N iterations)
 - Already partially exists in current REFINE loop — needs to be tightened into inner code-fix loop
-- Files: `researchclaw/pipeline/executor.py`, `researchclaw/experiment/docker_sandbox.py`
+- Files: `berb/pipeline/executor.py`, `berb/experiment/docker_sandbox.py`
 
 **Phase 3: Solution Tree Search** (Priority: CRITICAL)
 - Multiple candidate solutions generated in parallel
 - Each evaluated via sandbox execution (runtime errors, metric quality)
 - Best candidate selected or merged; backtrack on failures
 - Inspired by AIDE/AI Scientist v2 tree search pattern
-- Files: New `researchclaw/pipeline/code_agent.py`, `researchclaw/pipeline/executor.py`
+- Files: New `berb/pipeline/code_agent.py`, `berb/pipeline/executor.py`
 
 **Phase 4: Multi-Agent Review** (Priority: MEDIUM)
 - Coder agent generates code, reviewer agent critiques
 - Dialog continues until reviewer approves or max rounds reached
 - Catches logical errors, missing edge cases, poor experiment design
-- Files: `researchclaw/pipeline/code_agent.py`
+- Files: `berb/pipeline/code_agent.py`
 
 #### Task Breakdown
 
@@ -497,8 +497,8 @@ Branch: `feat/advanced-code-agent` | Commits: `93d3233`, `4b91ac9`
 
 | File | Issue Count | Lines |
 |------|------------|-------|
-| `researchclaw/pipeline/executor.py` | 14 | ~6000 |
-| `researchclaw/prompts.py` | 10 | ~2500 |
-| `researchclaw/templates/converter.py` | 5 | ~1200 |
-| `researchclaw/experiment/docker_sandbox.py` | 3 | ~420 |
-| `researchclaw/docker/Dockerfile` | 3 | ~45 |
+| `berb/pipeline/executor.py` | 14 | ~6000 |
+| `berb/prompts.py` | 10 | ~2500 |
+| `berb/templates/converter.py` | 5 | ~1200 |
+| `berb/experiment/docker_sandbox.py` | 3 | ~420 |
+| `berb/docker/Dockerfile` | 3 | ~45 |

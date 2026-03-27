@@ -2,7 +2,7 @@
 
 Caches search results by (query, source, limit) hash to avoid
 redundant API calls. Cache entries expire after TTL_SEC seconds.
-Cache directory: .researchclaw_cache/literature/
+Cache directory: .berb_cache/literature/
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_CACHE_DIR = Path(".researchclaw_cache") / "literature"
+_DEFAULT_CACHE_DIR = Path(".berb_cache") / "literature"
 _TTL_SEC = 86400 * 7  # 7 days (default for S2, OpenAlex)
 
 # Per-source TTLs: arXiv updates daily at midnight, so 24h cache is optimal.

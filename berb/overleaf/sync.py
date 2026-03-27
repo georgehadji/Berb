@@ -82,7 +82,7 @@ class OverleafSync:
             return False
 
         ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-        self._git("commit", "-m", f"AutoResearchClaw sync: {ts}")
+        self._git("commit", "-m", f"Berb sync: {ts}")
         self._git("push", "origin", self.branch)
         self._last_sync = datetime.now(timezone.utc)
         logger.info("Pushed paper to Overleaf")

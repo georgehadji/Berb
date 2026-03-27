@@ -39,7 +39,7 @@ class ACPConfig:
     agent: str = "claude"
     cwd: str = "."
     acpx_command: str = ""  # auto-detect if empty
-    session_name: str = "researchclaw"
+    session_name: str = "berb"
     timeout_sec: int = 1800  # per-prompt timeout
 
 
@@ -88,7 +88,7 @@ class ACPClient:
             agent=acp.agent,
             cwd=acp.cwd,
             acpx_command=getattr(acp, "acpx_command", ""),
-            session_name=getattr(acp, "session_name", "researchclaw"),
+            session_name=getattr(acp, "session_name", "berb"),
             timeout_sec=getattr(acp, "timeout_sec", 1800),
         ))
 

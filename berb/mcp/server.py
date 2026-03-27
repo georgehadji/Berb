@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class ResearchClawMCPServer:
-    """MCP Server that exposes AutoResearchClaw capabilities as tools.
+    """MCP Server that exposes Berb capabilities as tools.
 
     External agents (e.g., Claude, OpenClaw) can connect to this server
     and invoke pipeline operations via the MCP protocol.

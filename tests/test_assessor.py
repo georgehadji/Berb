@@ -1,4 +1,4 @@
-"""Tests for researchclaw.assessor — Paper Quality Assessor (Agent D3).
+"""Tests for berb.assessor — Paper Quality Assessor (Agent D3).
 
 20+ tests covering rubrics, scorer, venue_recommender, and comparator.
 """

@@ -72,9 +72,9 @@ experiment:
     gpu_required: false
     max_memory_mb: 4096
   # Docker sandbox settings (only used when mode: "docker")
-  # Build image first: docker build -t researchclaw/experiment:latest researchclaw/docker/
+  # Build image first: docker build -t berb/experiment:latest berb/docker/
   docker:
-    image: "researchclaw/experiment:latest"
+    image: "berb/experiment:latest"
     gpu_enabled: true
     # gpu_device_ids: [0]        # empty = all GPUs
     memory_limit_mb: 8192
@@ -89,17 +89,17 @@ experiment:
     port: 22                # SSH port
     key_path: ""            # Path to private key (default: ~/.ssh/id_rsa)
     gpu_ids: []             # e.g. [0, 1] for CUDA_VISIBLE_DEVICES
-    remote_workdir: "/tmp/researchclaw_experiments"
+    remote_workdir: "/tmp/berb_experiments"
     remote_python: "python3"
     setup_commands: []      # e.g. ["source ~/venv/bin/activate", "pip install torch"]
     # Docker-over-SSH (most secure remote execution)
     use_docker: false       # Set true to run experiments inside Docker on remote host
-    docker_image: "researchclaw/experiment:latest"
+    docker_image: "berb/experiment:latest"
     docker_network_policy: "none"   # none | full
     docker_memory_limit_mb: 8192
     docker_shm_size_mb: 2048
   # OpenCode Beast Mode — external AI coding agent for complex experiments
-  # Install: npm i -g opencode-ai@latest  (or use `researchclaw setup`)
+  # Install: npm i -g opencode-ai@latest  (or use `berb setup`)
   opencode:
     enabled: true                # Master switch (default: true)
     auto: true                   # Auto-trigger without confirmation (default: true)
@@ -132,7 +132,7 @@ experiment:
 #       key_path: "~/.ssh/id_rsa"
 #       gpu_ids: [0]
 #       use_docker: true
-#       docker_image: "researchclaw/experiment:latest"
+#       docker_image: "berb/experiment:latest"
 #       docker_network_policy: "none"
 #
 # 3. Colab via SSH tunnel:
@@ -150,7 +150,7 @@ experiment:
 #   experiment:
 #     mode: "colab_drive"
 #     colab_drive:
-#       drive_root: "~/Library/CloudStorage/GoogleDrive-you@gmail.com/My Drive/researchclaw"
+#       drive_root: "~/Library/CloudStorage/GoogleDrive-you@gmail.com/My Drive/berb"
 #       poll_interval_sec: 30
 #       timeout_sec: 3600
 #       setup_script: "pip install torch torchvision -q"
@@ -174,7 +174,7 @@ experiment:
     render_timeout_sec: 30
     # Security: Docker sandbox for visualization code execution
     # use_docker: null  # null = auto-detect, true = force, false = disable
-    docker_image: "researchclaw/experiment:latest"
+    docker_image: "berb/experiment:latest"
     # Output format: "python" (Matplotlib/Seaborn) or "latex" (TikZ/PGFPlots)
     output_format: "python"
     # Nano Banana (Gemini native image generation)

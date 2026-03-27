@@ -280,7 +280,7 @@ def test_execute_stage_creates_stage_dir_writes_artifacts_and_meta(
 ) -> None:
     fake_llm = FakeLLMClientWithConfig("# Goal\n\nMocked goal body")
     monkeypatch.setattr(
-        "researchclaw.pipeline.executor.LLMClient.from_rc_config",
+        "berb.pipeline.executor.LLMClient.from_rc_config",
         lambda _config: fake_llm,
     )
 
@@ -502,7 +502,7 @@ def test_execute_stage_llm_client_creation_error_falls_back_without_crash(
     def boom(_config: RCConfig):
         raise RuntimeError("llm init failed")
 
-    monkeypatch.setattr("researchclaw.pipeline.executor.LLMClient.from_rc_config", boom)
+    monkeypatch.setattr("berb.pipeline.executor.LLMClient.from_rc_config", boom)
     result = rc_executor.execute_stage(
         Stage.TOPIC_INIT,
         run_dir=run_dir,
@@ -574,7 +574,7 @@ class TestStageHealth:
         from berb.pipeline.stages import Stage
 
         config = RCConfig.load(
-            Path(__file__).parent.parent / "config.researchclaw.example.yaml",
+            Path(__file__).parent.parent / "config.berb.example.yaml",
             check_paths=False,
         )
         result = execute_stage(
@@ -596,11 +596,11 @@ class TestStageHealth:
         from berb.pipeline.stages import Stage
 
         config = RCConfig.load(
-            Path(__file__).parent.parent / "config.researchclaw.example.yaml",
+            Path(__file__).parent.parent / "config.berb.example.yaml",
             check_paths=False,
         )
 
-        with patch("researchclaw.pipeline.executor.LLMClient") as mock_llm_cls:
+        with patch("berb.pipeline.executor.LLMClient") as mock_llm_cls:
             mock_client = MagicMock()
             mock_client.chat.return_value = MagicMock(
                 content='{"topic": "test", "research_questions": ["q1"]}'
@@ -634,11 +634,11 @@ class TestStageHealth:
         from berb.pipeline.stages import Stage
 
         config = RCConfig.load(
-            Path(__file__).parent.parent / "config.researchclaw.example.yaml",
+            Path(__file__).parent.parent / "config.berb.example.yaml",
             check_paths=False,
         )
 
-        with patch("researchclaw.pipeline.executor.LLMClient") as mock_llm_cls:
+        with patch("berb.pipeline.executor.LLMClient") as mock_llm_cls:
             mock_client = MagicMock()
             mock_client.chat.return_value = MagicMock(
                 content='{"topic": "test", "sub_problems": []}'

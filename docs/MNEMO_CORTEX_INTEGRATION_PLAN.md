@@ -93,7 +93,7 @@
 **Scope:** Add Mnemo Cortex as an optional memory backend alongside existing MetaClaw integration.
 
 **Implementation:**
-1. Create `researchclaw/mnemo_bridge/` module
+1. Create `berb/mnemo_bridge/` module
 2. Implement 3 core functions:
    - `inject_context(stage, prompt)` → calls `/context`
    - `archive_stage(stage, result)` → calls `/ingest`
@@ -129,7 +129,7 @@ mnemo_bridge:
 **Scope:** Full integration using Mnemo's Session Watcher for automatic capture.
 
 **Implementation:**
-1. Modify `researchclaw/pipeline/runner.py` to write session JSONL files
+1. Modify `berb/pipeline/runner.py` to write session JSONL files
 2. Run Mnemo Watcher as background daemon
 3. Watcher auto-captures all LLM exchanges to `/ingest`
 4. Add `/writeback` call at end of each research run
@@ -265,19 +265,19 @@ mnemo_bridge:
 **Goal:** Basic Mnemo integration working alongside MetaClaw.
 
 **Tasks:**
-1. [ ] Create `researchclaw/mnemo_bridge/` module
+1. [ ] Create `berb/mnemo_bridge/` module
    - `__init__.py` - Bridge class
    - `client.py` - HTTP client for Mnemo endpoints
    - `config.py` - Config validation
-2. [ ] Add config schema to `researchclaw/config.py`
-3. [ ] Implement `/context` injection in `researchclaw/pipeline/runner.py`
+2. [ ] Add config schema to `berb/config.py`
+3. [ ] Implement `/context` injection in `berb/pipeline/runner.py`
 4. [ ] Implement `/ingest` calls after each stage
 5. [ ] Add `mnemo-cortex` to `pyproject.toml` dependencies (optional)
 6. [ ] Write tests: `tests/test_mnemo_bridge.py`
 
 **Files to Create:**
 ```
-researchclaw/mnemo_bridge/
+berb/mnemo_bridge/
 ├── __init__.py      # MnemoBridge class
 ├── client.py        # HTTP client
 ├── config.py        # Config validation
@@ -317,7 +317,7 @@ mnemo_bridge:
 
 **Files to Create:**
 ```
-researchclaw/mnemo_bridge/
+berb/mnemo_bridge/
 ├── watcher.py       # Session watcher daemon
 └── session_format.py # JSONL format definition
 ```
@@ -347,7 +347,7 @@ researchclaw/mnemo_bridge/
 **Tasks:**
 1. [ ] Add circuit-breaker for Mnemo server failures
 2. [ ] Implement graceful degradation (pipeline continues if Mnemo down)
-3. [ ] Add health check to `researchclaw doctor`
+3. [ ] Add health check to `berb doctor`
 4. [ ] Write integration guide: `docs/mnemo-integration.md`
 5. [ ] Create example config: `config.mnemo.example.yaml`
 6. [ ] Add to CI/CD tests
@@ -422,11 +422,11 @@ mnemo_bridge:
 ### Bridge Adapter Class
 
 ```python
-# researchclaw/mnemo_bridge/__init__.py
+# berb/mnemo_bridge/__init__.py
 
 import httpx
 from typing import Optional
-from researchclaw.config import RCConfig
+from berb.config import RCConfig
 
 class MnemoBridge:
     def __init__(self, config: RCConfig):
@@ -526,9 +526,9 @@ class MnemoBridge:
 ### Usage in Pipeline Runner
 
 ```python
-# researchclaw/pipeline/runner.py
+# berb/pipeline/runner.py
 
-from researchclaw.mnemo_bridge import MnemoBridge
+from berb.mnemo_bridge import MnemoBridge
 
 class Runner:
     def __init__(self, config: RCConfig):
@@ -581,7 +581,7 @@ class Runner:
 # tests/test_mnemo_bridge.py
 
 import pytest
-from researchclaw.mnemo_bridge import MnemoBridge
+from berb.mnemo_bridge import MnemoBridge
 
 @pytest.fixture
 def mnemo_bridge(config):
@@ -679,7 +679,7 @@ class TestMnemoIntegration:
 
 1. **Decision:** Approve Phase 1 implementation (core bridge)
 2. **Setup:** Install Mnemo Cortex locally for testing
-3. **Development:** Create `researchclaw/mnemo_bridge/` module
+3. **Development:** Create `berb/mnemo_bridge/` module
 4. **Testing:** Write unit tests + integration tests
 5. **Documentation:** Write `docs/mnemo-integration.md`
 6. **Rollout:** Enable for beta testers, gather feedback
@@ -740,5 +740,5 @@ curl -X POST http://localhost:50001/preflight \
 
 - **Mnemix Repo:** `E:\Documents\Vibe-Coding\Github Projects\Research\AutoResearchClaw-main\AutoResearchClaw-main\mnemix`
 - **Mnemo Cortex GitHub:** https://github.com/GuyMannDude/mnemo-cortex
-- **AutoResearchClaw MetaClaw Integration:** `researchclaw/metaclaw_bridge/`
+- **AutoResearchClaw MetaClaw Integration:** `berb/metaclaw_bridge/`
 - **OpenClaw Adapter Example:** `mnemix/adapters/openclaw/`

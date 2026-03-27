@@ -1,4 +1,4 @@
-"""Integration tests for researchclaw.web — WebSearchAgent end-to-end."""
+"""Integration tests for berb.web — WebSearchAgent end-to-end."""
 
 from __future__ import annotations
 
@@ -148,8 +148,8 @@ class TestWebSearchAgent:
         assert len(pdfs) == 2
         assert all(u.endswith(".pdf") for u in pdfs)
 
-    @patch("researchclaw.web.search.urlopen")
-    @patch("researchclaw.web.scholar.scholarly")
+    @patch("berb.web.search.urlopen")
+    @patch("berb.web.scholar.scholarly")
     def test_search_and_extract_minimal(self, mock_scholarly, mock_urlopen):
         """End-to-end test with mocked HTTP — DuckDuckGo + mocked Scholar."""
         mock_resp = MagicMock()
@@ -171,9 +171,9 @@ class TestWebSearchAgent:
         assert result.topic == "knowledge distillation"
         assert result.elapsed_seconds > 0
 
-    @patch("researchclaw.web.search.urlopen")
-    @patch("researchclaw.web.scholar.scholarly")
-    @patch("researchclaw.web.crawler.urlopen")
+    @patch("berb.web.search.urlopen")
+    @patch("berb.web.scholar.scholarly")
+    @patch("berb.web.crawler.urlopen")
     def test_search_and_extract_with_crawling(self, mock_crawl_urlopen, mock_scholarly, mock_search_urlopen):
         """Test with crawling enabled."""
         mock_search_resp = MagicMock()

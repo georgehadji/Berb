@@ -360,7 +360,7 @@ class TestDockerProfileMapping:
         """All domains should map to a valid docker profile."""
         import yaml
 
-        profiles_path = Path(__file__).parent.parent / "researchclaw" / "data" / "docker_profiles.yaml"
+        profiles_path = Path(__file__).parent.parent / "berb" / "data" / "docker_profiles.yaml"
         if not profiles_path.exists():
             pytest.skip("docker_profiles.yaml not found")
 
@@ -380,7 +380,7 @@ class TestDockerProfileMapping:
         """All domain profiles should have a docker mapping."""
         import yaml
 
-        profiles_path = Path(__file__).parent.parent / "researchclaw" / "data" / "docker_profiles.yaml"
+        profiles_path = Path(__file__).parent.parent / "berb" / "data" / "docker_profiles.yaml"
         if not profiles_path.exists():
             pytest.skip("docker_profiles.yaml not found")
 
