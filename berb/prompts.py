@@ -1,4 +1,4 @@
-"""Prompt externalization for the ResearchClaw pipeline.
+"""Prompt externalization for the Berb pipeline.
 
 All 23 stage prompts are defined here as defaults and can be overridden
 via a user-provided YAML file.  Users customize prompts without touching
@@ -17,7 +17,7 @@ Usage
 -----
 ::
 
-    from researchclaw.prompts import PromptManager
+    from berb.prompts import PromptManager
 
     pm = PromptManager()                           # defaults only
     pm = PromptManager("my_prompts.yaml")          # with user overrides

@@ -55,7 +55,7 @@ def _header(summary: dict[str, Any], run_dir: Path) -> str:
     status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"
 
     lines = [
-        "# ResearchClaw Run Report",
+        "# Berb Run Report",
         "",
         f"**Run ID**: {run_id}",
         f"**Date**: {generated}",

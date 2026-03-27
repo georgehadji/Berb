@@ -139,7 +139,7 @@ class PDFExtractor:
         tmp_path = None
         try:
             req = Request(url, headers={
-                "User-Agent": "ResearchClaw/0.5 (Academic Research Bot)"
+                "User-Agent": "Berb/0.5 (Academic Research Bot)"
             })
             resp = urlopen(req, timeout=30)  # noqa: S310
             data = resp.read()

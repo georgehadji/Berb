@@ -1,4 +1,4 @@
-"""ResearchClaw CLI — run the 23-stage autonomous research pipeline."""
+"""Berb CLI — run the 23-stage autonomous research pipeline."""
 
 from __future__ import annotations
 
@@ -12,14 +12,14 @@ from pathlib import Path
 from collections.abc import Mapping
 from typing import cast
 
-from researchclaw.adapters import AdapterBundle
-from researchclaw.config import (
+from berb.adapters import AdapterBundle
+from berb.config import (
     CONFIG_SEARCH_ORDER,
     EXAMPLE_CONFIG,
     RCConfig,
     resolve_config_path,
 )
-from researchclaw.health import print_doctor_report, run_doctor, write_doctor_report
+from berb.health import print_doctor_report, run_doctor, write_doctor_report
 
 
 # ---------------------------------------------------------------------------
@@ -95,7 +95,7 @@ def _prompt_opencode_install() -> bool:
     print("  OpenCode is an AI coding agent that dramatically improves")
     print("  experiment code generation for complex research tasks.")
     print()
-    print("  With OpenCode enabled, ResearchClaw can generate multi-file")
+    print("  With OpenCode enabled, Berb can generate multi-file")
     print("  experiment projects with custom architectures, training")
     print("  loops, and ablation studies — far beyond single-file limits.")
     print()
@@ -105,7 +105,7 @@ def _prompt_opencode_install() -> bool:
         print("  To install OpenCode later:")
         print("    1. Install Node.js: https://nodejs.org/")
         print("    2. Run: npm i -g opencode-ai@latest")
-        print("    — or: researchclaw setup")
+        print("    — or: berb setup")
         print()
         return False
 
@@ -118,10 +118,10 @@ def _prompt_opencode_install() -> bool:
     if answer in ("", "y", "yes"):
         success = _install_opencode()
         if not success:
-            print("  You can retry later with: researchclaw setup")
+            print("  You can retry later with: berb setup")
         return success
     else:
-        print("  Skipped. You can install later with: researchclaw setup")
+        print("  Skipped. You can install later with: berb setup")
         return False
 
 
@@ -139,7 +139,7 @@ def _resolve_config_or_exit(args: argparse.Namespace) -> Path | None:
         search_list = ", ".join(CONFIG_SEARCH_ORDER)
         print(
             f"Error: no config file found (searched: {search_list}).\n"
-            f"Run 'researchclaw init' to create one from the example template.",
+            f"Run 'berb init' to create one from the example template.",
             file=sys.stderr,
         )
         return None
@@ -196,7 +196,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     # --- LLM Preflight ---
     if not skip_preflight:
-        from researchclaw.llm import create_llm_client
+        from berb.llm import create_llm_client
 
         client = create_llm_client(config)
         print("Preflight check...", end=" ", flush=True)
@@ -246,8 +246,8 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     adapters = AdapterBundle()
 
-    from researchclaw.pipeline.runner import execute_pipeline, read_checkpoint
-    from researchclaw.pipeline.stages import Stage
+    from berb.pipeline.runner import execute_pipeline, read_checkpoint
+    from berb.pipeline.stages import Stage
 
     # --- Determine start stage ---
     from_stage = Stage.TOPIC_INIT
@@ -268,8 +268,8 @@ def cmd_run(args: argparse.Namespace) -> int:
             from_stage = resumed
             print(f"Resuming from checkpoint: Stage {int(from_stage)}: {from_stage.name}")
 
-    from researchclaw import __version__
-    print(f"ResearchClaw v{__version__} — Starting pipeline")
+    from berb import __version__
+    print(f"Berb v{__version__} — Starting pipeline")
     print(f"  Run ID:  {run_id}")
     print(f"  Topic:   {config.research.topic}")
     print(f"  Output:  {run_dir}")
@@ -282,7 +282,7 @@ def cmd_run(args: argparse.Namespace) -> int:
     if oc_cfg and getattr(oc_cfg, "enabled", False) and not _is_opencode_installed():
         print()
         print("  Hint: OpenCode beast mode is enabled but not installed.")
-        print("        Run 'researchclaw setup' to install for better code generation.")
+        print("        Run 'berb setup' to install for better code generation.")
 
     print()
 
@@ -305,7 +305,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
-    from researchclaw.config import validate_config
+    from berb.config import validate_config
     import yaml
 
     resolved = _resolve_config_or_exit(args)
@@ -355,7 +355,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
 
 def cmd_project(args: argparse.Namespace) -> int:
     """C1: Multi-project management commands."""
-    from researchclaw.project.manager import ProjectManager
+    from berb.project.manager import ProjectManager
 
     action = cast(str, args.project_action)
     config_path = Path(cast(str, args.config))
@@ -407,14 +407,14 @@ def cmd_mcp(args: argparse.Namespace) -> int:
 
     start = cast(bool, args.start)
     if start:
-        from researchclaw.mcp.server import ResearchClawMCPServer
+        from berb.mcp.server import BerbMCPServer
 
-        server = ResearchClawMCPServer()
+        server = BerbMCPServer()
         print("Starting MCP server...")
         asyncio.run(server.start())
         return 0
     else:
-        from researchclaw.mcp.tools import list_tool_names
+        from berb.mcp.tools import list_tool_names
 
         names = list_tool_names()
         print("Available MCP tools:")
@@ -432,7 +432,7 @@ def cmd_overleaf(args: argparse.Namespace) -> int:
         print("Overleaf sync is not enabled in config.", file=sys.stderr)
         return 1
 
-    from researchclaw.overleaf.sync import OverleafSync
+    from berb.overleaf.sync import OverleafSync
 
     sync = OverleafSync(
         git_url=config.overleaf.git_url,
@@ -473,11 +473,11 @@ def cmd_serve(args: argparse.Namespace) -> int:
     port = int(cast(int, args.port) or config.server.port)
 
     try:
-        from researchclaw.server.app import create_app
+        from berb.server.app import create_app
         import uvicorn
     except ImportError as exc:
         print(
-            f"Error: web dependencies not installed — pip install researchclaw[web]\n{exc}",
+            f"Error: web dependencies not installed — pip install berb[web]\n{exc}",
             file=sys.stderr,
         )
         return 1
@@ -499,11 +499,11 @@ def cmd_dashboard(args: argparse.Namespace) -> int:
     port = int(cast(int, args.port) or config.server.port)
 
     try:
-        from researchclaw.server.app import create_app
+        from berb.server.app import create_app
         import uvicorn
     except ImportError as exc:
         print(
-            f"Error: web dependencies not installed — pip install researchclaw[web]\n{exc}",
+            f"Error: web dependencies not installed — pip install berb[web]\n{exc}",
             file=sys.stderr,
         )
         return 1
@@ -515,7 +515,7 @@ def cmd_dashboard(args: argparse.Namespace) -> int:
 
 def cmd_wizard(args: argparse.Namespace) -> int:
     """Run the interactive setup wizard."""
-    from researchclaw.wizard.quickstart import QuickStartWizard
+    from berb.wizard.quickstart import QuickStartWizard
 
     wizard = QuickStartWizard()
     output = cast(str | None, args.output)
@@ -639,13 +639,13 @@ def cmd_init(args: argparse.Namespace) -> int:
         print("\nNext steps:")
         print("  1. Ensure your ACP agent is installed and on PATH")
         print("  2. Edit config.arc.yaml to set llm.acp.agent if needed")
-        print("  3. Run: researchclaw doctor")
+        print("  3. Run: berb doctor")
     else:
         env_var = api_key_env or "OPENAI_API_KEY"
         print(f"\nNext steps:")
         print(f"  1. Export your API key: export {env_var}=sk-...")
         print("  2. Edit config.arc.yaml to customize your settings")
-        print("  3. Run: researchclaw doctor")
+        print("  3. Run: berb doctor")
 
     # Offer OpenCode installation
     _prompt_opencode_install()
@@ -655,7 +655,7 @@ def cmd_init(args: argparse.Namespace) -> int:
 
 def cmd_setup(args: argparse.Namespace) -> int:
     """Post-install setup — check and install optional tools."""
-    print("ResearchClaw — Environment Setup\n")
+    print("Berb — Environment Setup\n")
 
     # 1. OpenCode
     if _is_opencode_installed():
@@ -692,12 +692,12 @@ def cmd_setup(args: argparse.Namespace) -> int:
         print("       Install: sudo apt install texlive-full  (or equivalent)")
 
     print()
-    print("Run 'researchclaw doctor' for a full environment health check.")
+    print("Run 'berb doctor' for a full environment health check.")
     return 0
 
 
 def cmd_report(args: argparse.Namespace) -> int:
-    from researchclaw.report import generate_report, write_report
+    from berb.report import generate_report, write_report
 
     run_dir = Path(cast(str, args.run_dir))
     output = cast(str | None, args.output)
@@ -729,8 +729,8 @@ def cmd_trends(args: argparse.Namespace) -> int:
 
     import asyncio
 
-    from researchclaw.trends.feeds import FeedManager
-    from researchclaw.trends.trend_analyzer import TrendAnalyzer
+    from berb.trends.feeds import FeedManager
+    from berb.trends.trend_analyzer import TrendAnalyzer
 
     domains = cast(list[str] | None, args.domains) or list(config.research.domains)
     if not domains:
@@ -742,7 +742,7 @@ def cmd_trends(args: argparse.Namespace) -> int:
     )
 
     if cast(bool, args.digest):
-        from researchclaw.trends.daily_digest import DailyDigest
+        from berb.trends.daily_digest import DailyDigest
 
         digest = DailyDigest(feed_manager)
         result = asyncio.run(digest.generate(domains, config.trends.max_papers_per_day))
@@ -757,8 +757,8 @@ def cmd_trends(args: argparse.Namespace) -> int:
         return 0
 
     if cast(bool, args.suggest_topics):
-        from researchclaw.trends.auto_topic import AutoTopicGenerator
-        from researchclaw.trends.opportunity_finder import OpportunityFinder
+        from berb.trends.auto_topic import AutoTopicGenerator
+        from berb.trends.opportunity_finder import OpportunityFinder
 
         papers = feed_manager.fetch_recent_papers(domains, max_papers=50)
         analyzer = TrendAnalyzer()
@@ -768,14 +768,14 @@ def cmd_trends(args: argparse.Namespace) -> int:
         print(generator.format_candidates(candidates))
         return 0
 
-    print("Usage: researchclaw trends --digest|--analyze|--suggest-topics")
+    print("Usage: berb trends --digest|--analyze|--suggest-topics")
     return 0
 
 
 def cmd_calendar(args: argparse.Namespace) -> int:
     """Conference deadline calendar commands."""
-    from researchclaw.calendar.deadlines import ConferenceCalendar
-    from researchclaw.calendar.planner import SubmissionPlanner
+    from berb.calendar.deadlines import ConferenceCalendar
+    from berb.calendar.planner import SubmissionPlanner
 
     calendar = ConferenceCalendar.load_builtin()
     domains = cast(list[str] | None, args.domains)
@@ -790,13 +790,13 @@ def cmd_calendar(args: argparse.Namespace) -> int:
         print(planner.format_plan(plan_venue))
         return 0
 
-    print("Usage: researchclaw calendar --upcoming|--plan <venue>")
+    print("Usage: berb calendar --upcoming|--plan <venue>")
     return 0
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="researchclaw",
-        description="ResearchClaw — Autonomous Research Pipeline",
+        prog="berb",
+        description="Berb — Autonomous Research Pipeline",
     )
     sub = parser.add_subparsers(dest="command")
 

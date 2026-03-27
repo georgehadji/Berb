@@ -59,7 +59,7 @@ class WebCrawler:
         *,
         timeout: int = 30,
         max_content_length: int = 50_000,
-        user_agent: str = "ResearchClaw/0.5 (Academic Research Bot)",
+        user_agent: str = "Berb/0.5 (Academic Research Bot)",
     ) -> None:
         self.timeout = timeout
         self.max_content_length = max_content_length
