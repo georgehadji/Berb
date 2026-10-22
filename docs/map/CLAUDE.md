@@ -2,7 +2,7 @@
 
 Edit map of `berb/`: the nouns, what each one touches, and which are actually wired. The source tree stays the truth; cards cite it.
 
-Built on ICM (system map form). Slice 2: `objects/pipeline-core/` and `objects/llm/` cards are verified; other clusters are still stub lines.
+Built on ICM (system map form). Slice 2: `objects/pipeline-core/`, `objects/llm/` and `objects/literature/` cards are verified; other clusters are still stub lines.
 
 ## Where things live
 

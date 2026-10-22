@@ -1,6 +1,6 @@
 # Objects index
 
-One line per noun: `name` — owner — universe — status. `pipeline-core` and `llm` are verified (cards in their folders); other clusters are stubs whose universe comes from root `CLAUDE.md` and `.reachability-allowlist`, unverified against source.
+One line per noun: `name` — owner — universe — status. `pipeline-core`, `llm` and `literature` are verified (cards in their folders); other clusters are stubs whose universe comes from root `CLAUDE.md` and `.reachability-allowlist`, unverified against source.
 
 ## pipeline-core
 Cards verified 2026-10-22 @ f2b4be7.
@@ -25,8 +25,18 @@ Cards verified 2026-10-22 @ f2b4be7. Two defects found by this audit are fixed (
 - not carded: `acp_client`, `deep_query_client`, `anthropic_adapter`, `openrouter_adapter`, `presets`, `registry`, `pricing`, `output_limits`, `prompt_cache`, `cross_model` — stub
 
 ## literature
-- public API `berb.literature.__all__` — `berb/literature/__init__.py` — live (contract) — stub
-- parked: `searxng_client`, `grey_search`, `multimodal_search` — `berb/literature/` — leftover — stub
+Cards verified 2026-10-22 @ fb7bd25. Two defects found by this audit are fixed (uncommitted): [[search-cascade]] (clients swallowed failures, so the cache fallback and failed-source count were dead and outages overwrote good cache entries) and [[citation-verify]] (an OpenAlex miss skipped the arXiv-id check).
+- [[search-cascade]] unified search, dedup, ranking, cache, Perplexity top-up — `berb/literature/search.py` (+ clients, `cache.py`) — live — verified
+- [[paper-model]] `Paper`, `Author`, `cite_key` — `berb/literature/models.py` — live — verified
+- [[literature-stages]] stages 3-6 (stage 4 candidate ladder, stage 5 screen) — `berb/pipeline/stage_impls/_literature.py` — live — verified (stages 3 and 6 contracts only)
+- [[citation-verify]] BibTeX verification used at stages 17, 22, 23 — `berb/literature/verify.py` — live — verified
+- [[advisory-screens]] retraction and paper-mill screens — `retraction.py`, `paper_mill.py` — live — verified
+- [[novelty]] hypothesis novelty check (output unread) — `berb/literature/novelty.py` — live — verified
+- [[pdf-ingestor]] uploaded PDFs to candidate rows — `berb/literature/pdf_ingestor.py` — live — verified
+- [[public-api]] `berb.literature.__all__` and which exported modules are actually wired — `berb/literature/__init__.py` — live (contract) — verified
+- parked (revisit 2026-12-01, strike 1): `grey_search`, `searxng_client`, `full_text`, `specification`, `trends` — `berb/literature/` — leftover — verified against `.reachability-allowlist`
+- contract-only (no importer outside `literature/`): `citation_classifier`, `evidence_map`, `citation_graph`, `section_analysis`, `structured_notes`, `recency_filter`, `multimodal_search`; `fs_processor`/`fs_query` reached only via the parked `optimization_integration` — see [[public-api]]
+- not carded: `zotero_integration`, `perplexity_search`, `retraction` internals beyond [[advisory-screens]]
 
 ## experiment
 - sandboxes (local, docker, ssh, colab) — `berb/experiment/sandbox.py`, `docker_sandbox.py`, `ssh_sandbox.py`, `colab_sandbox.py` — live — stub

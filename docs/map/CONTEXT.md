@@ -16,7 +16,7 @@ Public API packages `berb.llm` and `berb.literature` are live by contract (`__al
 
 ## Status values
 
-`stub` (one line, no body), `verified` (needs date, commit, citations), `stale`. Only `objects/pipeline-core/` and `objects/llm/` are verified.
+`stub` (one line, no body), `verified` (needs date, commit, citations), `stale`. Only `objects/pipeline-core/`, `objects/llm/` and `objects/literature/` are verified.
 
 ## Not covered yet
 
