@@ -49,6 +49,7 @@ def search_openalex(
     limit: int = 20,
     year_min: int = 0,
     email: str = _POLITE_EMAIL,
+    raise_on_failure: bool = False,
 ) -> list[Paper]:
     """Search OpenAlex for papers matching *query*.
 
@@ -62,11 +63,15 @@ def search_openalex(
         If >0, restrict to papers published in this year or later.
     email:
         Polite pool email for higher rate limits.
+    raise_on_failure:
+        Raise ``RuntimeError`` instead of returning ``[]`` when the request
+        fails, so callers can tell an outage from a genuinely empty result.
 
     Returns
     -------
     list[Paper]
-        Parsed papers.  Empty list on network failure.
+        Parsed papers.  Empty list on network failure unless
+        ``raise_on_failure`` is set.
     """
     _rate_limiter.wait_sync()
 
@@ -92,6 +97,8 @@ def search_openalex(
     url = f"{_BASE_URL}?{urllib.parse.urlencode(params)}"
     data = _request_with_retry(url, email)
     if data is None:
+        if raise_on_failure:
+            raise RuntimeError("OpenAlex request failed")
         return []
 
     results = data.get("results", [])

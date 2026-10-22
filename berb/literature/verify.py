@@ -664,11 +664,13 @@ def verify_citations(
 ) -> VerificationReport:
     """Verify all BibTeX entries against real academic APIs.
 
-    Three-layer verification:
+    Layers, in order; the first definite answer wins:
 
-    1. If entry has ``eprint`` (arXiv ID) → arXiv API lookup
-    2. If entry has ``doi`` → CrossRef API lookup
-    3. Otherwise → title search via Semantic Scholar + arXiv
+    1. ``doi`` → CrossRef / DataCite (a verdict here is final)
+    2. title search via OpenAlex. A *miss* is provisional: it is kept as the
+       fallback verdict and the layers below still run. Only a match is final.
+    3. ``eprint`` (arXiv ID) → arXiv API lookup
+    4. title search via Semantic Scholar
 
     Parameters
     ----------
@@ -776,6 +778,7 @@ def verify_citations(
                 )
 
         # L3a: OpenAlex title search (high rate limits, good coverage)
+        openalex_miss: CitationResult | None = None
         if result is None:
             if api_call_count > 0:
                 time.sleep(_DELAY_OPENALEX)
@@ -789,6 +792,11 @@ def verify_citations(
                     result.status.value,
                     result.confidence,
                 )
+                # A miss is not proof of absence: OpenAlex lags on new preprints.
+                # Keep it as the fallback verdict and let the arXiv-id and S2
+                # layers try; a positive from either overrides it.
+                if result.status == VerifyStatus.HALLUCINATED:
+                    openalex_miss, result = result, None
 
         # L1: arXiv ID — only if DOI and OpenAlex both failed
         if result is None and arxiv_id:
@@ -817,6 +825,10 @@ def verify_citations(
                     result.status.value,
                     result.confidence,
                 )
+
+        # Later layers gave nothing (e.g. network error): the OpenAlex miss stands.
+        if result is None:
+            result = openalex_miss
 
         # Fallback: all layers failed (network issues)
         if result is None:

@@ -91,6 +91,18 @@ def _papers_to_dicts(papers: list[Paper]) -> list[dict[str, object]]:
     return [asdict(p) for p in papers]
 
 
+def _cache_if_found(
+    cache_put: CachePut, query: str, source: str, limit: int, papers: list[Paper]
+) -> None:
+    """Cache a result, but never an empty one.
+
+    The cache is the fallback for a failing source; storing `[]` would replace a
+    good entry with an empty one and a fresh timestamp.
+    """
+    if papers:
+        cache_put(query, source, limit, _papers_to_dicts(papers))
+
+
 def _as_int(value: object, default: int = 0) -> int:
     if isinstance(value, int):
         return value
@@ -197,9 +209,10 @@ def search_papers(
                     query,
                     limit=limit,
                     year_min=year_min,
+                    raise_on_failure=True,
                 )
                 all_papers.extend(papers)
-                cache_put(query, "openalex", limit, _papers_to_dicts(papers))
+                _cache_if_found(cache_put, query, "openalex", limit, papers)
                 source_stats["openalex"] = len(papers)
                 logger.info("OpenAlex returned %d papers for %r", len(papers), query)
                 time.sleep(0.5)
@@ -210,18 +223,19 @@ def search_papers(
                     limit=limit,
                     year_min=year_min,
                     api_key=s2_api_key,
+                    raise_on_failure=True,
                 )
                 all_papers.extend(papers)
-                cache_put(query, "semantic_scholar", limit, _papers_to_dicts(papers))
+                _cache_if_found(cache_put, query, "semantic_scholar", limit, papers)
                 source_stats["semantic_scholar"] = len(papers)
                 logger.info("Semantic Scholar returned %d papers for %r", len(papers), query)
                 # Rate-limit gap before next source
                 time.sleep(1.0)
 
             elif src_lower == "arxiv":
-                papers = search_arxiv(query, limit=limit, year_min=year_min)
+                papers = search_arxiv(query, limit=limit, year_min=year_min, raise_on_failure=True)
                 all_papers.extend(papers)
-                cache_put(query, "arxiv", limit, _papers_to_dicts(papers))
+                _cache_if_found(cache_put, query, "arxiv", limit, papers)
                 source_stats["arxiv"] = len(papers)
                 logger.info("arXiv returned %d papers for %r", len(papers), query)
 

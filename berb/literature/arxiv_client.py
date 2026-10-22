@@ -140,6 +140,7 @@ def search_arxiv(
     limit: int = 50,
     sort_by: str = "relevance",
     year_min: int = 0,
+    raise_on_failure: bool = False,
 ) -> list[Paper]:
     """Search arXiv for papers matching *query*.
 
@@ -154,17 +155,25 @@ def search_arxiv(
         Sort criterion: "relevance", "submitted_date", or "last_updated".
     year_min:
         If > 0, only return papers published in this year or later.
+    raise_on_failure:
+        Raise ``RuntimeError`` instead of returning ``[]`` when the library is
+        missing, the circuit breaker is open or the request fails, so callers
+        can tell an outage from a genuinely empty result.
 
     Returns
     -------
     list[Paper]
-        Parsed papers. Empty list on failure.
+        Parsed papers. Empty list on failure unless ``raise_on_failure`` is set.
     """
     if arxiv is None:
         logger.warning("arxiv library not installed — skipping arXiv search")
+        if raise_on_failure:
+            raise RuntimeError("arxiv library not installed")
         return []
     if not _cb_should_allow():
         logger.info("[rate-limit] arXiv circuit breaker OPEN — skipping")
+        if raise_on_failure:
+            raise RuntimeError("arXiv circuit breaker open")
         return []
 
     limit = min(limit, 300)
@@ -196,12 +205,18 @@ def search_arxiv(
     except arxiv.HTTPError as exc:
         logger.warning("arXiv HTTP error: %s", exc)
         _cb_on_failure()
-    except arxiv.UnexpectedEmptyPageError:
+        if raise_on_failure:
+            raise RuntimeError(f"arXiv HTTP error: {exc}") from exc
+    except arxiv.UnexpectedEmptyPageError as exc:
         logger.warning("arXiv returned unexpected empty page for %r", query)
         _cb_on_failure()
+        if raise_on_failure:
+            raise RuntimeError("arXiv returned an unexpected empty page") from exc
     except Exception as exc:  # noqa: BLE001
         logger.warning("arXiv search failed: %s", exc)
         _cb_on_failure()
+        if raise_on_failure:
+            raise RuntimeError(f"arXiv search failed: {exc}") from exc
 
     return papers
 
