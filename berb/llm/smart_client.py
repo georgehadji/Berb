@@ -149,6 +149,10 @@ class SmartLLMClient:
         """
         return self._base_client.config
 
+    def preflight(self) -> tuple[bool, str]:
+        """Delegate to the wrapped client; `berb run` calls this on the factory's result."""
+        return self._base_client.preflight()
+
     def chat(
         self,
         messages: list[dict[str, Any]],

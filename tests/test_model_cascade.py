@@ -187,6 +187,88 @@ def test_per_step_parameters_reach_the_client() -> None:
     assert seen["temperature"] == pytest.approx(0.1)
 
 
+class _KwargCapture:
+    """Strict signature, like LLMClient.chat: a duplicated keyword raises TypeError."""
+
+    config = object()
+
+    def __init__(self) -> None:
+        self.calls: list[dict[str, Any]] = []
+
+    def chat(
+        self,
+        messages: list[dict[str, Any]],
+        *,
+        model: str | None = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+        **kwargs: Any,
+    ) -> Any:
+        self.calls.append(
+            {"model": model, "max_tokens": max_tokens, "temperature": temperature, **kwargs}
+        )
+        return _Response(_GOOD)
+
+
+def test_caller_max_tokens_does_not_collide_with_the_rung() -> None:
+    """The pipeline funnel always passes max_tokens=; it used to fail every rung."""
+    client = _KwargCapture()
+    cascade = CascadingLLMClient(client, _two_step())
+
+    resp = cascade.chat([{"role": "user", "content": "q?"}], max_tokens=1234, json_mode=True)
+
+    assert resp.content == _GOOD
+    assert client.calls[0]["max_tokens"] == 1234
+    assert client.calls[0]["json_mode"] is True
+
+
+def test_caller_temperature_does_not_collide_with_the_rung() -> None:
+    client = _KwargCapture()
+    cascade = CascadingLLMClient(client, _two_step())
+
+    cascade.chat([{"role": "user", "content": "q?"}], temperature=0.0)
+
+    assert client.calls[0]["temperature"] == pytest.approx(0.7)  # the rung's, not the caller's
+
+
+def test_rung_max_tokens_outranks_the_callers() -> None:
+    client = _KwargCapture()
+    cascade = CascadingLLMClient(
+        client,
+        CascadeConfig(cascade=(CascadeStep("cheap", min_score=0.0, max_tokens=42),)),
+    )
+
+    cascade.chat([{"role": "user", "content": "q?"}], max_tokens=1234)
+
+    assert client.calls[0]["max_tokens"] == 42
+
+
+def test_fallback_model_receives_the_callers_max_tokens() -> None:
+    class _FailingRungs(_KwargCapture):
+        def chat(self, messages: list[dict[str, Any]], **kwargs: Any) -> Any:
+            if kwargs.get("model") == "fallback":
+                return super().chat(messages, **kwargs)
+            raise RuntimeError("down")
+
+    client = _FailingRungs()
+    cascade = CascadingLLMClient(client, _two_step(fallback_model="fallback"))
+
+    cascade.chat([{"role": "user", "content": "q?"}], max_tokens=777)
+
+    assert client.calls[0]["model"] == "fallback"
+    assert client.calls[0]["max_tokens"] == 777
+
+
+def test_preflight_delegates_to_the_wrapped_client() -> None:
+    class _C:
+        config = object()
+
+        def preflight(self) -> tuple[bool, str]:
+            return True, "OK - wrapped"
+
+    assert CascadingLLMClient(_C(), _two_step()).preflight() == (True, "OK - wrapped")
+
+
 def test_config_reaches_through_to_the_wrapped_client() -> None:
     client = _RecordingClient({"cheap": _Response(_GOOD)})
     cascade = CascadingLLMClient(client, _two_step())

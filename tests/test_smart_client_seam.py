@@ -287,3 +287,23 @@ def test_create_llm_client_stays_plain_when_nadirclaw_disabled(tmp_path) -> None
     client = create_llm_client(config)
 
     assert isinstance(client, LLMClient)
+
+
+# ---------------------------------------------------------------------------
+# preflight: `berb run` calls client.preflight() on whatever create_llm_client returns
+# ---------------------------------------------------------------------------
+
+
+def test_preflight_delegates_to_the_base_client() -> None:
+    base = _FakeBase()
+    base.preflight = lambda: (True, "OK - base")  # type: ignore[attr-defined]
+
+    assert _client(base).preflight() == (True, "OK - base")
+
+
+def test_every_factory_wrapper_has_preflight() -> None:
+    """A wrapper without preflight crashes `berb run` unless --skip-preflight is passed."""
+    from berb.llm.model_cascade import CascadingLLMClient
+
+    assert callable(getattr(SmartLLMClient, "preflight", None))
+    assert callable(getattr(CascadingLLMClient, "preflight", None))
