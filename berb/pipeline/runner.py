@@ -323,6 +323,17 @@ async def _maybe_run_discovery(
     return promoted
 
 
+def _reset_run_cost_tracker(pivot_depth: int) -> None:
+    """Start each run with an empty process-global tracker (LL-5).
+
+    ``berb serve`` runs many pipelines in one process; without this, run N's
+    cost_report.json and the stage-12 budget inherit runs 1..N-1. A PIVOT
+    recurses into the same run, so only the outermost call resets.
+    """
+    if pivot_depth == 0:
+        get_cost_tracker().reset()
+
+
 async def execute_pipeline(
     *,
     run_dir: Path,
@@ -358,6 +369,7 @@ async def execute_pipeline(
     if _pivot_depth == 0:
         _configure_tracing(run_dir)
         new_trace(run_id)
+    _reset_run_cost_tracker(_pivot_depth)
 
     # A4-1: stamp run_id (and, via cost_tracker's contextvar, stage) onto
     # every log record from every one of the ~278 call sites. Set on every

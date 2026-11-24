@@ -130,6 +130,8 @@ class CostTracker:
         self._events: list[CostEvent] = []
         self._pricing = PricingTable(pricing_path)
         self._closed = False
+        # model -> calls that had neither a pricing entry nor a provider-reported cost
+        self._unpriced: dict[str, int] = {}
 
     # ─────────────────────────────────────────────────────────────────────────
     # Recording
@@ -159,13 +161,18 @@ class CostTracker:
         phase: str | None = None,
         node_id: str | None = None,
         purpose: str = "other",
+        reported_cost: float | None = None,
     ) -> CostEvent:
         """Convenience: build and record a CostEvent from LLM usage stats.
 
-        Computes cost from the pricing table. Unknown models are recorded
-        with cost_usd=0.0 and a warning is emitted.
+        Computes cost from the pricing table. For a model with no pricing
+        entry, the provider-reported cost is used when it is above 0.
+        Otherwise the call is recorded at $0.0, warned about once per model,
+        and listed under ``unpriced_models`` in the report, so a $0 here
+        reads as "unknown", not "free".
 
         Args:
+            reported_cost: Cost the provider returned for this call, if any.
             model: Full model identifier
             prompt_tokens: Input token count
             completion_tokens: Output token count
@@ -179,11 +186,18 @@ class CostTracker:
         """
         cost_usd = self._pricing.compute_cost(model, prompt_tokens, completion_tokens)
 
-        if cost_usd is None:
-            logger.warning(
-                "pricing_unknown: model=%r has no pricing entry; cost set to 0.0",
-                model,
-            )
+        if cost_usd is None and reported_cost is not None and reported_cost > 0:
+            cost_usd = float(reported_cost)
+        elif cost_usd is None:
+            with self._lock:
+                first = model not in self._unpriced
+                self._unpriced[model] = self._unpriced.get(model, 0) + 1
+            if first:
+                logger.warning(
+                    "pricing_unknown: model=%r has no pricing entry and the provider "
+                    "reported no cost; recorded as $0.0, so spend is understated",
+                    model,
+                )
             cost_usd = 0.0
 
         event = CostEvent(
@@ -270,12 +284,14 @@ class CostTracker:
                 "by_phase": {k: round(v, 6) for k, v in self.by_phase().items()},
                 "num_events": len(self._events),
                 "pricing_version": self._pricing.version,
+                "unpriced_models": dict(self._unpriced),
             }
 
     def reset(self) -> None:
         """Clear all recorded events."""
         with self._lock:
             self._events.clear()
+            self._unpriced.clear()
 
     def close(self) -> dict[str, Any]:
         """Close the tracker and return the final report.

@@ -69,6 +69,12 @@ class BudgetGovernor:
         self._config = config
         self._cost_tracker = cost_tracker
         self._start_time = time.monotonic()
+        # The tracker is process-wide; the budget caps what *this* search spends.
+        self._baseline_usd = cost_tracker.total_usd()
+
+    def spent_usd(self) -> float:
+        """USD spent since this governor was created."""
+        return max(0.0, self._cost_tracker.total_usd() - self._baseline_usd)
 
     def check(self, nodes_completed: int) -> str | None:
         """Check budget limits.
@@ -82,7 +88,7 @@ class BudgetGovernor:
                 f"wallclock budget exceeded ({elapsed:.0f}s > {self._config.budget_wallclock_sec}s)"
             )
 
-        total_cost = self._cost_tracker.total_usd()
+        total_cost = self.spent_usd()
         if total_cost > self._config.budget_usd:
             return f"cost budget exceeded (${total_cost:.2f} > ${self._config.budget_usd:.2f})"
 
@@ -228,7 +234,7 @@ class SearchRunner:
             self._node_counter,
             best.node_id[:8] if best else "none",
             termination_reason,
-            self._cost_tracker.total_usd(),
+            self._governor.spent_usd(),
             elapsed,
         )
 
@@ -237,7 +243,7 @@ class SearchRunner:
             journal=self._journal,
             termination_reason=termination_reason,
             nodes_explored=self._node_counter,
-            total_cost_usd=self._cost_tracker.total_usd(),
+            total_cost_usd=self._governor.spent_usd(),
             total_wallclock_sec=elapsed,
         )
 
@@ -393,7 +399,7 @@ class SearchRunner:
         )
 
         # Update cost from tracker
-        node.cost_usd = self._cost_tracker.total_usd()
+        node.cost_usd = self._governor.spent_usd()
 
         # Update the journal with evaluation results
         self._journal.record_evaluation(
