@@ -1,0 +1,66 @@
+signal	file:line	snippet	module	wired
+S1	berb/experiment/compute_guard.py:515	dict-key | "status": ExperimentStatus.RUNNING,	berb.experiment.compute_guard	N
+S1	berb/experiment/compute_guard.py:673	key | self._experiments[experiment_id]["status"] = ExperimentStatus.STOPPED	berb.experiment.compute_guard	N
+S1	berb/experiment/journal.py:118	dict-key | "phase": self.phase,	berb.experiment.journal	Y
+S1	berb/experiment/progress.py:289	attr | stage_result.status = StageStatus.COMPLETED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:301	attr | stage_result.status = StageStatus.FAILED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:306	attr | stage_result.status = StageStatus.COMPLETED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:308	attr | stage_result.status = StageStatus.FAILED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:484	dict-key | "stage": r.stage.value,	berb.experiment.progress	N
+S1	berb/experiment/progress.py:485	dict-key | "status": r.status.value,	berb.experiment.progress	N
+S1	berb/experiment/progress.py:521	dict-key | "stage": r.stage.value,	berb.experiment.progress	N
+S1	berb/experiment/progress.py:522	dict-key | "status": r.status.value,	berb.experiment.progress	N
+S1	berb/experiment/react_agent.py:63	dict-key | return [{"step": step.value, "content": content} for step, content in self.steps]	berb.experiment.react_agent	N
+S1	berb/experiment/split_policy.py:296	dict-key | "verdict": admit(ev).value,	berb.experiment.split_policy	N
+S1	berb/optimization/cost_quality.py:492	dict-key | "stage": stage_name,	berb.optimization.cost_quality	N
+S1	berb/optimization/cost_quality.py:542	dict-key | "stage": c.stage_name,	berb.optimization.cost_quality	N
+S1	berb/optimization/cost_quality.py:553	dict-key | "stage": r.stage_name,	berb.optimization.cost_quality	N
+S2	berb/experiment/async_pool.py:207	in execute_parallel | self._running = True	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:221	in execute_parallel | self._running = False	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:283	in _worker_loop | status.is_busy = True	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:349	in _worker_loop | status.is_busy = False	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:436	in shutdown | self._running = False	berb.experiment.async_pool	Y
+S2	berb/experiment/search/runner.py:321	in _evaluate_node | node.is_buggy = True	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:344	in _evaluate_node | node.timed_out = False	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:368	in _evaluate_node | node.timed_out = True	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:369	in _evaluate_node | node.is_buggy = True	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:379	in _evaluate_node | node.is_buggy = True	berb.experiment.search.runner	Y
+S2	berb/experiment/worker.py:128	in execute | self._is_busy = True	berb.experiment.worker	Y
+S2	berb/experiment/worker.py:198	in execute | self._is_busy = False	berb.experiment.worker	Y
+S3	berb/experiment/evaluators/convergence.py:128	for key in ("error", "l2_error", "linf_error"):	berb.experiment.evaluators.convergence	N
+S3	berb/experiment/visualize.py:613	colors.append("#228833" if status == "done" else "#EE6677")	berb.experiment.visualize	Y
+S4	berb/agents/benchmark_agent/selector.py:97	raw string 'none' | if self._network_policy == "none" and pip_deps:	berb.agents.benchmark_agent.selector	Y
+S4	berb/agents/benchmark_agent/validator.py:233	raw string 'error' | if llm_review.get("severity") == "error":	berb.agents.benchmark_agent.validator	Y
+S4	berb/agents/figure_agent/codegen.py:851	raw string 'latex' | if self._output_format == "latex":	berb.agents.figure_agent.codegen	Y
+S4	berb/experiment/compute_guard.py:26	enum ExperimentStatus | class ExperimentStatus(StrEnum):	berb.experiment.compute_guard	N
+S4	berb/experiment/compute_guard.py:399	raw string 'medium' | if risk_level == "medium":	berb.experiment.compute_guard	N
+S4	berb/experiment/compute_guard.py:415	raw string 'high' | "high_risk": risk_level == "high",	berb.experiment.compute_guard	N
+S4	berb/experiment/docker_sandbox.py:505	raw string 'none' | if cfg.network_policy == "none":	berb.experiment.docker_sandbox	Y
+S4	berb/experiment/metrics.py:27	enum MetricType | class MetricType(StrEnum):	berb.experiment.metrics	Y
+S4	berb/experiment/physics_guards.py:193	raw string 'warning' | warnings = sum(1 for i in issues if i.severity == "warning")	berb.experiment.physics_guards	Y
+S4	berb/experiment/physics_guards.py:194	raw string 'info' | info = sum(1 for i in issues if i.severity == "info")	berb.experiment.physics_guards	Y
+S4	berb/experiment/progress.py:33	enum ExperimentStage | class ExperimentStage(StrEnum):	berb.experiment.progress	N
+S4	berb/experiment/progress.py:42	enum StageStatus | class StageStatus(StrEnum):	berb.experiment.progress	N
+S4	berb/experiment/react_agent.py:34	enum ReActStep | class ReActStep(StrEnum):	berb.experiment.react_agent	N
+S4	berb/experiment/self_correcting.py:44	enum SimulationStatus | class SimulationStatus(StrEnum):	berb.experiment.self_correcting	N
+S4	berb/experiment/self_correcting.py:580	raw string 'convergence' | elif diagnosis.get("category") == "convergence":	berb.experiment.self_correcting	N
+S4	berb/experiment/ssh_sandbox.py:357	raw string 'none' | if cfg.docker_network_policy == "none":	berb.experiment.ssh_sandbox	Y
+S4	berb/experiment/validator.py:42	raw string 'error' | return not any(i.severity == "error" for i in self.issues)	berb.experiment.validator	Y
+S4	berb/experiment/validator.py:46	raw string 'error' | return [i for i in self.issues if i.severity == "error"]	berb.experiment.validator	Y
+S4	berb/experiment/validator.py:50	raw string 'warning' | return [i for i in self.issues if i.severity == "warning"]	berb.experiment.validator	Y
+S4	berb/experiment/visualize.py:613	raw string 'done' | colors.append("#228833" if status == "done" else "#EE6677")	berb.experiment.visualize	Y
+S4	berb/optimization/cost_quality.py:33	enum ModelTier | class ModelTier(StrEnum):	berb.optimization.cost_quality	N
+S5	berb/experiment/docker_sandbox.py:43	global _CONTAINER_COUNTER | global _CONTAINER_COUNTER  # noqa: PLW0603	berb.experiment.docker_sandbox	Y
+S5	berb/experiment/harness_template.py:118	global _default_harness | global _default_harness  # noqa: PLW0603	berb.experiment.harness_template	N
+S5	berb/optimization/cost_quality.py:572	global _optimizer | global _optimizer	berb.optimization.cost_quality	N
+S6	berb\experiment\colab_sandbox.py:117	(run_dir / "result.json").write_text(json.dumps(result))	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:327	if task_pending.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:339	if task_done.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:345	if task_pending.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:374	if not result_file.exists():	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:118	run_dir.rename(done_dir)	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:326	task_pending = self.pending_dir / task_id	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:333	task_done = self.done_dir / task_id	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:71	task_dir.rename(run_dir)	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\evolutionary_search.py:230	variant_design.id = f"{base_experiment.id}_v{i}"	berb.experiment.evolutionary_search	N
+S9	berb\experiment\journal.py:449	return json.dumps(data, indent=2, default=str)	berb.experiment.journal	Y

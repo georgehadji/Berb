@@ -1,0 +1,103 @@
+signal	file:line	snippet	module	wired
+S6	berb\cli.py:313	d.is_dir() and d.name.startswith("rc-") and (d / "checkpoint.json").exists()	berb.cli	?
+S6	berb\cli.py:321	if topic_file.exists():	berb.cli	?
+S6	berb\cli.py:351	if topic_file.exists():	berb.cli	?
+S6	berb\pipeline\checkpoint.py:49	(run_dir / "heartbeat.json").write_text(	berb.pipeline.checkpoint	?
+S6	berb\pipeline\checkpoint.py:141	if not cp_path.exists():	berb.pipeline.checkpoint	?
+S6	berb\dashboard\collector.py:87	if ckpt_path.exists():	berb.dashboard.collector	?
+S6	berb\dashboard\collector.py:101	if hb_path.exists():	berb.dashboard.collector	?
+S6	berb\mcp\server.py:75	if checkpoint_file.exists():	berb.mcp.server	?
+S6	berb\server\routes\pipeline.py:201	if ckpt.exists():	berb.server.routes.pipeline	?
+S6	berb\server\routes\pipeline.py:221	if ckpt.exists():	berb.server.routes.pipeline	?
+S6	berb\server\routes\projects.py:27	if ckpt.exists():	berb.server.routes.projects	?
+S6	berb\pipeline\runner.py:375	if not topic_file.exists():	berb.pipeline.runner	?
+S6	berb\pipeline\runner.py:682	_qw_path = run_dir / "quality_warning.txt"	berb.pipeline.runner	?
+S6	berb\pipeline\runner.py:722	if _diag_path.exists():	berb.pipeline.runner	?
+S6	berb\pipeline\runner.py:732	(run_dir / "experiment_repair_result.json").write_text(	berb.pipeline.runner	?
+S6	berb\pipeline\stage_impls\_review.py:865	if not _veto_marker.is_file():	berb.pipeline.stage_impls._review	?
+S6	berb\pipeline\stage_impls\_review.py:871	_veto_marker.write_text(	berb.pipeline.stage_impls._review	?
+S6	berb\pipeline\stage_impls\_review.py:901	if (stage_dir / "ensemble_review.md").is_file():	berb.pipeline.stage_impls._review	?
+S6	berb\pipeline\stage_impls\_review.py:903	if (stage_dir / "claim_adjudication.json").is_file():	berb.pipeline.stage_impls._review	?
+S6	berb\pipeline\stage_impls\_review.py:946	if (stage_dir / "ensemble_review.md").is_file():	berb.pipeline.stage_impls._review	?
+S6	berb\pipeline\stage_impls\_review.py:948	if (stage_dir / "claim_adjudication.json").is_file():	berb.pipeline.stage_impls._review	?
+S6	berb\pipeline\stage_impls\_code_generation.py:1535	if (stage_dir / "validation_report.md").exists():	berb.pipeline.stage_impls._code_generation	?
+S6	berb\pipeline\stage_impls\_literature.py:627	(stage_dir / "web_search_result.json").write_text(	berb.pipeline.stage_impls._literature	?
+S6	berb\pipeline\stage_impls\_literature.py:720	if (stage_dir / "web_search_result.json").exists():	berb.pipeline.stage_impls._literature	?
+S6	berb\pipeline\stage_impls\_export.py:394	if _degradation_signal_path.exists():	berb.pipeline.stage_impls._export	?
+S6	berb\pipeline\stage_impls\_export.py:960	if _invalid_citations_path.is_file():	berb.pipeline.stage_impls._export	?
+S6	berb\pipeline\stage_impls\_topic.py:235	if _goal_path.exists():	berb.pipeline.stage_impls._topic	?
+S6	berb\pipeline\packaging.py:57	_was_sanitized = _sanitization_report.exists()	berb.pipeline.packaging	?
+S6	berb\pipeline\iterative.py:70	if not history_path.exists():	berb.pipeline.iterative	?
+S6	berb\pipeline\iterative.py:87	if history_path.exists():	berb.pipeline.iterative	?
+S6	berb\pipeline\discovery.py:66	if saved.exists():	berb.pipeline.discovery	?
+S6	berb\pipeline\discovery.py:177	if not index.exists():	berb.pipeline.discovery	?
+S6	berb\pipeline\experiment_repair.py:521	best_path.write_text(json.dumps(best_summary, indent=2), encoding="utf-8")	berb.pipeline.experiment_repair	?
+S6	berb\evolution.py:268	if decision_file.exists():	berb.evolution	?
+S6	berb\copilot\feedback.py:73	if not response_path.exists():	berb.copilot.feedback	?
+S6	berb\copilot\feedback.py:125	if request_path.exists():	berb.copilot.feedback	?
+S6	berb\experiment\colab_sandbox.py:117	(run_dir / "result.json").write_text(json.dumps(result))	berb.experiment.colab_sandbox	?
+S6	berb\experiment\colab_sandbox.py:327	if task_pending.exists():	berb.experiment.colab_sandbox	?
+S6	berb\experiment\colab_sandbox.py:339	if task_done.exists():	berb.experiment.colab_sandbox	?
+S6	berb\experiment\colab_sandbox.py:345	if task_pending.exists():	berb.experiment.colab_sandbox	?
+S6	berb\experiment\colab_sandbox.py:374	if not result_file.exists():	berb.experiment.colab_sandbox	?
+S7	berb\copilot\branching.py:43	src = self.run_dir / f"stage-{stage_num:02d}"	berb.copilot.branching	?
+S7	berb\copilot\branching.py:45	dest = branch_dir / f"stage-{stage_num:02d}"	berb.copilot.branching	?
+S7	berb\experiment\colab_sandbox.py:71	task_dir.rename(run_dir)	berb.experiment.colab_sandbox	?
+S7	berb\experiment\colab_sandbox.py:118	run_dir.rename(done_dir)	berb.experiment.colab_sandbox	?
+S7	berb\experiment\colab_sandbox.py:326	task_pending = self.pending_dir / task_id	berb.experiment.colab_sandbox	?
+S7	berb\experiment\colab_sandbox.py:333	task_done = self.done_dir / task_id	berb.experiment.colab_sandbox	?
+S7	berb\experiment\evolutionary_search.py:230	variant_design.id = f"{base_experiment.id}_v{i}"	berb.experiment.evolutionary_search	?
+S7	berb\hyperagent\meta_agent.py:350	self.state.variant_id = f"meta_v{self.state.modification_code_version}"	berb.hyperagent.meta_agent	?
+S7	berb\pipeline\discovery.py:104	task_dir = run_dir / "discovery" / f"cycle-{cycle}" / uuid.uuid4().hex[:8]	berb.pipeline.discovery	?
+S7	berb\pipeline\discovery.py:201	stage_src = src / f"stage-{stage:02d}"	berb.pipeline.discovery	?
+S7	berb\pipeline\discovery.py:219	src = run_dir / f"stage-{stage:02d}"	berb.pipeline.discovery	?
+S7	berb\pipeline\discovery.py:295	path = task_dir / f"stage-{int(DISCOVERY_LAST_STAGE):02d}" / "decision_structured.json"	berb.pipeline.discovery	?
+S7	berb\pipeline\discovery.py:307	path = task_dir / f"stage-{int(Stage.RESULT_ANALYSIS):02d}" / "metrics.json"	berb.pipeline.discovery	?
+S7	berb\pipeline\executor.py:163	stage_dir = run_dir / f"stage-{int(stage):02d}"	berb.pipeline.executor	?
+S7	berb\pipeline\executor.py:186	f"stage-{int(stage):02d}-start",	berb.pipeline.executor	?
+S7	berb\pipeline\iterative.py:40	alt = run_dir / f"stage-14_v{_v}" / "experiment_summary.json"	berb.pipeline.iterative	?
+S7	berb\pipeline\iterative.py:44	prev = run_dir / f"stage-14_v{pivot_count}" / "experiment_summary.json"	berb.pipeline.iterative	?
+S7	berb\pipeline\iterative.py:145	stage_dir = run_dir / f"stage-{stage_num:02d}"	berb.pipeline.iterative	?
+S7	berb\pipeline\iterative.py:147	version_dir = run_dir / f"stage-{stage_num:02d}_v{attempt}"	berb.pipeline.iterative	?
+S7	berb\pipeline\iterative.py:150	stage_dir.rename(version_dir)	berb.pipeline.iterative	?
+S7	berb\pipeline\iterative.py:255	alt = run_dir / f"stage-14_v{v}" / "experiment_summary.json"	berb.pipeline.iterative	?
+S7	berb\pipeline\experiment_repair.py:217	path = run_dir / f"stage-14_repair_v{i}" / "experiment_summary.json"	berb.pipeline.experiment_repair	?
+S7	berb\pipeline\experiment_repair.py:410	repair_dir = run_dir / f"stage-14_repair_v{cycle}"	berb.pipeline.experiment_repair	?
+S7	berb\pipeline\experiment_repair.py:697	workspace = run_dir / f"_repair_opencode_v{cycle}"	berb.pipeline.experiment_repair	?
+S7	berb\pipeline\stages.py:550	temp_path = path.with_suffix(".tmp")	berb.pipeline.stages	?
+S7	berb\pipeline\stages.py:555	temp_path.rename(path)	berb.pipeline.stages	?
+S7	berb\pipeline\checkpoint.py:78	fd, tmp_path = tempfile.mkstemp(dir=run_dir, suffix=".tmp", prefix="checkpoint_")	berb.pipeline.checkpoint	?
+S7	berb\literature\cache.py:151	fd, tmp_path = tempfile.mkstemp(dir=d, suffix=".tmp", prefix=f"{key}_")	berb.literature.cache	?
+S7	berb\pipeline\runner.py:248	stage_dir = run_dir / f"stage-{int(stage):02d}"	berb.pipeline.runner	?
+S7	berb\pipeline\_metric_helpers.py:55	stage_dir = run_dir / f"stage-{s:02d}"	berb.pipeline._metric_helpers	?
+S7	berb\pipeline\stage_impls\_execution.py:619	src_dir = run_dir / f"stage-{stage_num:02d}" / "experiment"	berb.pipeline.stage_impls._execution	?
+S7	berb\pipeline\stage_impls\_execution.py:626	src_file = run_dir / f"stage-{stage_num:02d}" / "experiment.py"	berb.pipeline.stage_impls._execution	?
+S7	berb\pipeline\stage_impls\_execution.py:1136	version_dir = stage_dir / f"experiment_v{iteration}"	berb.pipeline.stage_impls._execution	?
+S7	berb\pipeline\stage_impls\_execution.py:1161	stage_dir / f"refine_sandbox_v{iteration}",	berb.pipeline.stage_impls._execution	?
+S7	berb\pipeline\stage_impls\_execution.py:1263	stage_dir / f"refine_sandbox_v{iteration}_fix",	berb.pipeline.stage_impls._execution	?
+S7	berb\pipeline\stage_impls\_execution.py:1285	best_version = f"experiment_v{iteration}/"	berb.pipeline.stage_impls._execution	?
+S9	berb\pipeline\checkpoint.py:82	fh.write(json.dumps(checkpoint, indent=2))	berb.pipeline.checkpoint	?
+S9	berb\pipeline\iterative.py:103	history_path.write_text(json.dumps(history, indent=2), encoding="utf-8")	berb.pipeline.iterative	?
+S9	berb\pipeline\_helpers.py:161	(stage_dir / "decision.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")	berb.pipeline._helpers	?
+S9	berb\pipeline\executor.py:384	json.dumps(stage_health, indent=2), encoding="utf-8"	berb.pipeline.executor	?
+S9	berb\pipeline\tracing.py:217	fh.write(json.dumps(record.to_dict()) + "\n")	berb.pipeline.tracing	?
+S9	berb\pipeline\summary.py:54	json.dumps(summary, indent=2),	berb.pipeline.summary	?
+S9	berb\pipeline\packaging.py:263	(dest / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")	berb.pipeline.packaging	?
+S9	berb\pipeline\stages.py:551	temp_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")	berb.pipeline.stages	?
+S9	berb\pipeline\stage_impls\_review.py:922	json.dumps(signal, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._review	?
+S9	berb\pipeline\stage_impls\_analysis.py:1009	json.dumps(decision_payload, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._analysis	?
+S9	berb\pipeline\stage_impls\_code_generation.py:1162	json.dumps(review_report, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._code_generation	?
+S9	berb\pipeline\stage_impls\_archive.py:107	(stage_dir / "bundle_index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")	berb.pipeline.stage_impls._archive	?
+S9	berb\pipeline\stage_impls\_execution.py:279	(runs_dir / "run-1.json").write_text(json.dumps(run_payload, indent=2), encoding="utf-8")	berb.pipeline.stage_impls._execution	?
+S9	berb\pipeline\stage_impls\_execution.py:546	json.dumps(run_payload, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._execution	?
+S9	berb\copilot\branching.py:55	(branch_dir / "branch_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")	berb.copilot.branching	?
+S9	berb\copilot\feedback.py:67	request_path.write_text(json.dumps(request, indent=2), encoding="utf-8")	berb.copilot.feedback	?
+S9	berb\project\manager.py:54	json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"	berb.project.manager	?
+S9	berb\literature\verify.py:565	json.dumps(result.to_dict(), indent=2),	berb.literature.verify	?
+S9	berb\assessor\comparator.py:60	history_file.write_text(json.dumps(self._entries, indent=2), encoding="utf-8")	berb.assessor.comparator	?
+S9	berb\audit\reproducibility.py:364	json.dump({"entries": trail, "run_id": self.run_id}, f, indent=2)	berb.audit.reproducibility	?
+S9	berb\audit\reproducibility.py:444	json.dump(report, f, indent=2)	berb.audit.reproducibility	?
+S9	berb\audit\reproducibility.py:495	json.dump(metadata, f, indent=2)	berb.audit.reproducibility	?
+S9	berb\experiment\journal.py:449	return json.dumps(data, indent=2, default=str)	berb.experiment.journal	?
+S9	berb\metrics\reasoning_cost_tracker.py:721	output_path.write_text(json.dumps(report, indent=2))	berb.metrics.reasoning_cost_tracker	?
+S9	berb\integrity\claims.py:221	return json.dumps(self.to_dict(), indent=indent, default=str)	berb.integrity.claims	?

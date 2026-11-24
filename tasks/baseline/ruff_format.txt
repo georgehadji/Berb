@@ -1,0 +1,68 @@
+unformatted: File would be reformatted
+   --> berb\reasoning\USAGE.md:424:1
+    |
+423 | from berb.reasoning.registry import list_reasoners
+424 +
+425 | print(list_reasoners())
+--------------------------------------------------------------------------------
+474 | # Create independent instances for parallel execution
+    - tasks = [
+    -     create_reasoner("perspective", llm_client).execute(ctx)
+    -     for ctx in contexts
+    - ]
+475 + tasks = [create_reasoner("perspective", llm_client).execute(ctx) for ctx in contexts]
+476 | results = await asyncio.gather(*tasks)
+--------------------------------------------------------------------------------
+496 |
+497 +
+498 | @pytest.mark.asyncio
+499 | async def test_multi_perspective():
+500 |     # Clear singletons for test isolation
+501 |     ReasonerRegistry.clear_singletons()
+    -     
+502 +
+503 |     # Get reasoner
+--------------------------------------------------------------------------------
+509 |     )
+    -     
+510 +
+511 |     # Execute
+512 |     result = await method.execute(context)
+    -     
+513 +
+514 |     # Assert
+--------------------------------------------------------------------------------
+556 | from berb.reasoning.registry import list_reasoners
+557 +
+558 | print(list_reasoners())
+559 |
+560 | # Ensure method type is correct
+561 | from berb.reasoning import MethodType
+562 +
+563 | method = get_reasoner(MethodType.BAYESIAN, llm_client)  # ✅
+--------------------------------------------------------------------------------
+572 | from berb.reasoning.registry import ReasonerRegistry
+573 +
+574 | ReasonerRegistry.clear_singletons()
+--------------------------------------------------------------------------------
+590 | from berb.reasoning.registry import ReasonerRegistry
+591 +
+592 | print(ReasonerRegistry.list_available())
+    |
+
+unformatted: File would be reformatted
+  --> tests\test_find_implicit_state.py:14:11
+   |
+13 |
+   - FIXTURE = '''
+14 + FIXTURE = """
+15 | from enum import StrEnum
+--------------------------------------------------------------------------------
+47 |     return x == "busy"
+   - '''
+48 + """
+49 |
+   |
+
+2 files would be reformatted, 629 files already formatted
+exit 1

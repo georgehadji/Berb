@@ -1,0 +1,110 @@
+signal	file:line	snippet	module	wired
+S1	berb/health.py:51	dict-key | "status": check.status,	berb.health	Y
+S1	berb/pipeline/_helpers.py:153	dict-key | "status": result.status.value,	berb.pipeline._helpers	Y
+S1	berb/pipeline/_helpers.py:154	dict-key | "decision": result.decision,	berb.pipeline._helpers	Y
+S1	berb/pipeline/executor.py:321	dict-key | "stage": int(stage),	berb.pipeline.executor	Y
+S1	berb/pipeline/executor.py:377	dict-key | "status": result.status.value,	berb.pipeline.executor	Y
+S1	berb/pipeline/experiment_diagnosis.py:855	dict-key | "mode": qa.mode.value,	berb.pipeline.experiment_diagnosis	Y
+S1	berb/pipeline/experiment_repair.py:916	dict-key | "status": "completed" if run_result.get("returncode") == 0 else "failed",	berb.pipeline.experiment_repair	Y
+S1	berb/pipeline/iterative.py:96	dict-key | "decision": decision,	berb.pipeline.iterative	Y
+S1	berb/pipeline/runner.py:239	dict-key | "decision": result.decision,	berb.pipeline.runner	Y
+S1	berb/pipeline/runner.py:86	dict-key | "decision": "pivot",	berb.pipeline.runner	Y
+S1	berb/pipeline/tracing.py:62	dict-key | "status": self.status,	berb.pipeline.tracing	Y
+S4	berb/health.py:688	raw string 'openrouter' | fallback_models = config.llm.fallback_models if provider == "openrouter" else ()	berb.health	Y
+S4	berb/health.py:735	raw string 'fail' | overall = "fail" if any(c.status == "fail" for c in checks) else "pass"	berb.health	Y
+S4	berb/health.py:759	raw string 'fail' | fail_count = sum(1 for check in report.checks if check.status == "fail")	berb.health	Y
+S4	berb/health.py:760	raw string 'warn' | warn_count = sum(1 for check in report.checks if check.status == "warn")	berb.health	Y
+S4	berb/pipeline/_figure_helpers.py:100	raw string 'abstract' | if heading_text.lower() == "abstract":	berb.pipeline._figure_helpers	Y
+S4	berb/pipeline/citation_verification.py:261	raw string 'verified' | if web_status == "verified":	berb.pipeline.citation_verification	Y
+S4	berb/pipeline/citation_verification.py:48	enum VerificationLayer | class VerificationLayer(StrEnum):	berb.pipeline.citation_verification	Y
+S4	berb/pipeline/experiment_diagnosis.py:131	enum PaperMode | class PaperMode(enum.Enum):	berb.pipeline.experiment_diagnosis	Y
+S4	berb/pipeline/experiment_diagnosis.py:27	enum DeficiencyType | class DeficiencyType(enum.Enum):	berb.pipeline.experiment_diagnosis	Y
+S4	berb/pipeline/stages.py:26	enum Stage | class Stage(IntEnum):	berb.pipeline.stages	Y
+S4	berb/pipeline/stages.py:428	raw string 'retry' | elif event.metadata.get("decision") == "retry":	berb.pipeline.stages	Y
+S4	berb/pipeline/stages.py:69	enum StageStatus | class StageStatus(StrEnum):	berb.pipeline.stages	Y
+S4	berb/pipeline/stages.py:81	enum TransitionEvent | class TransitionEvent(StrEnum):	berb.pipeline.stages	Y
+S5	berb/pipeline/contracts.py:449	CONTRACTS mutated in rebuild_from_registry | CONTRACTS[stage] = reg.contract	berb.pipeline.contracts	Y
+S5	berb/pipeline/registry.py:79	_registry mutated in register_stage | _registry[stage] = registration	berb.pipeline.registry	Y
+S5	berb/pipeline/registry.py:79	_registry mutated in decorator | _registry[stage] = registration	berb.pipeline.registry	Y
+S5	berb/pipeline/registry.py:97	_registry mutated in clear_registry | _registry.clear()	berb.pipeline.registry	Y
+S5	berb/pipeline/tracing.py:106	_traces mutated in clear_trace | _traces.pop(trace_id, None)	berb.pipeline.tracing	Y
+S5	berb/pipeline/tracing.py:205	_traces mutated in _record_span | _traces.setdefault(record.trace_id, []).append(record)	berb.pipeline.tracing	Y
+S5	berb/pipeline/tracing.py:82	global _output_dir | global _output_dir  # noqa: PLW0603	berb.pipeline.tracing	Y
+S5	berb/pipeline/tracing.py:92	_traces mutated in new_trace | _traces[trace_id] = []	berb.pipeline.tracing	Y
+S6	berb\pipeline\checkpoint.py:141	if not cp_path.exists():	berb.pipeline.checkpoint	Y
+S6	berb\pipeline\checkpoint.py:49	(run_dir / "heartbeat.json").write_text(	berb.pipeline.checkpoint	Y
+S6	berb\pipeline\discovery.py:177	if not index.exists():	berb.pipeline.discovery	Y
+S6	berb\pipeline\discovery.py:66	if saved.exists():	berb.pipeline.discovery	Y
+S6	berb\pipeline\experiment_repair.py:521	best_path.write_text(json.dumps(best_summary, indent=2), encoding="utf-8")	berb.pipeline.experiment_repair	Y
+S6	berb\pipeline\iterative.py:70	if not history_path.exists():	berb.pipeline.iterative	Y
+S6	berb\pipeline\iterative.py:87	if history_path.exists():	berb.pipeline.iterative	Y
+S6	berb\pipeline\packaging.py:57	_was_sanitized = _sanitization_report.exists()	berb.pipeline.packaging	Y
+S6	berb\pipeline\runner.py:375	if not topic_file.exists():	berb.pipeline.runner	Y
+S6	berb\pipeline\runner.py:682	_qw_path = run_dir / "quality_warning.txt"	berb.pipeline.runner	Y
+S6	berb\pipeline\runner.py:722	if _diag_path.exists():	berb.pipeline.runner	Y
+S6	berb\pipeline\runner.py:732	(run_dir / "experiment_repair_result.json").write_text(	berb.pipeline.runner	Y
+S7	berb\pipeline\_metric_helpers.py:55	stage_dir = run_dir / f"stage-{s:02d}"	berb.pipeline._metric_helpers	Y
+S7	berb\pipeline\checkpoint.py:78	fd, tmp_path = tempfile.mkstemp(dir=run_dir, suffix=".tmp", prefix="checkpoint_")	berb.pipeline.checkpoint	Y
+S7	berb\pipeline\discovery.py:104	task_dir = run_dir / "discovery" / f"cycle-{cycle}" / uuid.uuid4().hex[:8]	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:201	stage_src = src / f"stage-{stage:02d}"	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:219	src = run_dir / f"stage-{stage:02d}"	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:295	path = task_dir / f"stage-{int(DISCOVERY_LAST_STAGE):02d}" / "decision_structured.json"	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:307	path = task_dir / f"stage-{int(Stage.RESULT_ANALYSIS):02d}" / "metrics.json"	berb.pipeline.discovery	Y
+S7	berb\pipeline\executor.py:163	stage_dir = run_dir / f"stage-{int(stage):02d}"	berb.pipeline.executor	Y
+S7	berb\pipeline\executor.py:186	f"stage-{int(stage):02d}-start",	berb.pipeline.executor	Y
+S7	berb\pipeline\experiment_repair.py:217	path = run_dir / f"stage-14_repair_v{i}" / "experiment_summary.json"	berb.pipeline.experiment_repair	Y
+S7	berb\pipeline\experiment_repair.py:410	repair_dir = run_dir / f"stage-14_repair_v{cycle}"	berb.pipeline.experiment_repair	Y
+S7	berb\pipeline\experiment_repair.py:697	workspace = run_dir / f"_repair_opencode_v{cycle}"	berb.pipeline.experiment_repair	Y
+S7	berb\pipeline\iterative.py:145	stage_dir = run_dir / f"stage-{stage_num:02d}"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:147	version_dir = run_dir / f"stage-{stage_num:02d}_v{attempt}"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:150	stage_dir.rename(version_dir)	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:255	alt = run_dir / f"stage-14_v{v}" / "experiment_summary.json"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:40	alt = run_dir / f"stage-14_v{_v}" / "experiment_summary.json"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:44	prev = run_dir / f"stage-14_v{pivot_count}" / "experiment_summary.json"	berb.pipeline.iterative	Y
+S7	berb\pipeline\runner.py:248	stage_dir = run_dir / f"stage-{int(stage):02d}"	berb.pipeline.runner	Y
+S7	berb\pipeline\stages.py:550	temp_path = path.with_suffix(".tmp")	berb.pipeline.stages	Y
+S7	berb\pipeline\stages.py:555	temp_path.rename(path)	berb.pipeline.stages	Y
+S8	berb/pipeline/runner.py:621	read_pivot_count(run_dir) | pivot count read from run dir on disk, gates forced PROCEED | pivot_count = read_pivot_count(run_dir)	berb.pipeline.runner	Y
+S8	berb/pipeline/stages.py:427	PipelineState.pivot_count | pivot decisions rebuilt from event log, caps pivots | self.pivot_count += 1	berb.pipeline.stages	Y
+S8	berb/pipeline/stages.py:429	PipelineState.retry_count | retry decisions rebuilt from event log | self.retry_count += 1	berb.pipeline.stages	Y
+S9	berb\pipeline\_helpers.py:161	(stage_dir / "decision.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")	berb.pipeline._helpers	Y
+S9	berb\pipeline\checkpoint.py:82	fh.write(json.dumps(checkpoint, indent=2))	berb.pipeline.checkpoint	Y
+S9	berb\pipeline\executor.py:384	json.dumps(stage_health, indent=2), encoding="utf-8"	berb.pipeline.executor	Y
+S9	berb\pipeline\iterative.py:103	history_path.write_text(json.dumps(history, indent=2), encoding="utf-8")	berb.pipeline.iterative	Y
+S9	berb\pipeline\packaging.py:263	(dest / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")	berb.pipeline.packaging	Y
+S9	berb\pipeline\stages.py:551	temp_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")	berb.pipeline.stages	Y
+S9	berb\pipeline\summary.py:54	json.dumps(summary, indent=2),	berb.pipeline.summary	Y
+S9	berb\pipeline\tracing.py:217	fh.write(json.dumps(record.to_dict()) + "\n")	berb.pipeline.tracing	Y
+S11	berb/pipeline/_helpers.py:154	"decision": result.decision,	berb.pipeline._helpers	Y
+S11	berb/pipeline/_helpers.py:81	decision: str = "proceed"	berb.pipeline._helpers	Y
+S11	berb/pipeline/code_agent.py:1360	verdict = review.get("verdict", "APPROVE")	berb.pipeline.code_agent	Y
+S11	berb/pipeline/code_agent.py:1369	if verdict == "APPROVE" or not critical:	berb.pipeline.code_agent	Y
+S11	berb/pipeline/discovery.py:245	decision = _read_decision(task_dir)	berb.pipeline.discovery	Y
+S11	berb/pipeline/discovery.py:248	if decision == "PROCEED":	berb.pipeline.discovery	Y
+S11	berb/pipeline/discovery.py:302	return str(data.get("decision", "")).upper() if isinstance(data, dict) else ""	berb.pipeline.discovery	Y
+S11	berb/pipeline/executor.py:177	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:259	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:272	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:284	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:341	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:357	decision="block",	berb.pipeline.executor	Y
+S11	berb/pipeline/iterative.py:96	"decision": decision,	berb.pipeline.iterative	Y
+S11	berb/pipeline/runner.py:216	if result.decision == "degraded":	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:239	"decision": result.decision,	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:61	return result.decision in DECISION_ROLLBACK and pivot_depth < MAX_DECISION_PIVOTS	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:641	rollback_target = _get_rollback_target(stage, result.decision)	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:642	record_decision_history(run_dir, result.decision, rollback_target, pivot_count + 1)	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:65	return DECISION_ROLLBACK.get(decision, stage)	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:86	"decision": "pivot",	berb.pipeline.runner	Y
+S11	berb/pipeline/stages.py:216	decision: str = "proceed"	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:268	decision="block",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:296	decision="pivot",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:306	decision="block",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:316	decision="retry",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:325	decision="retry",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:339	decision="block",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:426	if event.metadata.get("decision") == "pivot":	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:428	elif event.metadata.get("decision") == "retry":	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:437	if event.metadata.get("decision"):	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:438	self.decisions.append(event.metadata["decision"])	berb.pipeline.stages	Y
+S11	berb/pipeline/summary.py:41	"degraded": any(r.decision == "degraded" for r in results),	berb.pipeline.summary	Y

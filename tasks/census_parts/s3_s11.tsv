@@ -1,0 +1,92 @@
+signal	file:line	snippet	module	wired
+S3	berb/agents/benchmark_agent/validator.py:233	if llm_review.get("severity") == "error":	berb.agents.benchmark_agent.validator	?
+S3	berb/commands/external_runners.py:188	if res["status"] == "success":	berb.commands.external_runners	?
+S3	berb/commands/external_runners.py:224	if res["status"] == "success":	berb.commands.external_runners	?
+S3	berb/cli.py:426	done = sum(1 for r in results if r.status.value == "done")	berb.cli	?
+S3	berb/cli.py:427	failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	?
+S3	berb/cli.py:1017	done = sum(1 for r in results if r.status.value == "done")	berb.cli	?
+S3	berb/cli.py:1018	failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	?
+S3	berb/experiment/visualize.py:613	colors.append("#228833" if status == "done" else "#EE6677")	berb.experiment.visualize	?
+S3	berb/report.py:56	status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	?
+S3	berb/experiment/validator.py:42	return not any(i.severity == "error" for i in self.issues)	berb.experiment.validator	?
+S3	berb/experiment/validator.py:46	return [i for i in self.issues if i.severity == "error"]	berb.experiment.validator	?
+S3	berb/evolution.py:460	if lesson.severity == "error":	berb.evolution	?
+S3	berb/experiment/evaluators/convergence.py:128	for key in ("error", "l2_error", "linf_error"):	berb.experiment.evaluators.convergence	?
+S3	berb/web/firecrawl_client.py:493	if status == "completed":	berb.web.firecrawl_client	?
+S3	berb/web/firecrawl_client.py:517	elif status == "failed":	berb.web.firecrawl_client	?
+S3	berb/llm/client.py:105	if provider.value != "unknown" and model_lower == provider.value:	berb.llm.client	?
+S3	berb/llm/anthropic_adapter.py:163	if data.get("type") == "error" or "error" in data:	berb.llm.anthropic_adapter	?
+S3	berb/literature/verify.py:226	if "api/errors" in entry_id or not found_title or found_title.lower() == "error":	berb.literature.verify	?
+S3	berb/ui/dashboard.py:382	completed = sum(1 for s in self.stages.values() if s.status == "completed")	berb.ui.dashboard	?
+S3	berb/server/routes/pipeline.py:70	if _active_run and _active_run.get("status") == "running":	berb.server.routes.pipeline	?
+S3	berb/server/routes/pipeline.py:130	done = sum(1 for r in results if r.status.value == "done")	berb.server.routes.pipeline	?
+S3	berb/server/routes/pipeline.py:131	failed = sum(1 for r in results if r.status.value == "failed")	berb.server.routes.pipeline	?
+S3	berb/learning/cross_project_learning.py:268	success_rate = sum(1 for s in stages if s.status == "success") / len(stages)	berb.learning.cross_project_learning	?
+S3	berb/learning/cross_project_learning.py:309	failures = [s for s in stages if s.status in ("failed", "repaired")]	berb.learning.cross_project_learning	?
+S3	berb/dashboard/metrics.py:12	completed = sum(1 for r in runs if r.get("status") == "completed")	berb.dashboard.metrics	?
+S3	berb/dashboard/metrics.py:13	failed = sum(1 for r in runs if r.get("status") == "failed")	berb.dashboard.metrics	?
+S3	berb/pipeline/stage_impls/_review.py:570	_exp_failed = _best_run.get("status") == "failed" and not _best_run.get("metrics")	berb.pipeline.stage_impls._review	?
+S3	berb/pipeline/stage_impls/_review.py:673	if cond_status == "failed":	berb.pipeline.stage_impls._review	?
+S3	berb/pipeline/stage_impls/_paper_writing.py:995	s for s in _polish_report.suggestions if s.severity.value in ("error", "warning")	berb.pipeline.stage_impls._paper_writing	?
+S3	berb/pipeline/stage_impls/_execution.py:242	if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	?
+S3	berb/pipeline/stage_impls/_code_generation.py:784	issues=[i for i in validation.issues if i.severity == "error"]	berb.pipeline.stage_impls._code_generation	?
+S3	berb/pipeline/stage_impls/_code_generation.py:837	if issue.severity == "error" and issue.category in (	berb.pipeline.stage_impls._code_generation	?
+S11	berb/pipeline/code_agent.py:1360	verdict = review.get("verdict", "APPROVE")	berb.pipeline.code_agent	?
+S11	berb/pipeline/code_agent.py:1369	if verdict == "APPROVE" or not critical:	berb.pipeline.code_agent	?
+S11	berb/pipeline/executor.py:177	decision="retry",	berb.pipeline.executor	?
+S11	berb/pipeline/executor.py:259	decision="retry",	berb.pipeline.executor	?
+S11	berb/pipeline/executor.py:272	decision="retry",	berb.pipeline.executor	?
+S11	berb/pipeline/executor.py:284	decision="retry",	berb.pipeline.executor	?
+S11	berb/pipeline/executor.py:341	decision="retry",	berb.pipeline.executor	?
+S11	berb/pipeline/executor.py:357	decision="block",	berb.pipeline.executor	?
+S11	berb/pipeline/iterative.py:96	"decision": decision,	berb.pipeline.iterative	?
+S11	berb/pipeline/discovery.py:245	decision = _read_decision(task_dir)	berb.pipeline.discovery	?
+S11	berb/pipeline/discovery.py:248	if decision == "PROCEED":	berb.pipeline.discovery	?
+S11	berb/pipeline/discovery.py:302	return str(data.get("decision", "")).upper() if isinstance(data, dict) else ""	berb.pipeline.discovery	?
+S11	berb/pipeline/stages.py:216	decision: str = "proceed"	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:268	decision="block",	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:296	decision="pivot",	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:306	decision="block",	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:316	decision="retry",	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:325	decision="retry",	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:339	decision="block",	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:426	if event.metadata.get("decision") == "pivot":	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:428	elif event.metadata.get("decision") == "retry":	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:437	if event.metadata.get("decision"):	berb.pipeline.stages	?
+S11	berb/pipeline/stages.py:438	self.decisions.append(event.metadata["decision"])	berb.pipeline.stages	?
+S11	berb/pipeline/runner.py:61	return result.decision in DECISION_ROLLBACK and pivot_depth < MAX_DECISION_PIVOTS	berb.pipeline.runner	?
+S11	berb/pipeline/runner.py:65	return DECISION_ROLLBACK.get(decision, stage)	berb.pipeline.runner	?
+S11	berb/pipeline/runner.py:86	"decision": "pivot",	berb.pipeline.runner	?
+S11	berb/pipeline/runner.py:216	if result.decision == "degraded":	berb.pipeline.runner	?
+S11	berb/pipeline/runner.py:239	"decision": result.decision,	berb.pipeline.runner	?
+S11	berb/pipeline/runner.py:641	rollback_target = _get_rollback_target(stage, result.decision)	berb.pipeline.runner	?
+S11	berb/pipeline/runner.py:642	record_decision_history(run_dir, result.decision, rollback_target, pivot_count + 1)	berb.pipeline.runner	?
+S11	berb/pipeline/_helpers.py:81	decision: str = "proceed"	berb.pipeline._helpers	?
+S11	berb/pipeline/_helpers.py:154	"decision": result.decision,	berb.pipeline._helpers	?
+S11	berb/pipeline/stage_impls/_archive.py:57	decision = _read_prior_artifact(run_dir, "decision.md") or ""	berb.pipeline.stage_impls._archive	?
+S11	berb/pipeline/stage_impls/_archive.py:66	decision=decision,	berb.pipeline.stage_impls._archive	?
+S11	berb/pipeline/stage_impls/_analysis.py:988	decision = _parse_decision(decision_md)	berb.pipeline.stage_impls._analysis	?
+S11	berb/pipeline/stage_impls/_analysis.py:1003	"decision": decision,	berb.pipeline.stage_impls._analysis	?
+S11	berb/pipeline/stage_impls/_analysis.py:1018	decision=decision,	berb.pipeline.stage_impls._analysis	?
+S11	berb/pipeline/summary.py:41	"degraded": any(r.decision == "degraded" for r in results),	berb.pipeline.summary	?
+S11	berb/pipeline/stage_impls/_execution.py:223	run_status = "rejected"	berb.pipeline.stage_impls._execution	?
+S11	berb/pipeline/stage_impls/_execution.py:229	run_status = "completed"	berb.pipeline.stage_impls._execution	?
+S11	berb/pipeline/stage_impls/_execution.py:231	run_status = "partial"	berb.pipeline.stage_impls._execution	?
+S11	berb/pipeline/stage_impls/_execution.py:237	run_status = "failed"	berb.pipeline.stage_impls._execution	?
+S11	berb/pipeline/stage_impls/_execution.py:242	if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	?
+S11	berb/pipeline/stage_impls/_execution.py:259	"status": run_status,	berb.pipeline.stage_impls._execution	?
+S11	berb/pipeline/stage_impls/_code_generation.py:1151	review_verdict = review_data.get("verdict", "unknown")	berb.pipeline.stage_impls._code_generation	?
+S11	berb/pipeline/stage_impls/_code_generation.py:1157	"verdict": review_verdict,	berb.pipeline.stage_impls._code_generation	?
+S11	berb/pipeline/stage_impls/_export.py:292	verdict = parse_cross_model_verdict(	berb.pipeline.stage_impls._export	?
+S11	berb/pipeline/stage_impls/_export.py:295	if verdict is None:	berb.pipeline.stage_impls._export	?
+S11	berb/pipeline/stage_impls/_export.py:309	"verdict": verdict.verdict.value,	berb.pipeline.stage_impls._export	?
+S11	berb/pipeline/stage_impls/_paper_writing.py:68	decision = _read_prior_artifact(run_dir, "decision.md") or ""	berb.pipeline.stage_impls._paper_writing	?
+S11	berb/pipeline/stage_impls/_paper_writing.py:111	decision=decision,	berb.pipeline.stage_impls._paper_writing	?
+S11	berb/pipeline/stage_impls/_review.py:656	verdict = report.get("verdict", "proceed")	berb.pipeline.stage_impls._review	?
+S11	berb/pipeline/stage_impls/_review.py:915	"verdict": verdict,	berb.pipeline.stage_impls._review	?
+S11	berb/pipeline/stage_impls/_review.py:929	decision="degraded",	berb.pipeline.stage_impls._review	?
+S11	berb/review/ensemble.py:473	decision = Decision(review_data["decision"])	berb.review.ensemble	?
+S11	berb/review/ensemble.py:478	decision = Decision(review_data["decision"])	berb.review.ensemble	?
+S11	berb/review/ensemble.py:485	decision=decision,	berb.review.ensemble	?
+S11	berb/integrity/claims.py:133	"verdict": self.verdict.value,	berb.integrity.claims	?
+S11	berb/integrity/claims.py:147	verdict = ClaimVerdict(data.get("verdict", "not_checked"))	berb.integrity.claims	?

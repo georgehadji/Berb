@@ -1,0 +1,157 @@
+signal	file:line	snippet	module	wired
+S1	berb/commands/external_runners.py:157	dict-key | "status": "success" if res.returncode == 0 else "failed",	berb.commands.external_runners	Y
+S1	berb/commands/external_runners.py:82	dict-key | "status": "success" if res.returncode == 0 else "failed",	berb.commands.external_runners	Y
+S1	berb/copilot/branching.py:53	dict-key | "status": "active",	berb.copilot.branching	Y
+S1	berb/copilot/branching.py:80	dict-key | "status": "unknown",	berb.copilot.branching	Y
+S1	berb/copilot/branching.py:88	dict-key | "status": "unknown",	berb.copilot.branching	Y
+S1	berb/copilot/controller.py:105	dict-key | "stage": feedback.stage,	berb.copilot.controller	Y
+S1	berb/copilot/controller.py:26	attr | self.mode = ResearchMode(config.mode)	berb.copilot.controller	Y
+S1	berb/copilot/feedback.py:59	dict-key | "stage": stage,	berb.copilot.feedback	Y
+S1	berb/copilot/feedback.py:64	dict-key | "status": "waiting",	berb.copilot.feedback	Y
+S1	berb/dashboard/collector.py:108	attr | snap.status = "running"	berb.dashboard.collector	Y
+S1	berb/dashboard/collector.py:38	dict-key | "status": self.status,	berb.dashboard.collector	Y
+S1	berb/dashboard/collector.py:93	attr | snap.status = ckpt.get("status", "running")	berb.dashboard.collector	Y
+S1	berb/mcp/server.py:78	dict-key | return {"success": True, "run_id": run_id, "status": "no_checkpoint"}	berb.mcp.server	Y
+S1	berb/mcp/tools.py:46	dict-key | "stage": {	berb.mcp.tools	Y
+S1	berb/modes/operation_mode.py:416	attr | self.mode = mode	berb.modes.operation_mode	Y
+S1	berb/server/app.py:80	dict-key | return {"status": "ok"}	berb.server.app	Y
+S1	berb/server/app.py:85	dict-key | "status": "ok",	berb.server.app	Y
+S1	berb/server/app.py:95	dict-key | "mode": config.experiment.mode,	berb.server.app	Y
+S1	berb/server/routes/pipeline.py:106	dict-key | "status": "running",	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:133	key | _active_run["status"] = "completed" if failed == 0 else "failed"	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:139	key | _active_run["status"] = "failed"	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:160	key | _active_run["status"] = "stopped"	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:161	dict-key | return {"status": "stopped"}	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:168	dict-key | return {"status": "idle"}	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:184	dict-key | "phase": getattr(s, "phase", ""),	berb.server.routes.pipeline	Y
+S1	berb/server/routes/projects.py:32	key | proj["status"] = ckpt_data.get("status", "unknown")	berb.server.routes.projects	Y
+S1	berb/server/routes/projects.py:34	key | proj["status"] = "unknown"	berb.server.routes.projects	Y
+S1	berb/server/routes/projects.py:36	key | proj["status"] = "no_checkpoint"	berb.server.routes.projects	Y
+S1	berb/servers/cloud_executor.py:38	dict-key | "status": "stub_launched",	berb.servers.cloud_executor	Y
+S1	berb/servers/cloud_executor.py:49	dict-key | return {"instance_id": instance_id, "status": "stub_unknown"}	berb.servers.cloud_executor	Y
+S1	berb/servers/dispatcher.py:104	key | info["status"] = "failed"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:117	key | info["status"] = "dispatched"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:125	key | info["status"] = "completed"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:138	dict-key | return {"task_id": task_id, "status": "unknown"}	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:141	dict-key | "status": info["status"],	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:53	dict-key | "status": "queued",	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:62	dict-key | "status": "dispatched",	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:88	key | info["status"] = "running"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:99	key | info["status"] = "completed" if result["success"] else "failed"	berb.servers.dispatcher	Y
+S1	berb/servers/slurm_executor.py:109	dict-key | return {"job_id": job_id, "state": state}	berb.servers.slurm_executor	Y
+S1	berb/ui/dashboard.py:203	attr | self.stages[stage_number].status = "completed"	berb.ui.dashboard	Y
+S1	berb/wizard/quickstart.py:111	key | config.setdefault("experiment", {})["mode"] = value	berb.wizard.quickstart	Y
+S1	berb/wizard/quickstart.py:138	dict-key | "project": {"name": "wizard-project", "mode": "full-auto"},	berb.wizard.quickstart	Y
+S1	berb/wizard/quickstart.py:24	dict-key | config["project"] = {"name": name, "mode": "full-auto"}	berb.wizard.quickstart	Y
+S1	berb/wizard/quickstart.py:46	dict-key | config["experiment"] = {"mode": mode}	berb.wizard.quickstart	Y
+S2	berb/mcp/server.py:124	in start | self._running = True	berb.mcp.server	Y
+S2	berb/mcp/server.py:129	in stop | self._running = False	berb.mcp.server	Y
+S2	berb/mcp/transport.py:111	in start | self._running = True	berb.mcp.transport	Y
+S2	berb/mcp/transport.py:160	in close | self._running = False	berb.mcp.transport	Y
+S3	berb/cli.py:1017	done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S3	berb/cli.py:1018	failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S3	berb/cli.py:426	done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S3	berb/cli.py:427	failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S3	berb/commands/external_runners.py:188	if res["status"] == "success":	berb.commands.external_runners	Y
+S3	berb/commands/external_runners.py:224	if res["status"] == "success":	berb.commands.external_runners	Y
+S3	berb/dashboard/metrics.py:12	completed = sum(1 for r in runs if r.get("status") == "completed")	berb.dashboard.metrics	Y
+S3	berb/dashboard/metrics.py:13	failed = sum(1 for r in runs if r.get("status") == "failed")	berb.dashboard.metrics	Y
+S3	berb/server/routes/pipeline.py:130	done = sum(1 for r in results if r.status.value == "done")	berb.server.routes.pipeline	Y
+S3	berb/server/routes/pipeline.py:131	failed = sum(1 for r in results if r.status.value == "failed")	berb.server.routes.pipeline	Y
+S3	berb/server/routes/pipeline.py:70	if _active_run and _active_run.get("status") == "running":	berb.server.routes.pipeline	Y
+S3	berb/ui/dashboard.py:382	completed = sum(1 for s in self.stages.values() if s.status == "completed")	berb.ui.dashboard	Y
+S3	berb/web/firecrawl_client.py:493	if status == "completed":	berb.web.firecrawl_client	Y
+S3	berb/web/firecrawl_client.py:517	elif status == "failed":	berb.web.firecrawl_client	Y
+S4	berb/cli.py:1017	raw string 'done' | done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S4	berb/cli.py:1018	raw string 'failed' | failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S4	berb/cli.py:1437	raw string 'init' | elif command == "init":	berb.cli	Y
+S4	berb/cli.py:1459	raw string 'literature' | elif command == "literature":	berb.cli	Y
+S4	berb/cli.py:1463	raw string 'experiment' | elif command == "experiment":	berb.cli	Y
+S4	berb/cli.py:1467	raw string 'rebuttal' | elif command == "rebuttal":	berb.cli	Y
+S4	berb/cli.py:426	raw string 'done' | done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S4	berb/cli.py:427	raw string 'failed' | failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S4	berb/cli.py:500	raw string 'status' | elif action == "status":	berb.cli	Y
+S4	berb/commands/external_runners.py:188	raw string 'success' | if res["status"] == "success":	berb.commands.external_runners	Y
+S4	berb/commands/external_runners.py:224	raw string 'success' | if res["status"] == "success":	berb.commands.external_runners	Y
+S4	berb/copilot/controller.py:108	raw string 'approve' | if feedback.action == "approve":	berb.copilot.controller	Y
+S4	berb/copilot/controller.py:116	raw string 'retry' | elif feedback.action == "retry":	berb.copilot.controller	Y
+S4	berb/copilot/controller.py:119	raw string 'skip' | elif feedback.action == "skip":	berb.copilot.controller	Y
+S4	berb/copilot/modes.py:8	enum ResearchMode | class ResearchMode(Enum):	berb.copilot.modes	Y
+S4	berb/dashboard/metrics.py:12	raw string 'completed' | completed = sum(1 for r in runs if r.get("status") == "completed")	berb.dashboard.metrics	Y
+S4	berb/dashboard/metrics.py:13	raw string 'failed' | failed = sum(1 for r in runs if r.get("status") == "failed")	berb.dashboard.metrics	Y
+S4	berb/hooks/__init__.py:307	raw string 'literature-review' | if skill_id == "literature-review":	berb.hooks	Y
+S4	berb/mcp/server.py:112	raw string 'latex' | if fmt == "latex":	berb.mcp.server	Y
+S4	berb/modes/operation_mode.py:24	enum OperationMode | class OperationMode(StrEnum):	berb.modes.operation_mode	Y
+S4	berb/modes/operation_mode.py:36	enum FeedbackAction | class FeedbackAction(StrEnum):	berb.modes.operation_mode	Y
+S4	berb/modes/operation_mode.py:461	raw string 'json' | elif self.collaborative_config.feedback_format == "json":	berb.modes.operation_mode	Y
+S4	berb/modes/workflow.py:23	enum WorkflowType | class WorkflowType(StrEnum):	berb.modes.workflow	Y
+S4	berb/plugins/__init__.py:35	enum PluginHook | class PluginHook(StrEnum):	berb.plugins	Y
+S4	berb/server/dialog/intents.py:9	enum Intent | class Intent(StrEnum):	berb.server.dialog.intents	Y
+S4	berb/server/routes/pipeline.py:130	raw string 'done' | done = sum(1 for r in results if r.status.value == "done")	berb.server.routes.pipeline	Y
+S4	berb/server/routes/pipeline.py:131	raw string 'failed' | failed = sum(1 for r in results if r.status.value == "failed")	berb.server.routes.pipeline	Y
+S4	berb/server/routes/pipeline.py:70	raw string 'running' | if _active_run and _active_run.get("status") == "running":	berb.server.routes.pipeline	Y
+S4	berb/server/websocket/events.py:12	enum EventType | class EventType(StrEnum):	berb.server.websocket.events	Y
+S4	berb/ui/dashboard.py:382	raw string 'completed' | completed = sum(1 for s in self.stages.values() if s.status == "completed")	berb.ui.dashboard	Y
+S4	berb/web/firecrawl_client.py:47	enum ScrapeFormat | class ScrapeFormat(StrEnum):	berb.web.firecrawl_client	Y
+S4	berb/web/firecrawl_client.py:493	raw string 'completed' | if status == "completed":	berb.web.firecrawl_client	Y
+S4	berb/web/firecrawl_client.py:517	raw string 'failed' | elif status == "failed":	berb.web.firecrawl_client	Y
+S5	berb/plugins/__init__.py:502	global _manager | global _manager	berb.plugins	Y
+S5	berb/presets/registry.py:352	global _registry | global _registry	berb.presets.registry	Y
+S5	berb/server/app.py:44	_app_state mutated in create_app | _app_state["config"] = config	berb.server.app	Y
+S5	berb/server/app.py:45	_app_state mutated in create_app | _app_state["monitor_dir"] = monitor_dir	berb.server.app	Y
+S5	berb/server/app.py:74	_app_state mutated in create_app | _app_state["event_manager"] = event_manager	berb.server.app	Y
+S5	berb/server/routes/chat.py:23	global _chat_manager | global _chat_manager	berb.server.routes.chat	Y
+S5	berb/server/routes/pipeline.py:112	global _active_run | global _active_run	berb.server.routes.pipeline	Y
+S5	berb/server/routes/pipeline.py:154	global _active_run,_run_task | global _active_run, _run_task	berb.server.routes.pipeline	Y
+S5	berb/server/routes/pipeline.py:68	global _active_run,_run_task | global _active_run, _run_task	berb.server.routes.pipeline	Y
+S5	berb/ui/dashboard.py:477	global _dashboard | global _dashboard	berb.ui.dashboard	Y
+S6	berb\cli.py:313	d.is_dir() and d.name.startswith("rc-") and (d / "checkpoint.json").exists()	berb.cli	Y
+S6	berb\cli.py:321	if topic_file.exists():	berb.cli	Y
+S6	berb\cli.py:351	if topic_file.exists():	berb.cli	Y
+S6	berb\copilot\feedback.py:125	if request_path.exists():	berb.copilot.feedback	Y
+S6	berb\copilot\feedback.py:73	if not response_path.exists():	berb.copilot.feedback	Y
+S6	berb\dashboard\collector.py:101	if hb_path.exists():	berb.dashboard.collector	Y
+S6	berb\dashboard\collector.py:87	if ckpt_path.exists():	berb.dashboard.collector	Y
+S6	berb\mcp\server.py:75	if checkpoint_file.exists():	berb.mcp.server	Y
+S6	berb\server\routes\pipeline.py:201	if ckpt.exists():	berb.server.routes.pipeline	Y
+S6	berb\server\routes\pipeline.py:221	if ckpt.exists():	berb.server.routes.pipeline	Y
+S6	berb\server\routes\projects.py:27	if ckpt.exists():	berb.server.routes.projects	Y
+S7	berb\copilot\branching.py:43	src = self.run_dir / f"stage-{stage_num:02d}"	berb.copilot.branching	Y
+S7	berb\copilot\branching.py:45	dest = branch_dir / f"stage-{stage_num:02d}"	berb.copilot.branching	Y
+S9	berb\copilot\branching.py:55	(branch_dir / "branch_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")	berb.copilot.branching	Y
+S9	berb\copilot\feedback.py:67	request_path.write_text(json.dumps(request, indent=2), encoding="utf-8")	berb.copilot.feedback	Y
+S10	src/hooks/useResearch.ts:38	status: response.status as ResearchJob['status'],	src/hooks/useResearch.ts	-
+S10	src/hooks/useResearch.ts:79	if (!job?.id || job.status === 'completed' || job.status === 'failed') {	src/hooks/useResearch.ts	-
+S10	src/utils/api.ts:15	status: 'queued' | 'running' | 'completed' | 'failed';	src/utils/api.ts	-
+S10	src/utils/api.ts:35	status: string;	src/utils/api.ts	-
+S10	src/views/PipelineMonitor.tsx:149	phase.status === 'completed' ? 'bg-successLight text-success' :	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:151	phase.status === 'failed' ? 'bg-errorLight text-error' :	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:165	{phase.status === 'running' && (	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:19	import type { Stage, Phase, StageStatus } from '@types';	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:204	stage.status === 'completed' ? 'bg-successLight text-success' :	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:214	{stage.status === 'paused' && (	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:22	{ phase_id: 'A', phase_name: 'Scoping', stages: [1, 2], status: 'completed', total_cost_usd: 0.02 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:223	{stage.status === 'running' && (	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:24	{ phase_id: 'C', phase_name: 'Synthesis', stages: [7, 8], status: 'running', total_cost_usd: 0.10 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:25	{ phase_id: 'D', phase_name: 'Design', stages: [9, 10, 11], status: 'pending', total_cost_usd: 0 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:39	{ stage_number: 7, stage_name: 'SYNTHESIS', status: 'running', progress: 78, message: 'Identifying thematic clusters', cost_usd: 0.06 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:58	const statusColors: Record<StageStatus, string> = {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:60	running: 'bg-accentLight text-accent',	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:73	const completedStages = stages.filter(s => s.status === 'completed').length;	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:77	const getStatusIcon = (status: StageStatus) => {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:78	switch (status) {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:81	case 'running':	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:92	const getStatusBadge = (status: StageStatus) => {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:95	{status.charAt(0).toUpperCase() + status.slice(1)}	src/views/PipelineMonitor.tsx	-
+S10	src/views/Wizard.tsx:586	{job.status === 'running' && (	src/views/Wizard.tsx	-
+S10	src/views/Wizard.tsx:610	Status: <span className="font-medium text-accent">{job.status}</span>	src/views/Wizard.tsx	-
+S10	src/views/Wizard.tsx:623	{job.status === 'running' && (	src/views/Wizard.tsx	-
+S10	types/index.ts:255	status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';	types/index.ts	-
+S10	types/index.ts:346	export interface WizardState {	types/index.ts	-
+S10	types/index.ts:61	export type StageStatus = 'pending' | 'running' | 'completed' | 'failed' | 'paused';	types/index.ts	-
+S10	types/index.ts:67	status: StageStatus;	types/index.ts	-
+S10	types/index.ts:81	status: StageStatus;	types/index.ts	-
+S12	berb/mcp/server.py:15	class BerbMCPServer: start,stop; if-guard in first 2 stmts: none | class BerbMCPServer:	berb.mcp.server	Y
+S12	berb/mcp/transport.py:22	class StdioTransport: close,start; if-guard in first 2 stmts: close | class StdioTransport:	berb.mcp.transport	Y
+S12	berb/mcp/transport.py:73	class SSETransport: close,start; if-guard in first 2 stmts: none | class SSETransport:	berb.mcp.transport	Y
+S12	berb/ui/dashboard.py:45	class PipelineDashboard: start,stop; if-guard in first 2 stmts: start,stop | class PipelineDashboard:	berb.ui.dashboard	Y

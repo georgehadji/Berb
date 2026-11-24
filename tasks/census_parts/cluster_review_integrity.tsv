@@ -1,0 +1,36 @@
+signal	file:line	snippet	module	wired
+S1	berb/integrity/claims.py:133	dict-key | "verdict": self.verdict.value,	berb.integrity.claims	Y
+S1	berb/integrity/evidence.py:110	dict-key | "stage": self.source.stage,	berb.integrity.evidence	Y
+S1	berb/integrity/evidence.py:136	dict-key | "stage": self.source.stage,	berb.integrity.evidence	Y
+S1	berb/review/ensemble.py:570	dict-key | "decision": "weak_reject",	berb.review.ensemble	Y
+S4	berb/integrity/anchors.py:55	enum AnchorKind | class AnchorKind(StrEnum):	berb.integrity.anchors	Y
+S4	berb/integrity/claims.py:29	enum ClaimType | class ClaimType(StrEnum):	berb.integrity.claims	Y
+S4	berb/integrity/claims.py:63	enum ClaimVerdict | class ClaimVerdict(StrEnum):	berb.integrity.claims	Y
+S4	berb/integrity/eval/hidden_eval.py:51	enum CriteriaVisibility | class CriteriaVisibility(StrEnum):	berb.integrity.eval.hidden_eval	N
+S4	berb/integrity/evidence.py:18	enum EvidenceType | class EvidenceType(StrEnum):	berb.integrity.evidence	Y
+S4	berb/integrity/findings.py:43	enum Severity | class Severity(StrEnum):	berb.integrity.findings	Y
+S4	berb/integrity/findings.py:66	enum CheckId | class CheckId(StrEnum):	berb.integrity.findings	Y
+S4	berb/review/ensemble.py:50	enum ReviewDimension | class ReviewDimension(StrEnum):	berb.review.ensemble	Y
+S4	berb/review/ensemble.py:61	enum Decision | class Decision(StrEnum):	berb.review.ensemble	Y
+S4	berb/writing/academic_polisher.py:31	enum AcademicPolishCategory | class AcademicPolishCategory(StrEnum):	berb.writing.academic_polisher	Y
+S4	berb/writing/academic_polisher.py:57	enum PolishSeverity | class PolishSeverity(StrEnum):	berb.writing.academic_polisher	Y
+S4	berb/writing/anti_ai.py:42	enum Language | class Language(StrEnum):	berb.writing.anti_ai	Y
+S4	berb/writing/anti_ai.py:50	enum PhraseCategory | class PhraseCategory(StrEnum):	berb.writing.anti_ai	Y
+S4	berb/writing/citation_engine.py:29	enum CitationLevel | class CitationLevel(StrEnum):	berb.writing.citation_engine	N
+S4	berb/writing/citation_engine.py:41	enum CitationStyle | class CitationStyle(StrEnum):	berb.writing.citation_engine	N
+S4	berb/writing/citation_styles.py:28	enum CitationStyle | class CitationStyle(StrEnum):	berb.writing.citation_styles	Y
+S4	berb/writing/impact_assessment.py:32	enum ContributionType | class ContributionType(StrEnum):	berb.writing.impact_assessment	Y
+S4	berb/writing/parallel_writer.py:32	enum SectionDependency | class SectionDependency(StrEnum):	berb.writing.parallel_writer	Y
+S4	berb/writing/pattern_memory.py:30	enum PatternType | class PatternType(StrEnum):	berb.writing.pattern_memory	Y
+S4	berb/writing/rebuttal_generator.py:26	enum ReviewCommentType | class ReviewCommentType(StrEnum):	berb.writing.rebuttal_generator	Y
+S4	berb/writing/rebuttal_generator.py:42	enum ResponseStrategy | class ResponseStrategy(StrEnum):	berb.writing.rebuttal_generator	Y
+S4	berb/writing/style_fingerprint.py:30	enum VocabularyLevel | class VocabularyLevel(StrEnum):	berb.writing.style_fingerprint	Y
+S4	berb/writing/style_fingerprint.py:39	enum FirstPersonUsage | class FirstPersonUsage(StrEnum):	berb.writing.style_fingerprint	Y
+S4	berb/writing/style_fingerprint.py:817	raw string 'auto' | if self.target_language == "auto":	berb.writing.style_fingerprint	Y
+S9	berb\assessor\comparator.py:60	history_file.write_text(json.dumps(self._entries, indent=2), encoding="utf-8")	berb.assessor.comparator	N
+S9	berb\integrity\claims.py:221	return json.dumps(self.to_dict(), indent=indent, default=str)	berb.integrity.claims	Y
+S11	berb/integrity/claims.py:133	"verdict": self.verdict.value,	berb.integrity.claims	Y
+S11	berb/integrity/claims.py:147	verdict = ClaimVerdict(data.get("verdict", "not_checked"))	berb.integrity.claims	Y
+S11	berb/review/ensemble.py:473	decision = Decision(review_data["decision"])	berb.review.ensemble	Y
+S11	berb/review/ensemble.py:478	decision = Decision(review_data["decision"])	berb.review.ensemble	Y
+S11	berb/review/ensemble.py:485	decision=decision,	berb.review.ensemble	Y

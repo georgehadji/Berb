@@ -1,0 +1,47 @@
+signal	file:line	snippet	module	wired
+S1	berb/hyperagent/base.py:134	dict-key | "phase": self.phase.value,	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:187	attr | self.state = HyperagentState()	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:214	attr | self.state.phase = AgentPhase.TASK_EXECUTION	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:231	attr | self.state.phase = AgentPhase.PERFORMANCE_TRACKING	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:261	attr | self.state.phase = AgentPhase.SELF_MODIFICATION	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:268	attr | self.state.phase = AgentPhase.INIT	berb.hyperagent.base	N
+S1	berb/hyperagent/meta_agent.py:117	attr | self.state = MetaAgentState()	berb.hyperagent.meta_agent	N
+S1	berb/hyperagent/meta_agent.py:487	dict-key | "state": self.state.to_dict(),	berb.hyperagent.meta_agent	N
+S1	berb/hyperagent/task_agent.py:146	attr | self.state = TaskAgentState()	berb.hyperagent.task_agent	N
+S1	berb/hyperagent/task_agent.py:369	dict-key | "mode": "simulated",	berb.hyperagent.task_agent	N
+S1	berb/hyperagent/task_agent.py:566	dict-key | "state": self.state.to_dict(),	berb.hyperagent.task_agent	N
+S1	berb/knowledge/base.py:60	dict-key | "stage": entry.source_stage,	berb.knowledge.base	Y
+S1	berb/learning/cross_project_learning.py:468	dict-key | "stage": stage,	berb.learning.cross_project_learning	N
+S1	berb/memory/shared_memory.py:336	dict-key | "stage": stage,	berb.memory.shared_memory	N
+S1	berb/memory/shared_memory.py:394	attr | state.status = status	berb.memory.shared_memory	N
+S1	berb/project/idea_pool.py:104	attr | idea.status = "planned"	berb.project.idea_pool	Y
+S1	berb/project/idea_pool.py:78	attr | idea.status = "evaluated"	berb.project.idea_pool	Y
+S1	berb/project/manager.py:124	dict-key | "projects": [{"name": p.name, "status": p.status, "topic": p.topic} for p in projects],	berb.project.manager	Y
+S1	berb/project/manager.py:153	dict-key | "status": a.status,	berb.project.manager	Y
+S1	berb/project/manager.py:159	dict-key | "status": b.status,	berb.project.manager	Y
+S1	berb/project/manager.py:171	attr | proj.status = "running"	berb.project.manager	Y
+S1	berb/project/manager.py:179	attr | proj.status = status	berb.project.manager	Y
+S1	berb/project/models.py:29	dict-key | "status": self.status,	berb.project.models	Y
+S1	berb/project/models.py:80	dict-key | "status": self.status,	berb.project.models	Y
+S1	berb/self_evolve/__init__.py:162	dict-key | "stage": exp.stage,	berb.self_evolve	N
+S1	berb/self_evolve/__init__.py:606	dict-key | "status": "complete",	berb.self_evolve	N
+S1	berb/self_evolve/__init__.py:671	dict-key | "status": "active",	berb.self_evolve	N
+S3	berb/learning/cross_project_learning.py:268	success_rate = sum(1 for s in stages if s.status == "success") / len(stages)	berb.learning.cross_project_learning	N
+S3	berb/learning/cross_project_learning.py:309	failures = [s for s in stages if s.status in ("failed", "repaired")]	berb.learning.cross_project_learning	N
+S4	berb/hyperagent/base.py:23	enum AgentPhase | class AgentPhase(StrEnum):	berb.hyperagent.base	N
+S4	berb/knowledge/graph/entities.py:10	enum EntityType | class EntityType(StrEnum):	berb.knowledge.graph.entities	N
+S4	berb/knowledge/graph/relations.py:10	enum RelationType | class RelationType(StrEnum):	berb.knowledge.graph.relations	N
+S4	berb/learning/cross_project_learning.py:268	raw string 'success' | success_rate = sum(1 for s in stages if s.status == "success") / len(stages)	berb.learning.cross_project_learning	N
+S4	berb/memory/embeddings.py:118	raw string 'api' | if self._backend == "api":	berb.memory.embeddings	Y
+S4	berb/memory/ideation_memory.py:137	raw string 'failure' | if entry.metadata.get("outcome") == "failure":	berb.memory.ideation_memory	N
+S4	berb/memory/ideation_memory.py:61	raw string 'failure' | if outcome == "failure":	berb.memory.ideation_memory	N
+S4	berb/research/world_model.py:22	enum FindingVerdict | class FindingVerdict(StrEnum):	berb.research.world_model	Y
+S4	berb/self_evolve/__init__.py:42	enum ExperienceType | class ExperienceType(StrEnum):	berb.self_evolve	N
+S5	berb/memory/shared_memory.py:684	global _memory | global _memory	berb.memory.shared_memory	N
+S7	berb\hyperagent\meta_agent.py:350	self.state.variant_id = f"meta_v{self.state.modification_code_version}"	berb.hyperagent.meta_agent	N
+S8	berb/hyperagent/base.py:158	Hyperagent.self.iteration | improvement iteration count recorded per result | self.iteration += 1	berb.hyperagent.base	N
+S8	berb/hyperagent/improvement_loop.py:78	ImprovementLoop.self.current_iteration | iteration counter across run_iteration calls | self.current_iteration += 1	berb.hyperagent.improvement_loop	N
+S8	berb/research/discovery_loop.py:290	DiscoveryLoop.self.wm.current_cycle | discovery cycle loop sets world-model cycle | self.wm.current_cycle = cycle	berb.research.discovery_loop	Y
+S8	berb/research/world_model.py:166	WorldModel.self.current_cycle | discovery cycle count persisted on world model | self.current_cycle += 1	berb.research.world_model	Y
+S8	berb/self_evolve/__init__.py:597	SelfEvolve.self._improvement_count | count of applied improvements across cycles | self._improvement_count += len(applied)	berb.self_evolve	N
+S9	berb\project\manager.py:54	json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"	berb.project.manager	Y
