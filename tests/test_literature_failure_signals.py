@@ -157,8 +157,8 @@ def _result(status: verify.VerifyStatus, method: str) -> verify.CitationResult:
 @pytest.fixture
 def layers_run(monkeypatch: pytest.MonkeyPatch) -> list[str]:
     """Stub the on-disk cache and sleeps; the returned list records which layers ran."""
-    monkeypatch.setattr(verify, "_read_cache", lambda title: None)
-    monkeypatch.setattr(verify, "_write_cache", lambda title, result: None)
+    monkeypatch.setattr(verify, "_read_cache", lambda *a, **k: None)
+    monkeypatch.setattr(verify, "_write_cache", lambda *a, **k: None)
     monkeypatch.setattr(verify.time, "sleep", lambda _: None)
     return []
 

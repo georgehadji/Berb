@@ -80,6 +80,7 @@ class CitationResult:
                 "authors": [a.name for a in self.matched_paper.authors],
                 "year": self.matched_paper.year,
                 "source": self.matched_paper.source,
+                "doi": self.matched_paper.doi,
             }
         return d
 
@@ -535,36 +536,57 @@ def verify_by_openalex(title: str) -> CitationResult | None:
 _CACHE_DIR = Path.home() / ".cache" / "berb" / "citation_verify"
 
 
-def _cache_key(title: str) -> str:
-    return hashlib.sha256(title.lower().strip().encode()).hexdigest()[:16]
+# Bump when the meaning of a cached verdict changes. v2: entries written
+# before it may be outage artefacts (a HALLUCINATED recorded while every
+# source was down), so they are never read again.
+_CACHE_VERSION = "v2"
 
 
-def _read_cache(title: str) -> CitationResult | None:
-    _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = _CACHE_DIR / f"{_cache_key(title)}.json"
-    if cache_file.exists():
-        try:
-            data = json.loads(cache_file.read_text(encoding="utf-8"))
-            return CitationResult(
-                cite_key=data.get("cite_key", ""),
-                title=data.get("title", title),
-                status=VerifyStatus(data["status"]),
-                confidence=data["confidence"],
-                method=data["method"],
-                details=data.get("details", ""),
+def _cache_key(title: str, doi: str = "", arxiv_id: str = "") -> str:
+    # The DOI and arXiv id are part of the key: a verdict for the bare title
+    # must not answer for an entry that cites a different (maybe fake) id.
+    raw = "|".join((_CACHE_VERSION, title.lower().strip(), doi.lower().strip(), arxiv_id.strip()))
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def _read_cache(title: str, doi: str = "", arxiv_id: str = "") -> CitationResult | None:
+    cache_file = _CACHE_DIR / f"{_cache_key(title, doi, arxiv_id)}.json"
+    try:
+        data = json.loads(cache_file.read_text(encoding="utf-8"))
+        paper = None
+        mp = data.get("matched_paper")
+        if isinstance(mp, dict) and mp.get("doi"):
+            paper = Paper(
+                paper_id="",
+                title=str(mp.get("title", "")),
+                year=int(mp.get("year") or 0),
+                doi=str(mp["doi"]),
+                source=str(mp.get("source", "")),
             )
-        except (json.JSONDecodeError, KeyError, ValueError):
-            return None
-    return None
+        return CitationResult(
+            cite_key=data.get("cite_key", ""),
+            title=data.get("title", title),
+            status=VerifyStatus(data["status"]),
+            confidence=data["confidence"],
+            method=data["method"],
+            details=data.get("details", ""),
+            matched_paper=paper,
+        )
+    except (OSError, json.JSONDecodeError, KeyError, ValueError, TypeError):
+        return None  # missing, unreadable or corrupt: treat as a miss
 
 
-def _write_cache(title: str, result: CitationResult) -> None:
-    _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = _CACHE_DIR / f"{_cache_key(title)}.json"
-    cache_file.write_text(
-        json.dumps(result.to_dict(), indent=2),
-        encoding="utf-8",
-    )
+def _write_cache(title: str, result: CitationResult, doi: str = "", arxiv_id: str = "") -> None:
+    """Persist a verdict. HALLUCINATED is never cached: it is the verdict most
+    likely to be an outage artefact, and re-checking a few titles is cheap."""
+    if result.status in (VerifyStatus.SKIPPED, VerifyStatus.HALLUCINATED):
+        return
+    try:
+        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        cache_file = _CACHE_DIR / f"{_cache_key(title, doi, arxiv_id)}.json"
+        cache_file.write_text(json.dumps(result.to_dict(), indent=2), encoding="utf-8")
+    except OSError as exc:
+        logger.debug("Citation cache write failed: %s", exc)
 
 
 # ---------------------------------------------------------------------------
@@ -584,15 +606,22 @@ def verify_by_title_search(
     """
     from berb.literature.search import search_papers
 
+    failed_sources: dict[str, int] = {}
     try:
         results = search_papers(
             title,
             limit=5,
             s2_api_key=s2_api_key,
             deduplicate=True,
+            failure_counter=failed_sources,
         )
     except Exception as exc:
         logger.debug("Title search failed for %r: %s", title, exc)
+        return None
+
+    if not results and failed_sources:
+        # Empty because a source was down, not because the paper is absent.
+        logger.debug("Title search for %r unverifiable: %s failed", title, sorted(failed_sources))
         return None
 
     if not results:
@@ -739,7 +768,7 @@ def verify_citations(
             continue
 
         # Check cache first
-        cached = _read_cache(title)
+        cached = _read_cache(title, doi, arxiv_id)
         if cached is not None:
             cached.cite_key = key
             report.results.append(cached)
@@ -851,9 +880,8 @@ def verify_citations(
             matched_paper=result.matched_paper,
         )
 
-        # Cache the result (skip SKIPPED — network failures shouldn't be cached)
-        if result.status != VerifyStatus.SKIPPED:
-            _write_cache(title, result)
+        # SKIPPED and HALLUCINATED are not cached (see _write_cache).
+        _write_cache(title, result, doi, arxiv_id)
 
         if result.status == VerifyStatus.VERIFIED:
             report.verified += 1

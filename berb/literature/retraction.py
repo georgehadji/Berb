@@ -26,7 +26,7 @@ import logging
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
@@ -91,6 +91,7 @@ _ADVERSE_TYPES: dict[str, RetractionState] = {
     "expression of concern": RetractionState.CONCERN,
     "expression_of_concern": RetractionState.CONCERN,
 }
+_ADVERSE_STATES = frozenset({RetractionState.RETRACTED, RetractionState.CONCERN})
 _STATE_RANK: dict[RetractionState, int] = {
     RetractionState.UNKNOWN: 0,
     RetractionState.NONE: 1,
@@ -308,12 +309,26 @@ def resolve_retraction(
     if not doi:
         return RetractionRecord(cite_key, RetractionState.UNKNOWN)
 
-    cached = cached_lookup(cite_key, cache_base=cache_base)
+    # Keyed by DOI: cite_keys like "smith2023" collide across papers and runs.
+    doi_key = f"doi:{doi.lower()}"
+    cached = cached_lookup(doi_key, cache_base=cache_base)
     if cached is not None:
-        return cached
+        return replace(cached, cite_key=cite_key)
+    # Records written before the DOI key existed were keyed by cite_key. An
+    # adverse one is still true; a "none" may be a one-sided-outage artefact.
+    legacy = cached_lookup(cite_key, cache_base=cache_base)
+    if legacy is not None and legacy.state in _ADVERSE_STATES:
+        return legacy
 
     crossref = _fetch_crossref_message(doi)
     openalex = _fetch_openalex_work(doi, email=email)
     record = parse_retraction(cite_key, crossref=crossref, openalex=openalex)
-    store_lookup(record, cache_base=cache_base)
+    complete = crossref is not None and openalex is not None
+    if not complete and record.state is RetractionState.NONE:
+        # One index was unreachable, so "no event found" covers only half the
+        # evidence. Absence of evidence is not a clean result.
+        logger.warning("Retraction check incomplete for %s (%s): reporting unknown", cite_key, doi)
+        return RetractionRecord(cite_key, RetractionState.UNKNOWN, "one index unreachable")
+    if complete or record.state in _ADVERSE_STATES:
+        store_lookup(replace(record, cite_key=doi_key), cache_base=cache_base)
     return record

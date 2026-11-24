@@ -2,6 +2,8 @@
 
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from berb.metaclaw_bridge.prm_gate import (
     _GATE_INSTRUCTIONS,
     ResearchPRMGate,
@@ -90,3 +92,40 @@ def test_evaluate_stage_all_failed(mock_call):
     )
     score = gate.evaluate_stage(20, "test")
     assert score == 0.0
+
+
+# --- wave 2 (BR-4): outage and ties are distinct outcomes ---------------------
+
+
+def _outcome_gate() -> ResearchPRMGate:
+    return ResearchPRMGate(api_base="http://test", api_key="k", votes=3)
+
+
+@patch("berb.metaclaw_bridge.prm_gate._single_judge_call")
+def test_outcome_reports_outage_as_unavailable(mock_call):
+    mock_call.return_value = None
+
+    outcome = _outcome_gate().evaluate_stage_outcome(20, "text")
+
+    assert outcome.status == "unavailable"
+    assert outcome.score == 0.0
+
+
+@pytest.mark.parametrize("order", [[1.0, -1.0, 0.0], [-1.0, 1.0, 0.0], [0.0, 1.0, -1.0]])
+@patch("berb.metaclaw_bridge.prm_gate._single_judge_call")
+def test_outcome_three_way_split_is_ambiguous_in_any_order(mock_call, order):
+    mock_call.side_effect = order
+
+    outcome = _outcome_gate().evaluate_stage_outcome(20, "text")
+
+    assert outcome.status == "ambiguous"
+    assert outcome.score == 0.0
+
+
+@patch("berb.metaclaw_bridge.prm_gate._single_judge_call")
+def test_outcome_clear_majority_is_ok(mock_call):
+    mock_call.side_effect = [-1.0, -1.0, 1.0]
+
+    outcome = _outcome_gate().evaluate_stage_outcome(20, "text")
+
+    assert (outcome.status, outcome.score) == ("ok", -1.0)
