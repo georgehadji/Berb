@@ -1060,7 +1060,7 @@ class LLMClient:
         callers, so nothing was ever recorded despite the tracker existing.
         """
         try:
-            from .cost_tracker import current_attribution, get_cost_tracker
+            from .cost_tracker import current_attribution, current_node, get_cost_tracker
 
             # A4-3: stage/phase come from the ambient contextvar the runner
             # sets around each stage; without them by_stage()/by_phase()
@@ -1072,6 +1072,7 @@ class LLMClient:
                 resp.completion_tokens,
                 stage=stage,
                 phase=phase,
+                node_id=current_node(),
                 reported_cost=resp.cost,
             )
         except Exception:  # noqa: BLE001

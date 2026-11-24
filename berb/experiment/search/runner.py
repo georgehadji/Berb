@@ -19,7 +19,7 @@ from berb.experiment.journal import ExperimentJournal, JournalNode
 from berb.experiment.plot_verdict import is_verdict_gating, verify_plots
 from berb.experiment.search.policy import SearchConfig, SearchPolicy
 from berb.experiment.search.scoring import ScoreBreakdown, score_node
-from berb.llm.cost_tracker import CostTracker, get_cost_tracker
+from berb.llm.cost_tracker import CostTracker, get_cost_tracker, node_attribution
 
 logger = logging.getLogger(__name__)
 
@@ -254,9 +254,23 @@ class SearchRunner:
         exp_plan: str,
         context: dict[str, Any],
     ) -> JournalNode | None:
+        """Expand one selection, charging its LLM calls to the new node."""
+        node_id = str(uuid.uuid4())
+        with node_attribution(node_id):
+            return await self._expand_node(node_id, selection, topic, exp_plan, context)
+
+    async def _expand_node(
+        self,
+        node_id: str,
+        selection: JournalNode | None,
+        topic: str,
+        exp_plan: str,
+        context: dict[str, Any],
+    ) -> JournalNode | None:
         """Expand one policy selection: generate code and evaluate it.
 
         Args:
+            node_id: Id for the node this expansion creates.
             selection: The node to expand, or None for a new root.
             topic: Research topic.
             exp_plan: Experiment plan.
@@ -292,7 +306,6 @@ class SearchRunner:
             return None
 
         candidate = candidates[0]
-        node_id = str(uuid.uuid4())
         phase = selection.phase if selection else context.get("phase", "baseline")
         depth = (selection.depth + 1) if selection else 0
 
@@ -310,6 +323,11 @@ class SearchRunner:
         # Evaluate in sandbox
         async with self._semaphore:
             node = await self._evaluate_node(node)
+
+        # This node's own spend (generation + evaluation), not the running total:
+        # ExperimentJournal sums node.cost_usd into its total_cost_usd. Set here,
+        # not in _evaluate_node, whose early return for a file-less node skips it.
+        node.cost_usd = self._cost_tracker.node_usd(node_id)
 
         self._node_counter += 1
         return node
@@ -397,9 +415,6 @@ class SearchRunner:
             maximize=self._metric_maximize,
             cohort=all_nodes if len(all_nodes) > 1 else None,
         )
-
-        # Update cost from tracker
-        node.cost_usd = self._governor.spent_usd()
 
         # Update the journal with evaluation results
         self._journal.record_evaluation(

@@ -126,6 +126,7 @@ async def start_pipeline(req: PipelineStartRequest) -> PipelineStartResponse:
                 auto_approve_gates=req.auto_approve,
                 skip_noncritical=True,
                 kb_root=kb_root,
+                reset_cost_tracker=True,
             )
             done = sum(1 for r in results if r.status.value == "done")
             failed = sum(1 for r in results if r.status.value == "failed")

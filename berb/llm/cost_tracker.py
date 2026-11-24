@@ -79,6 +79,30 @@ def current_attribution() -> tuple[int | None, str | None]:
     return _current_stage.get(), _current_phase.get()
 
 
+_current_node: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "berb_cost_current_node", default=None
+)
+
+
+@contextmanager
+def node_attribution(node_id: str) -> Iterator[None]:
+    """Attribute every LLM cost recorded inside this block to search node *node_id*.
+
+    Search nodes expand concurrently under asyncio.gather, so a before/after
+    delta of the global total would charge each node for its siblings' calls.
+    """
+    token = _current_node.set(node_id)
+    try:
+        yield
+    finally:
+        _current_node.reset(token)
+
+
+def current_node() -> str | None:
+    """Return the ambient search node id for cost attribution."""
+    return _current_node.get()
+
+
 @dataclass(frozen=True)
 class CostEvent:
     """A single cost-tracking event.
@@ -165,14 +189,14 @@ class CostTracker:
     ) -> CostEvent:
         """Convenience: build and record a CostEvent from LLM usage stats.
 
-        Computes cost from the pricing table. For a model with no pricing
-        entry, the provider-reported cost is used when it is above 0.
-        Otherwise the call is recorded at $0.0, warned about once per model,
+        A provider-reported cost above 0 wins: it is exact and reflects cache
+        discounts, while the pricing table is list price and may be a loose
+        suffix match. Otherwise the cost comes from the pricing table. With
+        neither, the call is recorded at $0.0, warned about once per model,
         and listed under ``unpriced_models`` in the report, so a $0 here
         reads as "unknown", not "free".
 
         Args:
-            reported_cost: Cost the provider returned for this call, if any.
             model: Full model identifier
             prompt_tokens: Input token count
             completion_tokens: Output token count
@@ -180,15 +204,17 @@ class CostTracker:
             phase: Optional research phase
             node_id: Optional journal node ID
             purpose: Purpose category
+            reported_cost: Cost the provider returned for this call, if any.
 
         Returns:
             The recorded CostEvent.
         """
-        cost_usd = self._pricing.compute_cost(model, prompt_tokens, completion_tokens)
+        if reported_cost is not None and reported_cost > 0:
+            cost_usd: float | None = float(reported_cost)
+        else:
+            cost_usd = self._pricing.compute_cost(model, prompt_tokens, completion_tokens)
 
-        if cost_usd is None and reported_cost is not None and reported_cost > 0:
-            cost_usd = float(reported_cost)
-        elif cost_usd is None:
+        if cost_usd is None:
             with self._lock:
                 first = model not in self._unpriced
                 self._unpriced[model] = self._unpriced.get(model, 0) + 1
@@ -228,6 +254,11 @@ class CostTracker:
         """Total tokens across all events."""
         with self._lock:
             return sum(e.prompt_tokens + e.completion_tokens for e in self._events)
+
+    def node_usd(self, node_id: str) -> float:
+        """Cost attributed to one search node."""
+        with self._lock:
+            return sum(e.cost_usd for e in self._events if e.node_id == node_id)
 
     def by_stage(self) -> dict[int, float]:
         """Cost breakdown by pipeline stage."""

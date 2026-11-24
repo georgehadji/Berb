@@ -323,17 +323,6 @@ async def _maybe_run_discovery(
     return promoted
 
 
-def _reset_run_cost_tracker(pivot_depth: int) -> None:
-    """Start each run with an empty process-global tracker (LL-5).
-
-    ``berb serve`` runs many pipelines in one process; without this, run N's
-    cost_report.json and the stage-12 budget inherit runs 1..N-1. A PIVOT
-    recurses into the same run, so only the outermost call resets.
-    """
-    if pivot_depth == 0:
-        get_cost_tracker().reset()
-
-
 async def execute_pipeline(
     *,
     run_dir: Path,
@@ -346,6 +335,7 @@ async def execute_pipeline(
     stop_on_gate: bool = False,
     skip_noncritical: bool = False,
     kb_root: Path | None = None,
+    reset_cost_tracker: bool = False,
     _pivot_depth: int = 0,
 ) -> list[StageResult]:
     """Execute pipeline stages using DAG-based scheduling.
@@ -358,6 +348,9 @@ async def execute_pipeline(
             A bound lets a caller execute a slice of the pipeline — the
             discovery loop (berb/pipeline/discovery.py) re-runs stages 7-15
             this way, which is not expressible with `from_stage` alone.
+        reset_cost_tracker: Clear the process-global cost tracker first.
+            True only where a new run starts (CLI, server); nested callers
+            leave it False so the run's spend survives.
     """
     event_store_path = run_dir / "event_log.json" if run_dir else None
     event_store = EventStore(run_id=run_id, storage_path=str(event_store_path))
@@ -369,7 +362,12 @@ async def execute_pipeline(
     if _pivot_depth == 0:
         _configure_tracing(run_dir)
         new_trace(run_id)
-    _reset_run_cost_tracker(_pivot_depth)
+    # LL-5: the tracker is process-global, so `berb serve` would carry run N-1's
+    # spend into run N's cost_report.json and stage-12 budget. Only the true run
+    # entry points (CLI, server) ask for a reset: a PIVOT, an iterative re-run
+    # and a discovery slice all call back in here mid-run and must keep its spend.
+    if reset_cost_tracker:
+        get_cost_tracker().reset()
 
     # A4-1: stamp run_id (and, via cost_tracker's contextvar, stage) onto
     # every log record from every one of the ~278 call sites. Set on every

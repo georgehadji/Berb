@@ -365,7 +365,10 @@ def test_resume_no_checkpoint_warns(
 
     import berb.pipeline.runner as runner_mod
 
+    pipeline_kwargs: list[dict] = []
+
     async def _fake_execute_pipeline(**kw):
+        pipeline_kwargs.append(kw)
         return []
 
     monkeypatch.setattr(runner_mod, "execute_pipeline", _fake_execute_pipeline)
@@ -392,6 +395,8 @@ def test_resume_no_checkpoint_warns(
     rc_cli.cmd_run(args)
     captured = capsys.readouterr()
     assert "no checkpoint found" in captured.err
+    # LL-5: a CLI run is a new run, so it starts the shared cost tracker fresh.
+    assert pipeline_kwargs[0]["reset_cost_tracker"] is True
 
 
 def test_main_dispatches_init(monkeypatch: pytest.MonkeyPatch) -> None:
