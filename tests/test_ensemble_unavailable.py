@@ -1,8 +1,8 @@
-"""Wave 1 of tasks/implicit_state_machines_plan.md: a failed check is not a pass.
+"""berb/review/ensemble.py: an unavailable review is not a vote (RI-1, RI-3).
 
 RI-1  failed reviewer calls must not be averaged in as real 5.0 votes.
 RI-3  a reviewer reply missing a field must not discard the whole ensemble.
-BR-14 a failed falsification critic must not read as "hypothesis passed".
+See tasks/implicit_state_machines_plan.md wave 1.
 """
 
 from __future__ import annotations
@@ -12,7 +12,6 @@ from types import SimpleNamespace
 
 import pytest
 
-from berb.reasoning.socratic import CriticUnavailableError, FalsificationCritic
 from berb.review.ensemble import AutomatedReviewerEnsemble, Decision, Review
 
 _FULL = {
@@ -124,26 +123,48 @@ def test_unusable_reply_is_marked_unavailable_not_raised():
     assert review.available is False
 
 
-# --- BR-14 --------------------------------------------------------------
+def test_single_real_review_has_no_confidence():
+    ens = AutomatedReviewerEnsemble(None)
+    placeholders = [ens._parse_review_content(p, "") for p in ens._personas[1:]]
+    meta = ens.area_chair_decision([_real(ens, 0), *placeholders])
+
+    assert meta.confidence == 0.0
 
 
-async def test_critic_raises_when_llm_call_fails():
-    critic = FalsificationCritic(llm_client=_Chat(RuntimeError("outage")))
-    with pytest.raises(CriticUnavailableError):
-        await critic.scrutinize("some hypothesis")
+@pytest.mark.parametrize("bad", ["NaN", "0", "100", '"n/a"'])
+def test_out_of_range_overall_score_falls_back_to_dimension_mean(bad):
+    ens = AutomatedReviewerEnsemble(None)
+    reply = json.dumps(_FULL).replace('"overall_score": 3.0', f'"overall_score": {bad}')
+
+    review = ens._parse_review_content(ens._personas[0], reply)
+
+    assert review.available
+    assert review.overall_score == 3.0
 
 
-async def test_critic_raises_on_non_list_reply():
-    critic = FalsificationCritic(llm_client=_Chat({"issues": []}))
-    with pytest.raises(CriticUnavailableError):
-        await critic.scrutinize("some hypothesis")
+def test_report_marks_unavailable_reviews_without_scores():
+    ens = AutomatedReviewerEnsemble(None)
+    reviews = [_real(ens, 0), *[ens._parse_review_content(p, "") for p in ens._personas[1:]]]
+    report = ens.generate_review_report(reviews, ens.area_chair_decision(reviews))
+
+    assert report.count("**Unavailable:**") == len(reviews) - 1
+    assert report.count("**Overall Score:**") == 1
 
 
-async def test_critic_raises_when_no_client():
-    with pytest.raises(CriticUnavailableError):
-        await FalsificationCritic().scrutinize("some hypothesis")
+def test_meta_review_built_by_hand_does_not_claim_zero_real_reviews():
+    from berb.review.ensemble import MetaReview
 
-
-async def test_critic_empty_list_is_still_a_pass():
-    critic = FalsificationCritic(llm_client=_Chat("[]"))
-    assert await critic.scrutinize("some hypothesis") == []
+    meta = MetaReview(
+        reviews=[],
+        average_score=2.0,
+        score_std=0.0,
+        max_score=2.0,
+        min_score=2.0,
+        score_distribution={},
+        consensus_decision=Decision.REJECT,
+        confidence=1.0,
+        meta_review_text="",
+        acceptance_recommendation="reject",
+        reviewer_conflicts=[],
+    )
+    assert meta.n_real == -1

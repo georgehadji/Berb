@@ -185,6 +185,26 @@ class TestReviewPaperBatch:
         missing_review = next(r for r in reviews if r.reviewer_id == missing_persona_id)
         assert "could not be generated" in missing_review.detailed_feedback.lower()
 
+    def test_malformed_persona_entry_falls_back_to_unavailable_review(self) -> None:
+        # An errored batch entry has no "choices"; it must not raise out of
+        # the batch path and discard the other personas' real reviews.
+        results = {
+            persona.id: _fake_response(_VALID_REVIEW_JSON) for persona in REVIEWER_PERSONAS[1:]
+        }
+        results[REVIEWER_PERSONAS[0].id] = {"error": {"type": "errored"}}
+        adapter = _FakeAnthropicAdapter(
+            statuses=[{"processing_status": "ended", "results_url": "https://x/results"}],
+            results=results,
+        )
+        ensemble = AutomatedReviewerEnsemble(llm_client=_make_llm_client(anthropic=adapter))
+
+        reviews = asyncio.run(
+            ensemble._review_paper_batch("paper text", poll_interval_sec=0.01, max_wait_sec=0.5)
+        )
+
+        assert reviews is not None
+        assert [r.available for r in reviews] == [False] + [True] * (len(REVIEWER_PERSONAS) - 1)
+
 
 class TestReviewPaperUsesBatchFlag:
     def test_use_batch_false_never_calls_batch_path(self) -> None:

@@ -855,12 +855,15 @@ def _execute_quality_gate(
             _ensemble.generate_review_report(
                 _ens_reviews, _ens_meta, output_path=stage_dir / "ensemble_review.md"
             )
-            logger.info(
-                "Stage 20: Ensemble review %.2f/10 (%s), %d conflict(s)",
-                _ens_meta.average_score,
-                _ens_meta.consensus_decision.value,
-                len(_ens_meta.reviewer_conflicts),
-            )
+            if _ens_meta.n_real == 0:
+                logger.info("Stage 20: Ensemble review unavailable (no real reviews)")
+            else:
+                logger.info(
+                    "Stage 20: Ensemble review %.2f/10 (%s), %d conflict(s)",
+                    _ens_meta.average_score,
+                    _ens_meta.consensus_decision.value,
+                    len(_ens_meta.reviewer_conflicts),
+                )
         except Exception as _ens_exc:  # noqa: BLE001
             logger.warning("Stage 20: Ensemble review skipped: %s", _ens_exc, exc_info=True)
 

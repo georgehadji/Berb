@@ -118,7 +118,9 @@ class MetaReview:
     reviewer_conflicts: list[str]  # Areas where reviewers disagreed
     review_diversity: float = 0.0  # 1 - mean pairwise cosine similarity (text space)
     critique_synthesis: str = ""  # P3-03: deduplicated cross-reviewer critique clusters
-    n_real: int = 0  # reviews that were real; 0 means the ensemble produced no signal
+    # Reviews that were real; 0 means the ensemble produced no signal,
+    # -1 (default) means the builder did not say.
+    n_real: int = -1
 
 
 # Reviewer personas based on NeurIPS reviewer guidelines
@@ -432,7 +434,10 @@ class AutomatedReviewerEnsemble:
         reviews: list[Review] = []
         for persona in self._personas:
             entry = raw_results.get(persona.id)
-            content = entry["choices"][0]["message"]["content"] if entry else ""
+            try:
+                content = entry["choices"][0]["message"]["content"] if entry else ""
+            except (KeyError, IndexError, TypeError):
+                content = ""  # errored batch entry -> unavailable placeholder
             reviews.append(self._parse_review_content(persona, content))
         return reviews
 
@@ -506,6 +511,8 @@ Return ONLY the JSON object, no other text.
             return None
         try:
             overall = float(data["overall_score"])
+            if not 1.0 <= overall <= 10.0:  # also rejects NaN
+                raise ValueError(overall)
         except (KeyError, ValueError, TypeError):
             overall = sum(scores.values()) / len(scores)
         try:
@@ -744,6 +751,8 @@ Return ONLY the JSON object, no other text.
 
         score_std = statistics.stdev(overall_scores) if len(overall_scores) > 1 else 0
         confidence = max(0, 1 - (score_std / 5))  # Normalize to 0-1
+        if len(reviews) < 2:
+            confidence = 0.0  # one vote has no spread to measure agreement from
 
         # Identify conflicts (high disagreement)
         conflicts = []
@@ -931,6 +940,20 @@ Return ONLY the JSON object, no other text.
         lines.extend(["## Individual Reviews", ""])
 
         for i, review in enumerate(reviews, 1):
+            if not review.available:
+                lines.extend(
+                    [
+                        f"### Review {i}: {review.reviewer_name}",
+                        "",
+                        "**Unavailable:** no real review was obtained; no score or decision.",
+                        "",
+                        review.detailed_feedback,
+                        "",
+                        "---",
+                        "",
+                    ]
+                )
+                continue
             lines.extend(
                 [
                     f"### Review {i}: {review.reviewer_name}",

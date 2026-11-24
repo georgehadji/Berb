@@ -2974,6 +2974,55 @@ class TestHypothesisRepair:
         assert "NOT evaluated" in state["critic_transcript"]
         assert "passes falsification gate" not in state["critic_transcript"]
 
+    def test_later_critic_outage_does_not_mask_earlier_rejection(
+        self, tmp_path: Path, rc_config: RCConfig, adapters: AdapterBundle
+    ) -> None:
+        """Hypothesis 1 is rejected, then the critic goes down on hypothesis
+        2: the real rejection must still block stage 9."""
+        from berb.llm.client import LLMResponse
+
+        class _FlakyCriticLLM:
+            def __init__(self) -> None:
+                self._critic_calls = 0
+
+            def chat(self, messages, **kwargs):  # noqa: ANN001, ANN003
+                prompt = messages[-1]["content"]
+                if "interrogative critic" in prompt:
+                    self._critic_calls += 1
+                    if self._critic_calls <= 2:  # both rounds for hypothesis 1
+                        return LLMResponse(
+                            content=json.dumps(
+                                [{"action": "clarify", "question": "Vague?", "severity": "hard"}]
+                            ),
+                            model="fake",
+                        )
+                    raise RuntimeError("provider outage")
+                if "falsification critic raised the following hard issues" in prompt:
+                    return LLMResponse(content="Still a vague hypothesis text here.", model="fake")
+                return LLMResponse(
+                    content="## Hypothesis 1\nOur method improves things in some unspecified "
+                    "way on benchmarks.\n## Hypothesis 2\nA second claim that is long enough to "
+                    "be scrutinised by the critic.",
+                    model="fake",
+                )
+
+        run_dir = tmp_path / "run"
+        run_dir.mkdir()
+        stage_dir = run_dir / "stage-08"
+        stage_dir.mkdir(parents=True)
+        _write_prior_artifact(run_dir, 7, "synthesis.md", "# Synthesis\nGap found.")
+
+        rc_executor._execute_hypothesis_gen(
+            stage_dir, run_dir, rc_config, adapters, llm=_FlakyCriticLLM()
+        )
+
+        state = json.loads((stage_dir / "hypothesis_state.json").read_text(encoding="utf-8"))
+        assert state["gate_passed"] is False
+        assert state["critic_status"] == "partial"
+        verdicts = [h["passed"] for h in state["hypotheses"]]
+        assert verdicts[0] is False
+        assert len(verdicts) > 1 and all(v is None for v in verdicts[1:])
+
     def test_repair_hypothesis_returns_original_on_llm_failure(self) -> None:
         from berb.pipeline.stage_impls._synthesis import _repair_hypothesis
 
