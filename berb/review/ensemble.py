@@ -95,6 +95,10 @@ class Review:
     questions_for_authors: list[str]
     confidence: int  # 1-5 (5=very confident)
     detailed_feedback: str
+    # False for the placeholder produced when no real review could be
+    # obtained (call failed, empty or unusable reply). Placeholders are kept
+    # in the list for display but excluded from every statistic.
+    available: bool = True
 
 
 @dataclass
@@ -114,6 +118,7 @@ class MetaReview:
     reviewer_conflicts: list[str]  # Areas where reviewers disagreed
     review_diversity: float = 0.0  # 1 - mean pairwise cosine similarity (text space)
     critique_synthesis: str = ""  # P3-03: deduplicated cross-reviewer critique clusters
+    n_real: int = 0  # reviews that were real; 0 means the ensemble produced no signal
 
 
 # Reviewer personas based on NeurIPS reviewer guidelines
@@ -463,31 +468,67 @@ Return ONLY the JSON object, no other text.
         to the honestly-marked "unavailable" placeholder on empty/malformed
         content. Shared by the sync per-call path and the batch path."""
         parsed = _safe_json_loads(content, None) if content else None
-        review_data = parsed if isinstance(parsed, dict) and "scores" in parsed else None
+        review = self._coerce_review(persona, parsed) if isinstance(parsed, dict) else None
+        if review is not None:
+            return review
 
-        if review_data is None:
-            review_data = self._generate_unavailable_review(persona)
-
-        try:
-            scores = {ReviewDimension(k): int(v) for k, v in review_data["scores"].items()}
-            decision = Decision(review_data["decision"])
-        except (KeyError, ValueError):
+        if content:
             logger.warning("Reviewer '%s' returned malformed review data", persona.name)
-            review_data = self._generate_unavailable_review(persona)
-            scores = {ReviewDimension(k): int(v) for k, v in review_data["scores"].items()}
-            decision = Decision(review_data["decision"])
+        data = self._generate_unavailable_review(persona)
+        return Review(
+            reviewer_id=persona.id,
+            reviewer_name=persona.name,
+            scores={ReviewDimension(k): v for k, v in data["scores"].items()},
+            overall_score=data["overall_score"],
+            decision=Decision(data["decision"]),
+            strengths=data["strengths"],
+            weaknesses=data["weaknesses"],
+            questions_for_authors=data["questions_for_authors"],
+            confidence=data["confidence"],
+            detailed_feedback=data["detailed_feedback"],
+            available=False,
+        )
 
+    @staticmethod
+    def _coerce_review(persona: ReviewerPersona, data: dict[str, Any]) -> Review | None:
+        """Build a real Review from a reply, degrading per field.
+
+        Only `scores` and `decision` are essential; without them there is no
+        review (returns None). Every other field falls back to a neutral
+        default so one omitted key does not discard the reviewer.
+        """
+        try:
+            scores = {ReviewDimension(k): int(v) for k, v in data["scores"].items()}
+            decision = Decision(data["decision"])
+        except (KeyError, ValueError, TypeError, AttributeError):
+            return None
+        if not scores:
+            return None
+        try:
+            overall = float(data["overall_score"])
+        except (KeyError, ValueError, TypeError):
+            overall = sum(scores.values()) / len(scores)
+        try:
+            confidence = min(5, max(1, int(data["confidence"])))
+        except (KeyError, ValueError, TypeError):
+            confidence = 3
+
+        def _strings(key: str) -> list[str]:
+            value = data.get(key)
+            return [str(x) for x in value] if isinstance(value, list) else []
+
+        feedback = data.get("detailed_feedback")
         return Review(
             reviewer_id=persona.id,
             reviewer_name=persona.name,
             scores=scores,
-            overall_score=float(review_data["overall_score"]),
+            overall_score=overall,
             decision=decision,
-            strengths=review_data["strengths"],
-            weaknesses=review_data["weaknesses"],
-            questions_for_authors=review_data["questions_for_authors"],
-            confidence=int(review_data["confidence"]),
-            detailed_feedback=review_data["detailed_feedback"],
+            strengths=_strings("strengths"),
+            weaknesses=_strings("weaknesses"),
+            questions_for_authors=_strings("questions_for_authors"),
+            confidence=confidence,
+            detailed_feedback=feedback if isinstance(feedback, str) else "",
         )
 
     def _extract_paper_text(self, paper_path: Path) -> str:
@@ -631,6 +672,30 @@ Return ONLY the JSON object, no other text.
         if len(reviews) != len(self._personas):
             logger.warning(f"Expected {len(self._personas)} reviews, got {len(reviews)}")
 
+        # Placeholders for failed calls are not votes: every statistic below
+        # is over the real reviews only. With none, there is no signal at
+        # all, and that is reported as such rather than as a 5.0 consensus.
+        all_reviews = reviews
+        reviews = [r for r in all_reviews if r.available]
+        if not reviews:
+            logger.warning("Ensemble produced no real review (%d unavailable)", len(all_reviews))
+            return MetaReview(
+                reviews=all_reviews,
+                average_score=0.0,
+                score_std=0.0,
+                max_score=0.0,
+                min_score=0.0,
+                score_distribution={},
+                consensus_decision=Decision.WEAK_REJECT,  # non-vetoing; n_real=0 is the signal
+                confidence=0.0,
+                meta_review_text=self._generate_meta_review_text(
+                    all_reviews, 0.0, Decision.WEAK_REJECT, [], "UNAVAILABLE"
+                ),
+                acceptance_recommendation="UNAVAILABLE - no reviewer produced a real review",
+                reviewer_conflicts=[],
+                n_real=0,
+            )
+
         # Calculate score statistics
         overall_scores = [r.overall_score for r in reviews]
 
@@ -706,7 +771,7 @@ Return ONLY the JSON object, no other text.
         # recomputed via a recursive area_chair_decision() call — the
         # original recursive call here caused unbounded recursion)
         meta_review_text = self._generate_meta_review_text(
-            reviews, avg_score, consensus, conflicts, recommendation
+            all_reviews, avg_score, consensus, conflicts, recommendation
         )
 
         # P1-02: Review Diversity Score (ScholarPeer) — score_std/conflicts
@@ -739,7 +804,8 @@ Return ONLY the JSON object, no other text.
             logger.debug("Review diversity score unavailable", exc_info=True)
 
         return MetaReview(
-            reviews=reviews,
+            reviews=all_reviews,
+            n_real=len(reviews),
             average_score=round(avg_score, 2),
             score_std=round(score_std, 2),
             max_score=max(overall_scores),
@@ -773,8 +839,24 @@ Return ONLY the JSON object, no other text.
         ]
 
         for i, review in enumerate(reviews, 1):
+            if not review.available:
+                lines.append(f"**Reviewer {i} ({review.reviewer_name}):** unavailable")
+                continue
             lines.append(
                 f"**Reviewer {i} ({review.reviewer_name}):** {review.overall_score:.1f}/10 - {review.decision.value.replace('_', ' ').title()}"
+            )
+
+        n_real = sum(1 for r in reviews if r.available)
+        if n_real == 0:
+            return "\n".join(
+                [
+                    "## Meta-Review",
+                    "",
+                    "No reviewer produced a real review, so there is no score and "
+                    "no recommendation. This is an outage, not a verdict.",
+                    "",
+                    *lines[lines.index("## Review Summary") :],
+                ]
             )
 
         if conflicts:
@@ -794,12 +876,20 @@ Return ONLY the JSON object, no other text.
                 "## Area Chair Recommendation",
                 "",
                 f"This paper receives an average score of {avg_score:.2f}/10 "
-                f"from {len(reviews)} reviewers. ",
-                f"The reviews show {'strong agreement' if len(conflicts) == 0 else 'notable disagreement'}.",
-                "",
-                "**Recommendation:** " + recommendation,
+                f"from {n_real} reviewers. ",
             ]
         )
+        if n_real < len(reviews):
+            lines.append(
+                f"{len(reviews) - n_real} review(s) were unavailable and are excluded "
+                "from the score."
+            )
+        lines.append(
+            "Agreement cannot be assessed from a single review."
+            if n_real < 2
+            else f"The reviews show {'strong agreement' if len(conflicts) == 0 else 'notable disagreement'}."
+        )
+        lines.extend(["", "**Recommendation:** " + recommendation])
 
         return "\n".join(lines)
 

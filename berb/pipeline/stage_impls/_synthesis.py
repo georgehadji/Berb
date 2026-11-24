@@ -367,7 +367,11 @@ def _execute_hypothesis_gen(
         "stage": "hypothesis_gen",
         "generated_at": _utcnow_iso(),
         "hypotheses": [],
-        "gate_passed": True,
+        # None = the critic did not evaluate the hypotheses (not run, outage, or
+        # crash). Stage 9 blocks only on an explicit False, so this stays
+        # non-blocking, but it no longer claims a pass that never happened.
+        "gate_passed": None,
+        "critic_status": "not_run",
         "critic_transcript": "",
     }
     if llm is not None and hypotheses_md.strip():
@@ -451,6 +455,7 @@ def _execute_hypothesis_gen(
 
                 _hypothesis_state["hypotheses"] = _hypothesis_records
                 _hypothesis_state["gate_passed"] = all(r["passed"] for r in _hypothesis_records)
+                _hypothesis_state["critic_status"] = "evaluated"
                 _hypothesis_state["critic_transcript"] = _critic.format_issues(_all_issues)
 
                 logger.info(
@@ -460,7 +465,21 @@ def _execute_hypothesis_gen(
                     len(_all_issues),
                 )
         except Exception as _e1:
-            logger.warning("E1: Falsification gate failed, gate passes open: %s", _e1)
+            from berb.reasoning.socratic import CriticUnavailableError
+
+            _unavailable = isinstance(_e1, CriticUnavailableError)
+            logger.warning(
+                "E1: Falsification critic %s, hypotheses NOT evaluated; stage 9 proceeds: %s",
+                "unavailable" if _unavailable else "crashed",
+                _e1,
+            )
+            _hypothesis_state["gate_passed"] = None
+            _hypothesis_state["critic_status"] = "unavailable" if _unavailable else "error"
+            _hypothesis_state["critic_error"] = str(_e1)
+            _hypothesis_state["critic_transcript"] = (
+                "Falsification critic did not run to completion: hypotheses were NOT "
+                f"evaluated ({_e1})."
+            )
 
     (stage_dir / "hypothesis_state.json").write_text(
         json.dumps(_hypothesis_state, indent=2, ensure_ascii=False),

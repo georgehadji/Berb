@@ -179,7 +179,13 @@ def _execute_experiment_design(
     if _hs_text:
         try:
             _hs = json.loads(_hs_text) if isinstance(_hs_text, str) else _hs_text
-            if not _hs.get("gate_passed", True):
+            if _hs.get("gate_passed", True) is None:
+                logger.warning(
+                    "E1: Hypotheses were not evaluated by the falsification critic (%s); "
+                    "proceeding without a falsification check.",
+                    _hs.get("critic_status", "unknown"),
+                )
+            if _hs.get("gate_passed", True) is False:
                 logger.warning(
                     "E1: Falsification gate BLOCKED — hypotheses failed scrutiny. "
                     "Returning to Stage 8 for revision."

@@ -380,6 +380,10 @@ ReasonerRegistry.register(
 )
 
 
+class CriticUnavailableError(RuntimeError):
+    """The falsification critic could not evaluate a hypothesis."""
+
+
 class FalsificationCritic:
     """Interrogate-only critic for the falsification gate (E1).
 
@@ -429,14 +433,15 @@ class FalsificationCritic:
             List of issues found.  Each issue has ``action`` (one of
             ALLOWED_ACTIONS), ``question``, and ``severity`` (``hard``
             or ``soft``).  Empty list means the hypothesis passed.
-        """
-        if not self.llm_client and not self.router:
-            logger.warning("FalsificationCritic: no LLM client available — gate passes")
-            return []
 
+        Raises:
+            CriticUnavailableError: no client, the call failed, or the reply
+                was not a JSON list.  The hypothesis was NOT evaluated; this
+                is not a pass.
+        """
         client = self.llm_client or getattr(self.router, "llm_client", None)
         if client is None:
-            return []
+            raise CriticUnavailableError("no LLM client available")
 
         ctx_str = ""
         if context:
@@ -491,12 +496,12 @@ Severity: "hard" = blocks the hypothesis, "soft" = needs clarification.
 
             content = response.content if hasattr(response, "content") else str(response)
             issues = json.loads(content)
-            if isinstance(issues, list):
-                return issues
-            return []
         except Exception as e:
             logger.warning("FalsificationCritic scrutiny failed: %s", e)
-            return []
+            raise CriticUnavailableError(str(e)) from e
+        if not isinstance(issues, list):
+            raise CriticUnavailableError("critic reply was not a JSON list")
+        return issues
 
     def format_issues(self, issues: list[dict[str, str]]) -> str:
         """Format a list of issues as a human-readable critic transcript."""

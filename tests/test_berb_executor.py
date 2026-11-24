@@ -2282,12 +2282,38 @@ class TestQualityGateEnsembleVeto:
         assert first.status is StageStatus.FAILED
 
         # Simulate the rollback -> rewrite -> re-run: same run_dir, fresh
-        # stage_dir. The ensemble still rejects, but the veto marker from
-        # the first pass must prevent a second veto.
+        # stage_dir, and a REWRITTEN paper. The ensemble still rejects, but
+        # the veto marker from the first pass must prevent a second veto.
+        _write_prior_artifact(run_dir, 19, "paper_revised.md", "# Test Paper\n\nRewritten.\n")
         stage_dir_2 = run_dir / "stage-20_v2"
         stage_dir_2.mkdir(parents=True, exist_ok=True)
         second = rc_executor._execute_quality_gate(stage_dir_2, run_dir, config, adapters, llm=llm)
         assert second.status is StageStatus.DONE
+
+    def test_veto_repeats_when_same_paper_is_rerun(
+        self,
+        tmp_path: Path,
+        run_dir: Path,
+        adapters: AdapterBundle,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """RI-4: `--resume` re-runs stage 20 on an unchanged paper; the
+        earlier veto must not turn into a pass."""
+        monkeypatch.setattr(
+            "berb.review.ensemble.AutomatedReviewerEnsemble",
+            self._FakeRejectingEnsemble,
+        )
+        self._setup_run_dir(run_dir)
+        llm = FakeLLMClient(json.dumps({"score_1_to_10": 9, "verdict": "accept"}))
+        config = self._strict_config(tmp_path)
+
+        for name in ("stage-20", "stage-20_retry"):
+            stage_dir = run_dir / name
+            stage_dir.mkdir(parents=True, exist_ok=True)
+            result = rc_executor._execute_quality_gate(
+                stage_dir, run_dir, config, adapters, llm=llm
+            )
+            assert result.status is StageStatus.FAILED
 
 
 class TestEnsembleStructuredContext:
@@ -2914,6 +2940,39 @@ class TestHypothesisRepair:
         state = json.loads((stage_dir / "hypothesis_state.json").read_text(encoding="utf-8"))
         assert any(h.get("repaired") for h in state["hypotheses"])
         assert state["gate_passed"] is True
+
+    def test_critic_outage_is_recorded_as_not_evaluated(
+        self, tmp_path: Path, rc_config: RCConfig, adapters: AdapterBundle
+    ) -> None:
+        """BR-14: a critic that raised must not be stored as gate_passed=true."""
+        from berb.llm.client import LLMResponse
+
+        class _OutageCriticLLM:
+            def chat(self, messages, **kwargs):  # noqa: ANN001, ANN003
+                if "interrogative critic" in messages[-1]["content"]:
+                    raise RuntimeError("provider outage")
+                return LLMResponse(
+                    content="## Hypothesis 1\nOur method improves CIFAR-10 top-1 accuracy "
+                    "by at least 5% over 5 seeds.",
+                    model="fake",
+                )
+
+        run_dir = tmp_path / "run"
+        run_dir.mkdir()
+        stage_dir = run_dir / "stage-08"
+        stage_dir.mkdir(parents=True)
+        _write_prior_artifact(run_dir, 7, "synthesis.md", "# Synthesis\nGap found.")
+
+        result = rc_executor._execute_hypothesis_gen(
+            stage_dir, run_dir, rc_config, adapters, llm=_OutageCriticLLM()
+        )
+
+        assert result.status == StageStatus.DONE  # stage 9 still proceeds
+        state = json.loads((stage_dir / "hypothesis_state.json").read_text(encoding="utf-8"))
+        assert state["gate_passed"] is None
+        assert state["critic_status"] == "unavailable"
+        assert "NOT evaluated" in state["critic_transcript"]
+        assert "passes falsification gate" not in state["critic_transcript"]
 
     def test_repair_hypothesis_returns_original_on_llm_failure(self) -> None:
         from berb.pipeline.stage_impls._synthesis import _repair_hypothesis
