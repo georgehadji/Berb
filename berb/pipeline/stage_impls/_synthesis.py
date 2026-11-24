@@ -367,7 +367,11 @@ def _execute_hypothesis_gen(
         "stage": "hypothesis_gen",
         "generated_at": _utcnow_iso(),
         "hypotheses": [],
-        "gate_passed": True,
+        # None = the critic did not evaluate the hypotheses (not run, outage, or
+        # crash). Stage 9 blocks only on an explicit False, so this stays
+        # non-blocking, but it no longer claims a pass that never happened.
+        "gate_passed": None,
+        "critic_status": "not_run",
         "critic_transcript": "",
     }
     if llm is not None and hypotheses_md.strip():
@@ -381,6 +385,7 @@ def _execute_hypothesis_gen(
                     _h_texts.append(_h[:1000])
 
             if _h_texts:
+                from berb.reasoning.socratic import CriticUnavailableError
                 from berb.reasoning.socratic import FalsificationCritic as _Critic
 
                 _critic = _Critic(llm_client=llm)
@@ -399,12 +404,23 @@ def _execute_hypothesis_gen(
 
                     _max_rounds = 2
                     _current_text = _ht
+                    _hard: list[dict[str, Any]] = []
+                    _soft: list[dict[str, Any]] = []
+                    _critic_down = False
                     for _round in range(_max_rounds):
 
                         async def _run_critic(text=_current_text):
                             return await _critic.scrutinize(text)
 
-                        _issues = asyncio.run(_run_critic())
+                        try:
+                            _issues = asyncio.run(_run_critic())
+                        except CriticUnavailableError as _cu:
+                            # Outage is its own state: this hypothesis is
+                            # NOT evaluated, and must not read as a pass.
+                            # Earlier hypotheses' verdicts stay intact.
+                            _record["critic_error"] = str(_cu)
+                            _critic_down = True
+                            break
                         _hard = [i for i in _issues if i.get("severity") == "hard"]
                         _soft = [i for i in _issues if i.get("severity") == "soft"]
 
@@ -436,8 +452,8 @@ def _execute_hypothesis_gen(
 
                     _record["hard_issues"] = _hard if _hard else []
                     _record["soft_issues"] = _soft if _soft else []
-                    _record["passed"] = len(_hard) == 0
-                    _record["rounds_completed"] = _round + 1
+                    _record["passed"] = None if _critic_down else len(_hard) == 0
+                    _record["rounds_completed"] = _round + (0 if _critic_down else 1)
                     _hypothesis_records.append(_record)
                     _all_issues.extend(_hard)
                     _all_issues.extend(_soft)
@@ -450,17 +466,51 @@ def _execute_hypothesis_gen(
                     )
 
                 _hypothesis_state["hypotheses"] = _hypothesis_records
-                _hypothesis_state["gate_passed"] = all(r["passed"] for r in _hypothesis_records)
-                _hypothesis_state["critic_transcript"] = _critic.format_issues(_all_issues)
+                _verdicts = [r["passed"] for r in _hypothesis_records]
+                _n_down = sum(1 for v in _verdicts if v is None)
+                if any(v is False for v in _verdicts):
+                    _gate: bool | None = False  # a real rejection outranks an outage
+                elif _n_down:
+                    _gate = None
+                else:
+                    _gate = True
+                _hypothesis_state["gate_passed"] = _gate
+                _hypothesis_state["critic_status"] = (
+                    "evaluated"
+                    if not _n_down
+                    else "unavailable"
+                    if _n_down == len(_verdicts)
+                    else "partial"
+                )
+                if _gate is None:
+                    _transcript = "Falsification critic unavailable: hypotheses were NOT evaluated."
+                else:
+                    _transcript = _critic.format_issues(_all_issues)
+                    if _n_down:
+                        _transcript += (
+                            f"\n{_n_down} hypothesis(es) were NOT evaluated (critic unavailable)."
+                        )
+                _hypothesis_state["critic_transcript"] = _transcript
 
                 logger.info(
-                    "E1: Falsification gate %s (%d hypotheses, %d hard issues)",
-                    "PASSED" if _hypothesis_state["gate_passed"] else "BLOCKED",
+                    "E1: Falsification gate %s (%d hypotheses, %d hard issues, %d not evaluated)",
+                    "NOT EVALUATED" if _gate is None else "PASSED" if _gate else "BLOCKED",
                     len(_h_texts),
                     len(_all_issues),
+                    _n_down,
                 )
         except Exception as _e1:
-            logger.warning("E1: Falsification gate failed, gate passes open: %s", _e1)
+            logger.warning(
+                "E1: Falsification gate crashed, hypotheses NOT evaluated; stage 9 proceeds: %s",
+                _e1,
+            )
+            _hypothesis_state["gate_passed"] = None
+            _hypothesis_state["critic_status"] = "error"
+            _hypothesis_state["critic_error"] = str(_e1)
+            _hypothesis_state["critic_transcript"] = (
+                "Falsification critic did not run to completion: hypotheses were NOT "
+                f"evaluated ({_e1})."
+            )
 
     (stage_dir / "hypothesis_state.json").write_text(
         json.dumps(_hypothesis_state, indent=2, ensure_ascii=False),

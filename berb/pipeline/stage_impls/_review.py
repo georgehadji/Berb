@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from pathlib import Path
@@ -835,6 +836,14 @@ def _execute_quality_gate(
                 )
             )
             _ens_meta = _ensemble.area_chair_decision(_ens_reviews)
+            _n_unavailable = sum(1 for _r in _ens_reviews if not _r.available)
+            if _ens_reviews and _n_unavailable:
+                logger.warning(
+                    "Stage 20: %d of %d ensemble reviews were unavailable%s",
+                    _n_unavailable,
+                    len(_ens_reviews),
+                    " — the ensemble gave no signal" if _n_unavailable == len(_ens_reviews) else "",
+                )
             # P3-03: cross-reviewer critique synthesis, purely additive —
             # area_chair_decision's scoring math above is untouched.
             try:
@@ -846,14 +855,17 @@ def _execute_quality_gate(
             _ensemble.generate_review_report(
                 _ens_reviews, _ens_meta, output_path=stage_dir / "ensemble_review.md"
             )
-            logger.info(
-                "Stage 20: Ensemble review %.2f/10 (%s), %d conflict(s)",
-                _ens_meta.average_score,
-                _ens_meta.consensus_decision.value,
-                len(_ens_meta.reviewer_conflicts),
-            )
+            if _ens_meta.n_real == 0:
+                logger.info("Stage 20: Ensemble review unavailable (no real reviews)")
+            else:
+                logger.info(
+                    "Stage 20: Ensemble review %.2f/10 (%s), %d conflict(s)",
+                    _ens_meta.average_score,
+                    _ens_meta.consensus_decision.value,
+                    len(_ens_meta.reviewer_conflicts),
+                )
         except Exception as _ens_exc:  # noqa: BLE001
-            logger.debug("Stage 20: Ensemble review skipped: %s", _ens_exc)
+            logger.warning("Stage 20: Ensemble review skipped: %s", _ens_exc, exc_info=True)
 
     _ens_veto = False
     _ens_veto_reason = ""
@@ -862,7 +874,20 @@ def _execute_quality_gate(
         Decision.STRONG_REJECT,
     ):
         _veto_marker = run_dir / "ensemble_veto_used.json"
-        if not _veto_marker.is_file():
+        # The one-veto bound exists so a rewritten paper cannot be vetoed
+        # forever. It must not let a re-run of the SAME paper (--resume after
+        # the veto failed this stage) slip through, so the marker records
+        # which paper it vetoed and only counts as used once that changed.
+        _paper_sha = hashlib.sha256(revised.encode("utf-8")).hexdigest()
+        _vetoed_sha: str | None = None
+        if _veto_marker.is_file():
+            try:
+                _vetoed_sha = json.loads(_veto_marker.read_text(encoding="utf-8")).get(
+                    "paper_sha256"
+                )
+            except (OSError, ValueError, AttributeError):
+                _vetoed_sha = None
+        if not _veto_marker.is_file() or _vetoed_sha == _paper_sha:
             _ens_veto = True
             _ens_veto_reason = (
                 f"Ensemble consensus {_ens_meta.consensus_decision.value} "
@@ -872,6 +897,7 @@ def _execute_quality_gate(
                 json.dumps(
                     {
                         "triggered_at": _utcnow_iso(),
+                        "paper_sha256": _paper_sha,
                         "consensus_decision": _ens_meta.consensus_decision.value,
                         "average_score": _ens_meta.average_score,
                     },

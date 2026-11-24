@@ -1,0 +1,646 @@
+signal	file:line	snippet	module	wired
+S1	berb/calendar/planner.py:60	dict-key | "stage": stage_name,	berb.calendar.planner	Y
+S1	berb/commands/external_runners.py:157	dict-key | "status": "success" if res.returncode == 0 else "failed",	berb.commands.external_runners	Y
+S1	berb/commands/external_runners.py:82	dict-key | "status": "success" if res.returncode == 0 else "failed",	berb.commands.external_runners	Y
+S1	berb/copilot/branching.py:53	dict-key | "status": "active",	berb.copilot.branching	Y
+S1	berb/copilot/branching.py:80	dict-key | "status": "unknown",	berb.copilot.branching	Y
+S1	berb/copilot/branching.py:88	dict-key | "status": "unknown",	berb.copilot.branching	Y
+S1	berb/copilot/controller.py:105	dict-key | "stage": feedback.stage,	berb.copilot.controller	Y
+S1	berb/copilot/controller.py:26	attr | self.mode = ResearchMode(config.mode)	berb.copilot.controller	Y
+S1	berb/copilot/feedback.py:59	dict-key | "stage": stage,	berb.copilot.feedback	Y
+S1	berb/copilot/feedback.py:64	dict-key | "status": "waiting",	berb.copilot.feedback	Y
+S1	berb/dashboard/collector.py:108	attr | snap.status = "running"	berb.dashboard.collector	Y
+S1	berb/dashboard/collector.py:38	dict-key | "status": self.status,	berb.dashboard.collector	Y
+S1	berb/dashboard/collector.py:93	attr | snap.status = ckpt.get("status", "running")	berb.dashboard.collector	Y
+S1	berb/evolution.py:559	dict-key | "stage": lesson.stage_name,	berb.evolution	Y
+S1	berb/experiment/compute_guard.py:515	dict-key | "status": ExperimentStatus.RUNNING,	berb.experiment.compute_guard	N
+S1	berb/experiment/compute_guard.py:673	key | self._experiments[experiment_id]["status"] = ExperimentStatus.STOPPED	berb.experiment.compute_guard	N
+S1	berb/experiment/journal.py:118	dict-key | "phase": self.phase,	berb.experiment.journal	Y
+S1	berb/experiment/progress.py:289	attr | stage_result.status = StageStatus.COMPLETED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:301	attr | stage_result.status = StageStatus.FAILED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:306	attr | stage_result.status = StageStatus.COMPLETED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:308	attr | stage_result.status = StageStatus.FAILED	berb.experiment.progress	N
+S1	berb/experiment/progress.py:484	dict-key | "stage": r.stage.value,	berb.experiment.progress	N
+S1	berb/experiment/progress.py:485	dict-key | "status": r.status.value,	berb.experiment.progress	N
+S1	berb/experiment/progress.py:521	dict-key | "stage": r.stage.value,	berb.experiment.progress	N
+S1	berb/experiment/progress.py:522	dict-key | "status": r.status.value,	berb.experiment.progress	N
+S1	berb/experiment/react_agent.py:63	dict-key | return [{"step": step.value, "content": content} for step, content in self.steps]	berb.experiment.react_agent	N
+S1	berb/experiment/split_policy.py:296	dict-key | "verdict": admit(ev).value,	berb.experiment.split_policy	N
+S1	berb/health.py:51	dict-key | "status": check.status,	berb.health	Y
+S1	berb/hyperagent/base.py:134	dict-key | "phase": self.phase.value,	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:187	attr | self.state = HyperagentState()	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:214	attr | self.state.phase = AgentPhase.TASK_EXECUTION	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:231	attr | self.state.phase = AgentPhase.PERFORMANCE_TRACKING	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:261	attr | self.state.phase = AgentPhase.SELF_MODIFICATION	berb.hyperagent.base	N
+S1	berb/hyperagent/base.py:268	attr | self.state.phase = AgentPhase.INIT	berb.hyperagent.base	N
+S1	berb/hyperagent/meta_agent.py:117	attr | self.state = MetaAgentState()	berb.hyperagent.meta_agent	N
+S1	berb/hyperagent/meta_agent.py:487	dict-key | "state": self.state.to_dict(),	berb.hyperagent.meta_agent	N
+S1	berb/hyperagent/task_agent.py:146	attr | self.state = TaskAgentState()	berb.hyperagent.task_agent	N
+S1	berb/hyperagent/task_agent.py:369	dict-key | "mode": "simulated",	berb.hyperagent.task_agent	N
+S1	berb/hyperagent/task_agent.py:566	dict-key | "state": self.state.to_dict(),	berb.hyperagent.task_agent	N
+S1	berb/integrity/claims.py:133	dict-key | "verdict": self.verdict.value,	berb.integrity.claims	Y
+S1	berb/integrity/evidence.py:110	dict-key | "stage": self.source.stage,	berb.integrity.evidence	Y
+S1	berb/integrity/evidence.py:136	dict-key | "stage": self.source.stage,	berb.integrity.evidence	Y
+S1	berb/knowledge/base.py:60	dict-key | "stage": entry.source_stage,	berb.knowledge.base	Y
+S1	berb/learning/cross_project_learning.py:468	dict-key | "stage": stage,	berb.learning.cross_project_learning	N
+S1	berb/literature/grey_search.py:277	dict-key | "status": status_module.get("overallStatus"),	berb.literature.grey_search	N
+S1	berb/literature/grey_search.py:278	dict-key | "phase": protocol.get("designModule", {}).get("phases", []),	berb.literature.grey_search	N
+S1	berb/literature/retraction.py:112	dict-key | return {"cite_key": self.cite_key, "state": self.state.value, "detail": self.detail}	berb.literature.retraction	Y
+S1	berb/literature/verify.py:70	dict-key | "status": self.status.value,	berb.literature.verify	Y
+S1	berb/llm/batch_api.py:206	attr | job.status = BatchStatus.PENDING	berb.llm.batch_api	N
+S1	berb/llm/batch_api.py:208	attr | job.status = BatchStatus.IN_PROGRESS	berb.llm.batch_api	N
+S1	berb/llm/batch_api.py:214	attr | job.status = BatchStatus.COMPLETED	berb.llm.batch_api	N
+S1	berb/llm/batch_api.py:279	attr | job.status = BatchStatus.CANCELLED	berb.llm.batch_api	N
+S1	berb/llm/client.py:378	attr | state.state = "half_open"	berb.llm.client	Y
+S1	berb/llm/client.py:394	attr | state.state = "closed"	berb.llm.client	Y
+S1	berb/llm/client.py:409	attr | state.state = "open"	berb.llm.client	Y
+S1	berb/llm/client.py:412	attr | state.state = "open"	berb.llm.client	Y
+S1	berb/llm/client.py:419	dict-key | "state": state.state,	berb.llm.client	Y
+S1	berb/llm/deep_query_client.py:387	dict-key | "status": status,	berb.llm.deep_query_client	Y
+S1	berb/llm/eval_dataset.py:233	dict-key | "stage": stage,	berb.llm.eval_dataset	N
+S1	berb/llm/nadirclaw_router.py:253	attr | self.mode = mode	berb.llm.nadirclaw_router	Y
+S1	berb/logging_setup.py:83	attr | record.stage = f"s{stage:02d}" if stage is not None else "--"	berb.logging_setup	Y
+S1	berb/mcp/server.py:78	dict-key | return {"success": True, "run_id": run_id, "status": "no_checkpoint"}	berb.mcp.server	Y
+S1	berb/mcp/tools.py:46	dict-key | "stage": {	berb.mcp.tools	Y
+S1	berb/memory/shared_memory.py:336	dict-key | "stage": stage,	berb.memory.shared_memory	N
+S1	berb/memory/shared_memory.py:394	attr | state.status = status	berb.memory.shared_memory	N
+S1	berb/metrics/reasoning_cost_tracker.py:99	dict-key | "phase": self.phase,	berb.metrics.reasoning_cost_tracker	Y
+S1	berb/mnemo_bridge/__init__.py:351	dict-key | return {"status": "error", "error": str(e)}	berb.mnemo_bridge	N
+S1	berb/mnemo_bridge/__init__.py:369	dict-key | return {"status": "unhealthy", "error": str(e)}	berb.mnemo_bridge	N
+S1	berb/modes/operation_mode.py:416	attr | self.mode = mode	berb.modes.operation_mode	Y
+S1	berb/optimization/cost_quality.py:492	dict-key | "stage": stage_name,	berb.optimization.cost_quality	N
+S1	berb/optimization/cost_quality.py:542	dict-key | "stage": c.stage_name,	berb.optimization.cost_quality	N
+S1	berb/optimization/cost_quality.py:553	dict-key | "stage": r.stage_name,	berb.optimization.cost_quality	N
+S1	berb/pipeline/_helpers.py:153	dict-key | "status": result.status.value,	berb.pipeline._helpers	Y
+S1	berb/pipeline/_helpers.py:154	dict-key | "decision": result.decision,	berb.pipeline._helpers	Y
+S1	berb/pipeline/executor.py:321	dict-key | "stage": int(stage),	berb.pipeline.executor	Y
+S1	berb/pipeline/executor.py:377	dict-key | "status": result.status.value,	berb.pipeline.executor	Y
+S1	berb/pipeline/experiment_diagnosis.py:855	dict-key | "mode": qa.mode.value,	berb.pipeline.experiment_diagnosis	Y
+S1	berb/pipeline/experiment_repair.py:916	dict-key | "status": "completed" if run_result.get("returncode") == 0 else "failed",	berb.pipeline.experiment_repair	Y
+S1	berb/pipeline/iterative.py:96	dict-key | "decision": decision,	berb.pipeline.iterative	Y
+S1	berb/pipeline/runner.py:239	dict-key | "decision": result.decision,	berb.pipeline.runner	Y
+S1	berb/pipeline/runner.py:86	dict-key | "decision": "pivot",	berb.pipeline.runner	Y
+S1	berb/pipeline/stage_impls/_analysis.py:1003	dict-key | "decision": decision,	berb.pipeline.stage_impls._analysis	Y
+S1	berb/pipeline/stage_impls/_analysis.py:181	dict-key | "status": "completed",	berb.pipeline.stage_impls._analysis	Y
+S1	berb/pipeline/stage_impls/_code_generation.py:1157	dict-key | "verdict": review_verdict,	berb.pipeline.stage_impls._code_generation	Y
+S1	berb/pipeline/stage_impls/_execution.py:259	dict-key | "status": run_status,	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:358	dict-key | "status": "simulated",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:378	dict-key | "status": "completed" if item.error is None else "failed",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:509	dict-key | context={"phase": "baseline"},	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:539	dict-key | "status": "completed" if node.is_buggy is False else "failed",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:635	dict-key | "mode": "simulated",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:872	dict-key | "mode": config.experiment.mode,	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_export.py:309	dict-key | "verdict": verdict.verdict.value,	berb.pipeline.stage_impls._export	Y
+S1	berb/pipeline/stage_impls/_literature.py:213	dict-key | "status": "available",	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_literature.py:222	dict-key | "status": "available",	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_literature.py:231	key | src["status"] = (	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_literature.py:236	key | src["status"] = "unknown"	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:841	key | entry["status"] = "severely_short"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:849	key | entry["status"] = "short"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:857	key | entry["status"] = "long"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:859	key | entry["status"] = "ok"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_review.py:771	dict-key | "status": v.status.value,	berb.pipeline.stage_impls._review	Y
+S1	berb/pipeline/stage_impls/_review.py:915	dict-key | "verdict": verdict,	berb.pipeline.stage_impls._review	Y
+S1	berb/pipeline/stage_impls/_synthesis.py:367	dict-key | "stage": "hypothesis_gen",	berb.pipeline.stage_impls._synthesis	Y
+S1	berb/pipeline/tracing.py:62	dict-key | "status": self.status,	berb.pipeline.tracing	Y
+S1	berb/project/idea_pool.py:104	attr | idea.status = "planned"	berb.project.idea_pool	Y
+S1	berb/project/idea_pool.py:78	attr | idea.status = "evaluated"	berb.project.idea_pool	Y
+S1	berb/project/manager.py:124	dict-key | "projects": [{"name": p.name, "status": p.status, "topic": p.topic} for p in projects],	berb.project.manager	Y
+S1	berb/project/manager.py:153	dict-key | "status": a.status,	berb.project.manager	Y
+S1	berb/project/manager.py:159	dict-key | "status": b.status,	berb.project.manager	Y
+S1	berb/project/manager.py:171	attr | proj.status = "running"	berb.project.manager	Y
+S1	berb/project/manager.py:179	attr | proj.status = status	berb.project.manager	Y
+S1	berb/project/models.py:29	dict-key | "status": self.status,	berb.project.models	Y
+S1	berb/project/models.py:80	dict-key | "status": self.status,	berb.project.models	Y
+S1	berb/reasoning/jury.py:212	dict-key | "verdict": verdict,	berb.reasoning.jury	Y
+S1	berb/reasoning/jury.py:216	dict-key | "verdict": j.verdict,	berb.reasoning.jury	Y
+S1	berb/reasoning/jury.py:329	attr | juror.verdict = data.get("verdict", "abstain")	berb.reasoning.jury	Y
+S1	berb/reasoning/jury.py:339	attr | juror.verdict = "abstain"	berb.reasoning.jury	Y
+S1	berb/review/ensemble.py:570	dict-key | "decision": "weak_reject",	berb.review.ensemble	Y
+S1	berb/self_evolve/__init__.py:162	dict-key | "stage": exp.stage,	berb.self_evolve	N
+S1	berb/self_evolve/__init__.py:606	dict-key | "status": "complete",	berb.self_evolve	N
+S1	berb/self_evolve/__init__.py:671	dict-key | "status": "active",	berb.self_evolve	N
+S1	berb/server/app.py:80	dict-key | return {"status": "ok"}	berb.server.app	Y
+S1	berb/server/app.py:85	dict-key | "status": "ok",	berb.server.app	Y
+S1	berb/server/app.py:95	dict-key | "mode": config.experiment.mode,	berb.server.app	Y
+S1	berb/server/routes/pipeline.py:106	dict-key | "status": "running",	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:133	key | _active_run["status"] = "completed" if failed == 0 else "failed"	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:139	key | _active_run["status"] = "failed"	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:160	key | _active_run["status"] = "stopped"	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:161	dict-key | return {"status": "stopped"}	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:168	dict-key | return {"status": "idle"}	berb.server.routes.pipeline	Y
+S1	berb/server/routes/pipeline.py:184	dict-key | "phase": getattr(s, "phase", ""),	berb.server.routes.pipeline	Y
+S1	berb/server/routes/projects.py:32	key | proj["status"] = ckpt_data.get("status", "unknown")	berb.server.routes.projects	Y
+S1	berb/server/routes/projects.py:34	key | proj["status"] = "unknown"	berb.server.routes.projects	Y
+S1	berb/server/routes/projects.py:36	key | proj["status"] = "no_checkpoint"	berb.server.routes.projects	Y
+S1	berb/servers/cloud_executor.py:38	dict-key | "status": "stub_launched",	berb.servers.cloud_executor	Y
+S1	berb/servers/cloud_executor.py:49	dict-key | return {"instance_id": instance_id, "status": "stub_unknown"}	berb.servers.cloud_executor	Y
+S1	berb/servers/dispatcher.py:104	key | info["status"] = "failed"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:117	key | info["status"] = "dispatched"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:125	key | info["status"] = "completed"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:138	dict-key | return {"task_id": task_id, "status": "unknown"}	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:141	dict-key | "status": info["status"],	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:53	dict-key | "status": "queued",	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:62	dict-key | "status": "dispatched",	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:88	key | info["status"] = "running"	berb.servers.dispatcher	Y
+S1	berb/servers/dispatcher.py:99	key | info["status"] = "completed" if result["success"] else "failed"	berb.servers.dispatcher	Y
+S1	berb/servers/slurm_executor.py:109	dict-key | return {"job_id": job_id, "state": state}	berb.servers.slurm_executor	Y
+S1	berb/ui/dashboard.py:203	attr | self.stages[stage_number].status = "completed"	berb.ui.dashboard	Y
+S1	berb/wizard/quickstart.py:111	key | config.setdefault("experiment", {})["mode"] = value	berb.wizard.quickstart	Y
+S1	berb/wizard/quickstart.py:138	dict-key | "project": {"name": "wizard-project", "mode": "full-auto"},	berb.wizard.quickstart	Y
+S1	berb/wizard/quickstart.py:24	dict-key | config["project"] = {"name": name, "mode": "full-auto"}	berb.wizard.quickstart	Y
+S1	berb/wizard/quickstart.py:46	dict-key | config["experiment"] = {"mode": mode}	berb.wizard.quickstart	Y
+S2	berb/experiment/async_pool.py:207	in execute_parallel | self._running = True	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:221	in execute_parallel | self._running = False	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:283	in _worker_loop | status.is_busy = True	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:349	in _worker_loop | status.is_busy = False	berb.experiment.async_pool	Y
+S2	berb/experiment/async_pool.py:436	in shutdown | self._running = False	berb.experiment.async_pool	Y
+S2	berb/experiment/search/runner.py:321	in _evaluate_node | node.is_buggy = True	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:344	in _evaluate_node | node.timed_out = False	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:368	in _evaluate_node | node.timed_out = True	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:369	in _evaluate_node | node.is_buggy = True	berb.experiment.search.runner	Y
+S2	berb/experiment/search/runner.py:379	in _evaluate_node | node.is_buggy = True	berb.experiment.search.runner	Y
+S2	berb/experiment/worker.py:128	in execute | self._is_busy = True	berb.experiment.worker	Y
+S2	berb/experiment/worker.py:198	in execute | self._is_busy = False	berb.experiment.worker	Y
+S2	berb/llm/cost_tracker.py:289	in close | self._closed = True	berb.llm.cost_tracker	Y
+S2	berb/mcp/server.py:124	in start | self._running = True	berb.mcp.server	Y
+S2	berb/mcp/server.py:129	in stop | self._running = False	berb.mcp.server	Y
+S2	berb/mcp/transport.py:111	in start | self._running = True	berb.mcp.transport	Y
+S2	berb/mcp/transport.py:160	in close | self._running = False	berb.mcp.transport	Y
+S2	berb/metaclaw_bridge/session.py:45	in end | self._active = False	berb.metaclaw_bridge.session	Y
+S3	berb/cli.py:1017	done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S3	berb/cli.py:1018	failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S3	berb/cli.py:426	done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S3	berb/cli.py:427	failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S3	berb/commands/external_runners.py:188	if res["status"] == "success":	berb.commands.external_runners	Y
+S3	berb/commands/external_runners.py:224	if res["status"] == "success":	berb.commands.external_runners	Y
+S3	berb/dashboard/metrics.py:12	completed = sum(1 for r in runs if r.get("status") == "completed")	berb.dashboard.metrics	Y
+S3	berb/dashboard/metrics.py:13	failed = sum(1 for r in runs if r.get("status") == "failed")	berb.dashboard.metrics	Y
+S3	berb/experiment/evaluators/convergence.py:128	for key in ("error", "l2_error", "linf_error"):	berb.experiment.evaluators.convergence	N
+S3	berb/experiment/visualize.py:613	colors.append("#228833" if status == "done" else "#EE6677")	berb.experiment.visualize	Y
+S3	berb/learning/cross_project_learning.py:268	success_rate = sum(1 for s in stages if s.status == "success") / len(stages)	berb.learning.cross_project_learning	N
+S3	berb/learning/cross_project_learning.py:309	failures = [s for s in stages if s.status in ("failed", "repaired")]	berb.learning.cross_project_learning	N
+S3	berb/literature/verify.py:226	if "api/errors" in entry_id or not found_title or found_title.lower() == "error":	berb.literature.verify	Y
+S3	berb/llm/anthropic_adapter.py:163	if data.get("type") == "error" or "error" in data:	berb.llm.anthropic_adapter	Y
+S3	berb/llm/client.py:105	if provider.value != "unknown" and model_lower == provider.value:	berb.llm.client	Y
+S3	berb/pipeline/stage_impls/_execution.py:242	if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	Y
+S3	berb/pipeline/stage_impls/_review.py:570	_exp_failed = _best_run.get("status") == "failed" and not _best_run.get("metrics")	berb.pipeline.stage_impls._review	Y
+S3	berb/pipeline/stage_impls/_review.py:673	if cond_status == "failed":	berb.pipeline.stage_impls._review	Y
+S3	berb/report.py:56	status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	Y
+S3	berb/server/routes/pipeline.py:130	done = sum(1 for r in results if r.status.value == "done")	berb.server.routes.pipeline	Y
+S3	berb/server/routes/pipeline.py:131	failed = sum(1 for r in results if r.status.value == "failed")	berb.server.routes.pipeline	Y
+S3	berb/server/routes/pipeline.py:70	if _active_run and _active_run.get("status") == "running":	berb.server.routes.pipeline	Y
+S3	berb/ui/dashboard.py:382	completed = sum(1 for s in self.stages.values() if s.status == "completed")	berb.ui.dashboard	Y
+S3	berb/web/firecrawl_client.py:493	if status == "completed":	berb.web.firecrawl_client	Y
+S3	berb/web/firecrawl_client.py:517	elif status == "failed":	berb.web.firecrawl_client	Y
+S4	berb/agents/benchmark_agent/selector.py:97	raw string 'none' | if self._network_policy == "none" and pip_deps:	berb.agents.benchmark_agent.selector	Y
+S4	berb/agents/benchmark_agent/validator.py:233	raw string 'error' | if llm_review.get("severity") == "error":	berb.agents.benchmark_agent.validator	Y
+S4	berb/agents/figure_agent/codegen.py:851	raw string 'latex' | if self._output_format == "latex":	berb.agents.figure_agent.codegen	Y
+S4	berb/cli.py:1017	raw string 'done' | done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S4	berb/cli.py:1018	raw string 'failed' | failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S4	berb/cli.py:1437	raw string 'init' | elif command == "init":	berb.cli	Y
+S4	berb/cli.py:1459	raw string 'literature' | elif command == "literature":	berb.cli	Y
+S4	berb/cli.py:1463	raw string 'experiment' | elif command == "experiment":	berb.cli	Y
+S4	berb/cli.py:1467	raw string 'rebuttal' | elif command == "rebuttal":	berb.cli	Y
+S4	berb/cli.py:426	raw string 'done' | done = sum(1 for r in results if r.status.value == "done")	berb.cli	Y
+S4	berb/cli.py:427	raw string 'failed' | failed = sum(1 for r in results if r.status.value == "failed")	berb.cli	Y
+S4	berb/cli.py:500	raw string 'status' | elif action == "status":	berb.cli	Y
+S4	berb/commands/external_runners.py:188	raw string 'success' | if res["status"] == "success":	berb.commands.external_runners	Y
+S4	berb/commands/external_runners.py:224	raw string 'success' | if res["status"] == "success":	berb.commands.external_runners	Y
+S4	berb/copilot/controller.py:108	raw string 'approve' | if feedback.action == "approve":	berb.copilot.controller	Y
+S4	berb/copilot/controller.py:116	raw string 'retry' | elif feedback.action == "retry":	berb.copilot.controller	Y
+S4	berb/copilot/controller.py:119	raw string 'skip' | elif feedback.action == "skip":	berb.copilot.controller	Y
+S4	berb/copilot/modes.py:8	enum ResearchMode | class ResearchMode(Enum):	berb.copilot.modes	Y
+S4	berb/dashboard/metrics.py:12	raw string 'completed' | completed = sum(1 for r in runs if r.get("status") == "completed")	berb.dashboard.metrics	Y
+S4	berb/dashboard/metrics.py:13	raw string 'failed' | failed = sum(1 for r in runs if r.get("status") == "failed")	berb.dashboard.metrics	Y
+S4	berb/domains/adapters/math.py:59	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.math	Y
+S4	berb/domains/adapters/math.py:78	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.math	Y
+S4	berb/domains/adapters/neuroscience.py:91	raw string 'simulation' | if paradigm == "simulation":	berb.domains.adapters.neuroscience	Y
+S4	berb/domains/adapters/physics.py:120	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.physics	Y
+S4	berb/domains/adapters/physics.py:75	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.physics	Y
+S4	berb/domains/detector.py:34	enum ExperimentParadigm | class ExperimentParadigm(StrEnum):	berb.domains.detector	Y
+S4	berb/domains/detector.py:44	enum MetricType | class MetricType(StrEnum):	berb.domains.detector	Y
+S4	berb/domains/experiment_schema.py:17	enum ConditionRole | class ConditionRole(StrEnum):	berb.domains.experiment_schema	N
+S4	berb/domains/experiment_schema.py:25	enum ExperimentType | class ExperimentType(StrEnum):	berb.domains.experiment_schema	N
+S4	berb/domains/prompt_adapter.py:190	raw string 'convergence' | if paradigm == "convergence":	berb.domains.prompt_adapter	Y
+S4	berb/domains/prompt_adapter.py:198	raw string 'progressive_spec' | elif paradigm == "progressive_spec":	berb.domains.prompt_adapter	Y
+S4	berb/domains/prompt_adapter.py:206	raw string 'simulation' | elif paradigm == "simulation":	berb.domains.prompt_adapter	Y
+S4	berb/evolution.py:40	enum LessonCategory | class LessonCategory(StrEnum):	berb.evolution	Y
+S4	berb/evolution.py:460	raw string 'error' | if lesson.severity == "error":	berb.evolution	Y
+S4	berb/experiment/compute_guard.py:26	enum ExperimentStatus | class ExperimentStatus(StrEnum):	berb.experiment.compute_guard	N
+S4	berb/experiment/compute_guard.py:399	raw string 'medium' | if risk_level == "medium":	berb.experiment.compute_guard	N
+S4	berb/experiment/compute_guard.py:415	raw string 'high' | "high_risk": risk_level == "high",	berb.experiment.compute_guard	N
+S4	berb/experiment/docker_sandbox.py:505	raw string 'none' | if cfg.network_policy == "none":	berb.experiment.docker_sandbox	Y
+S4	berb/experiment/metrics.py:27	enum MetricType | class MetricType(StrEnum):	berb.experiment.metrics	Y
+S4	berb/experiment/physics_guards.py:193	raw string 'warning' | warnings = sum(1 for i in issues if i.severity == "warning")	berb.experiment.physics_guards	Y
+S4	berb/experiment/physics_guards.py:194	raw string 'info' | info = sum(1 for i in issues if i.severity == "info")	berb.experiment.physics_guards	Y
+S4	berb/experiment/progress.py:33	enum ExperimentStage | class ExperimentStage(StrEnum):	berb.experiment.progress	N
+S4	berb/experiment/progress.py:42	enum StageStatus | class StageStatus(StrEnum):	berb.experiment.progress	N
+S4	berb/experiment/react_agent.py:34	enum ReActStep | class ReActStep(StrEnum):	berb.experiment.react_agent	N
+S4	berb/experiment/self_correcting.py:44	enum SimulationStatus | class SimulationStatus(StrEnum):	berb.experiment.self_correcting	N
+S4	berb/experiment/self_correcting.py:580	raw string 'convergence' | elif diagnosis.get("category") == "convergence":	berb.experiment.self_correcting	N
+S4	berb/experiment/ssh_sandbox.py:357	raw string 'none' | if cfg.docker_network_policy == "none":	berb.experiment.ssh_sandbox	Y
+S4	berb/experiment/validator.py:42	raw string 'error' | return not any(i.severity == "error" for i in self.issues)	berb.experiment.validator	Y
+S4	berb/experiment/validator.py:46	raw string 'error' | return [i for i in self.issues if i.severity == "error"]	berb.experiment.validator	Y
+S4	berb/experiment/validator.py:50	raw string 'warning' | return [i for i in self.issues if i.severity == "warning"]	berb.experiment.validator	Y
+S4	berb/experiment/visualize.py:613	raw string 'done' | colors.append("#228833" if status == "done" else "#EE6677")	berb.experiment.visualize	Y
+S4	berb/export/latex_exporter.py:229	raw string 'ieee' | elif template == "ieee":	berb.export.latex_exporter	Y
+S4	berb/export/multi_format.py:29	enum ExportFormat | class ExportFormat(StrEnum):	berb.export.multi_format	Y
+S4	berb/health.py:688	raw string 'openrouter' | fallback_models = config.llm.fallback_models if provider == "openrouter" else ()	berb.health	Y
+S4	berb/health.py:735	raw string 'fail' | overall = "fail" if any(c.status == "fail" for c in checks) else "pass"	berb.health	Y
+S4	berb/health.py:759	raw string 'fail' | fail_count = sum(1 for check in report.checks if check.status == "fail")	berb.health	Y
+S4	berb/health.py:760	raw string 'warn' | warn_count = sum(1 for check in report.checks if check.status == "warn")	berb.health	Y
+S4	berb/hooks/__init__.py:307	raw string 'literature-review' | if skill_id == "literature-review":	berb.hooks	Y
+S4	berb/hyperagent/base.py:23	enum AgentPhase | class AgentPhase(StrEnum):	berb.hyperagent.base	N
+S4	berb/i18n/academic_languages.py:33	enum WritingDirection | class WritingDirection(StrEnum):	berb.i18n.academic_languages	N
+S4	berb/i18n/multilingual.py:34	enum SupportedLanguage | class SupportedLanguage(StrEnum):	berb.i18n.multilingual	N
+S4	berb/integrations/scite_mcp.py:32	enum SciteCitationType | class SciteCitationType(StrEnum):	berb.integrations.scite_mcp	N
+S4	berb/integrity/anchors.py:55	enum AnchorKind | class AnchorKind(StrEnum):	berb.integrity.anchors	Y
+S4	berb/integrity/claims.py:29	enum ClaimType | class ClaimType(StrEnum):	berb.integrity.claims	Y
+S4	berb/integrity/claims.py:63	enum ClaimVerdict | class ClaimVerdict(StrEnum):	berb.integrity.claims	Y
+S4	berb/integrity/eval/hidden_eval.py:51	enum CriteriaVisibility | class CriteriaVisibility(StrEnum):	berb.integrity.eval.hidden_eval	N
+S4	berb/integrity/evidence.py:18	enum EvidenceType | class EvidenceType(StrEnum):	berb.integrity.evidence	Y
+S4	berb/integrity/findings.py:43	enum Severity | class Severity(StrEnum):	berb.integrity.findings	Y
+S4	berb/integrity/findings.py:66	enum CheckId | class CheckId(StrEnum):	berb.integrity.findings	Y
+S4	berb/knowledge/graph/entities.py:10	enum EntityType | class EntityType(StrEnum):	berb.knowledge.graph.entities	N
+S4	berb/knowledge/graph/relations.py:10	enum RelationType | class RelationType(StrEnum):	berb.knowledge.graph.relations	N
+S4	berb/learning/cross_project_learning.py:268	raw string 'success' | success_rate = sum(1 for s in stages if s.status == "success") / len(stages)	berb.learning.cross_project_learning	N
+S4	berb/literature/citation_classifier.py:35	enum CitationIntent | class CitationIntent(StrEnum):	berb.literature.citation_classifier	Y
+S4	berb/literature/citation_graph.py:25	enum ClusterAlgorithm | class ClusterAlgorithm(StrEnum):	berb.literature.citation_graph	Y
+S4	berb/literature/citation_graph.py:777	raw string 'results' | elif perspective == "results":	berb.literature.citation_graph	Y
+S4	berb/literature/evidence_map.py:27	enum ConsensusLevel | class ConsensusLevel(StrEnum):	berb.literature.evidence_map	Y
+S4	berb/literature/evidence_map.py:49	enum StudyType | class StudyType(StrEnum):	berb.literature.evidence_map	Y
+S4	berb/literature/novelty.py:404	raw string 'low' | elif assessment == "low":	berb.literature.novelty	Y
+S4	berb/literature/retraction.py:63	enum RetractionState | class RetractionState(StrEnum):	berb.literature.retraction	Y
+S4	berb/literature/section_analysis.py:26	enum PaperSection | class PaperSection(StrEnum):	berb.literature.section_analysis	Y
+S4	berb/literature/section_analysis.py:50	enum CitationPurpose | class CitationPurpose(StrEnum):	berb.literature.section_analysis	Y
+S4	berb/literature/structured_notes.py:271	raw string 'markdown' | if format == "markdown":	berb.literature.structured_notes	Y
+S4	berb/literature/verify.py:226	raw string 'error' | if "api/errors" in entry_id or not found_title or found_title.lower() == "error":	berb.literature.verify	Y
+S4	berb/literature/verify.py:44	enum VerifyStatus | class VerifyStatus(StrEnum):	berb.literature.verify	Y
+S4	berb/literature/zotero_integration.py:161	raw string 'author' | if c.get("creatorType") == "author"	berb.literature.zotero_integration	Y
+S4	berb/literature/zotero_integration.py:504	raw string 'markdown' | if format == "markdown":	berb.literature.zotero_integration	Y
+S4	berb/literature/zotero_integration.py:506	raw string 'json' | elif format == "json":	berb.literature.zotero_integration	Y
+S4	berb/llm/acp_client.py:517	raw string 'system' | if role == "system":	berb.llm.acp_client	Y
+S4	berb/llm/adaptive_temp.py:37	enum RetryStage | class RetryStage(StrEnum):	berb.llm.adaptive_temp	N
+S4	berb/llm/anthropic_adapter.py:163	raw string 'error' | if data.get("type") == "error" or "error" in data:	berb.llm.anthropic_adapter	Y
+S4	berb/llm/anthropic_adapter.py:90	raw string 'system' | if msg["role"] == "system":	berb.llm.anthropic_adapter	Y
+S4	berb/llm/batch_api.py:43	enum BatchStatus | class BatchStatus(StrEnum):	berb.llm.batch_api	N
+S4	berb/llm/batch_api.py:53	enum BatchPriority | class BatchPriority(StrEnum):	berb.llm.batch_api	N
+S4	berb/llm/client.py:105	raw string 'unknown' | if provider.value != "unknown" and model_lower == provider.value:	berb.llm.client	Y
+S4	berb/llm/client.py:1090	raw string 'system' | if msgs and msgs[0].get("role") == "system" and isinstance(msgs[0].get("content"), str):	berb.llm.client	Y
+S4	berb/llm/client.py:1342	raw string 'openrouter' | if fallback_provider == "openrouter"	berb.llm.client	Y
+S4	berb/llm/client.py:47	enum LLMProvider | class LLMProvider(StrEnum):	berb.llm.client	Y
+S4	berb/llm/client.py:542	raw string 'openrouter' | if provider == "openrouter":	berb.llm.client	Y
+S4	berb/llm/client.py:956	raw string 'system' | if msgs and msgs[0]["role"] == "system":	berb.llm.client	Y
+S4	berb/llm/cross_model.py:218	enum CrossModelVerdict | class CrossModelVerdict(StrEnum):	berb.llm.cross_model	Y
+S4	berb/llm/nadirclaw_router.py:330	raw string 'system' | if msg.get("role") == "system":	berb.llm.nadirclaw_router	Y
+S4	berb/llm/nadirclaw_router.py:342	raw string 'system' | if msg.get("role") == "system":	berb.llm.nadirclaw_router	Y
+S4	berb/llm/nadirclaw_router.py:526	raw string 'mid' | elif tier == "mid":	berb.llm.nadirclaw_router	Y
+S4	berb/llm/openrouter_adapter.py:81	enum ModelVariant | class ModelVariant(StrEnum):	berb.llm.openrouter_adapter	Y
+S4	berb/llm/output_limits.py:21	enum Stage | class Stage(IntEnum):	berb.llm.output_limits	Y
+S4	berb/llm/speculative_gen.py:39	enum SpeculativeOutcome | class SpeculativeOutcome(StrEnum):	berb.llm.speculative_gen	N
+S4	berb/llm/speculative_router.py:39	enum SpeculativeOutcome | class SpeculativeOutcome(StrEnum):	berb.llm.speculative_router	N
+S4	berb/mcp/server.py:112	raw string 'latex' | if fmt == "latex":	berb.mcp.server	Y
+S4	berb/memory/embeddings.py:118	raw string 'api' | if self._backend == "api":	berb.memory.embeddings	Y
+S4	berb/memory/ideation_memory.py:137	raw string 'failure' | if entry.metadata.get("outcome") == "failure":	berb.memory.ideation_memory	N
+S4	berb/memory/ideation_memory.py:61	raw string 'failure' | if outcome == "failure":	berb.memory.ideation_memory	N
+S4	berb/metrics/reasoning_cost_tracker.py:48	enum Provider | class Provider(StrEnum):	berb.metrics.reasoning_cost_tracker	Y
+S4	berb/modes/operation_mode.py:24	enum OperationMode | class OperationMode(StrEnum):	berb.modes.operation_mode	Y
+S4	berb/modes/operation_mode.py:36	enum FeedbackAction | class FeedbackAction(StrEnum):	berb.modes.operation_mode	Y
+S4	berb/modes/operation_mode.py:461	raw string 'json' | elif self.collaborative_config.feedback_format == "json":	berb.modes.operation_mode	Y
+S4	berb/modes/workflow.py:23	enum WorkflowType | class WorkflowType(StrEnum):	berb.modes.workflow	Y
+S4	berb/optimization/cost_quality.py:33	enum ModelTier | class ModelTier(StrEnum):	berb.optimization.cost_quality	N
+S4	berb/pipeline/_figure_helpers.py:100	raw string 'abstract' | if heading_text.lower() == "abstract":	berb.pipeline._figure_helpers	Y
+S4	berb/pipeline/citation_verification.py:261	raw string 'verified' | if web_status == "verified":	berb.pipeline.citation_verification	Y
+S4	berb/pipeline/citation_verification.py:48	enum VerificationLayer | class VerificationLayer(StrEnum):	berb.pipeline.citation_verification	Y
+S4	berb/pipeline/experiment_diagnosis.py:131	enum PaperMode | class PaperMode(enum.Enum):	berb.pipeline.experiment_diagnosis	Y
+S4	berb/pipeline/experiment_diagnosis.py:27	enum DeficiencyType | class DeficiencyType(enum.Enum):	berb.pipeline.experiment_diagnosis	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:177	raw string 'none' | if _net_policy == "none":	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:197	raw string 'high' | if tier == "high":	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:243	raw string 'none' | if _net_policy == "none":	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:784	raw string 'error' | issues=[i for i in validation.issues if i.severity == "error"]	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:837	raw string 'error' | if issue.severity == "error" and issue.category in (	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_execution.py:242	raw string 'completed' | if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	Y
+S4	berb/pipeline/stage_impls/_export.py:1000	raw string 'hallucinated' | r.cite_key for r in _export_report.results if r.status.value == "hallucinated"	berb.pipeline.stage_impls._export	Y
+S4	berb/pipeline/stage_impls/_export.py:1423	raw string 'text_without_insight' | if _contribution.contribution_type.value == "text_without_insight":	berb.pipeline.stage_impls._export	Y
+S4	berb/pipeline/stage_impls/_paper_writing.py:936	raw string 'abstract' | if hl == "abstract" and wc > 250:	berb.pipeline.stage_impls._paper_writing	Y
+S4	berb/pipeline/stage_impls/_review.py:570	raw string 'failed' | _exp_failed = _best_run.get("status") == "failed" and not _best_run.get("metrics")	berb.pipeline.stage_impls._review	Y
+S4	berb/pipeline/stage_impls/_review.py:673	raw string 'failed' | if cond_status == "failed":	berb.pipeline.stage_impls._review	Y
+S4	berb/pipeline/stage_impls/_review.py:780	raw string 'unsupported' | _unsupported = [v for v in _verdicts if v.status.value == "unsupported"]	berb.pipeline.stage_impls._review	Y
+S4	berb/pipeline/stages.py:26	enum Stage | class Stage(IntEnum):	berb.pipeline.stages	Y
+S4	berb/pipeline/stages.py:428	raw string 'retry' | elif event.metadata.get("decision") == "retry":	berb.pipeline.stages	Y
+S4	berb/pipeline/stages.py:69	enum StageStatus | class StageStatus(StrEnum):	berb.pipeline.stages	Y
+S4	berb/pipeline/stages.py:81	enum TransitionEvent | class TransitionEvent(StrEnum):	berb.pipeline.stages	Y
+S4	berb/plugins/__init__.py:35	enum PluginHook | class PluginHook(StrEnum):	berb.plugins	Y
+S4	berb/reasoner_bridge/__init__.py:34	enum PerspectiveType | class PerspectiveType(StrEnum):	berb.reasoner_bridge	N
+S4	berb/reasoner_bridge/__init__.py:43	enum StressScenario | class StressScenario(StrEnum):	berb.reasoner_bridge	N
+S4	berb/reasoning/base.py:21	enum MethodType | class MethodType(StrEnum):	berb.reasoning.base	Y
+S4	berb/reasoning/jury.py:50	enum JurorRole | class JurorRole(StrEnum):	berb.reasoning.jury	Y
+S4	berb/reasoning/multi_perspective.py:56	enum PerspectiveType | class PerspectiveType(StrEnum):	berb.reasoning.multi_perspective	Y
+S4	berb/report.py:56	raw string 'done' | status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	Y
+S4	berb/report.py:56	raw string 'failed' | status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	Y
+S4	berb/research/world_model.py:22	enum FindingVerdict | class FindingVerdict(StrEnum):	berb.research.world_model	Y
+S4	berb/review/ensemble.py:50	enum ReviewDimension | class ReviewDimension(StrEnum):	berb.review.ensemble	Y
+S4	berb/review/ensemble.py:61	enum Decision | class Decision(StrEnum):	berb.review.ensemble	Y
+S4	berb/self_evolve/__init__.py:42	enum ExperienceType | class ExperienceType(StrEnum):	berb.self_evolve	N
+S4	berb/server/dialog/intents.py:9	enum Intent | class Intent(StrEnum):	berb.server.dialog.intents	Y
+S4	berb/server/routes/pipeline.py:130	raw string 'done' | done = sum(1 for r in results if r.status.value == "done")	berb.server.routes.pipeline	Y
+S4	berb/server/routes/pipeline.py:131	raw string 'failed' | failed = sum(1 for r in results if r.status.value == "failed")	berb.server.routes.pipeline	Y
+S4	berb/server/routes/pipeline.py:70	raw string 'running' | if _active_run and _active_run.get("status") == "running":	berb.server.routes.pipeline	Y
+S4	berb/server/websocket/events.py:12	enum EventType | class EventType(StrEnum):	berb.server.websocket.events	Y
+S4	berb/templates/converter.py:1827	raw string 'abstract' | if sec.heading_lower == "abstract":	berb.templates.converter	Y
+S4	berb/templates/converter.py:841	raw string 'abstract' | if sec.heading_lower == "abstract":	berb.templates.converter	Y
+S4	berb/ui/dashboard.py:382	raw string 'completed' | completed = sum(1 for s in self.stages.values() if s.status == "completed")	berb.ui.dashboard	Y
+S4	berb/voice/commands.py:10	enum VoiceCommand | class VoiceCommand(StrEnum):	berb.voice.commands	N
+S4	berb/web/firecrawl_client.py:47	enum ScrapeFormat | class ScrapeFormat(StrEnum):	berb.web.firecrawl_client	Y
+S4	berb/web/firecrawl_client.py:493	raw string 'completed' | if status == "completed":	berb.web.firecrawl_client	Y
+S4	berb/web/firecrawl_client.py:517	raw string 'failed' | elif status == "failed":	berb.web.firecrawl_client	Y
+S4	berb/writing/academic_polisher.py:31	enum AcademicPolishCategory | class AcademicPolishCategory(StrEnum):	berb.writing.academic_polisher	Y
+S4	berb/writing/academic_polisher.py:57	enum PolishSeverity | class PolishSeverity(StrEnum):	berb.writing.academic_polisher	Y
+S4	berb/writing/anti_ai.py:42	enum Language | class Language(StrEnum):	berb.writing.anti_ai	Y
+S4	berb/writing/anti_ai.py:50	enum PhraseCategory | class PhraseCategory(StrEnum):	berb.writing.anti_ai	Y
+S4	berb/writing/citation_engine.py:29	enum CitationLevel | class CitationLevel(StrEnum):	berb.writing.citation_engine	N
+S4	berb/writing/citation_engine.py:41	enum CitationStyle | class CitationStyle(StrEnum):	berb.writing.citation_engine	N
+S4	berb/writing/citation_styles.py:28	enum CitationStyle | class CitationStyle(StrEnum):	berb.writing.citation_styles	Y
+S4	berb/writing/impact_assessment.py:32	enum ContributionType | class ContributionType(StrEnum):	berb.writing.impact_assessment	Y
+S4	berb/writing/parallel_writer.py:32	enum SectionDependency | class SectionDependency(StrEnum):	berb.writing.parallel_writer	Y
+S4	berb/writing/pattern_memory.py:30	enum PatternType | class PatternType(StrEnum):	berb.writing.pattern_memory	Y
+S4	berb/writing/rebuttal_generator.py:26	enum ReviewCommentType | class ReviewCommentType(StrEnum):	berb.writing.rebuttal_generator	Y
+S4	berb/writing/rebuttal_generator.py:42	enum ResponseStrategy | class ResponseStrategy(StrEnum):	berb.writing.rebuttal_generator	Y
+S4	berb/writing/style_fingerprint.py:30	enum VocabularyLevel | class VocabularyLevel(StrEnum):	berb.writing.style_fingerprint	Y
+S4	berb/writing/style_fingerprint.py:39	enum FirstPersonUsage | class FirstPersonUsage(StrEnum):	berb.writing.style_fingerprint	Y
+S4	berb/writing/style_fingerprint.py:817	raw string 'auto' | if self.target_language == "auto":	berb.writing.style_fingerprint	Y
+S5	berb/data/__init__.py:127	global _CACHE | global _CACHE  # noqa: PLW0603	berb.data	Y
+S5	berb/domains/detector.py:157	global _profile_cache | global _profile_cache	berb.domains.detector	Y
+S5	berb/domains/detector.py:168	_profile_cache mutated in load_all_profiles | _profile_cache[profile.domain_id] = profile	berb.domains.detector	Y
+S5	berb/experiment/docker_sandbox.py:43	global _CONTAINER_COUNTER | global _CONTAINER_COUNTER  # noqa: PLW0603	berb.experiment.docker_sandbox	Y
+S5	berb/experiment/harness_template.py:118	global _default_harness | global _default_harness  # noqa: PLW0603	berb.experiment.harness_template	N
+S5	berb/i18n/multilingual.py:598	global _adapter | global _adapter	berb.i18n.multilingual	N
+S5	berb/literature/arxiv_client.py:122	global _client | global _client  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:55	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:56	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:66	global _cb_state | global _cb_state  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:84	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:94	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:95	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/semantic_scholar.py:101	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:112	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:113	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:68	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:69	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:80	global _cb_state | global _cb_state  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/llm/cost_tracker.py:315	global _tracker | global _tracker	berb.llm.cost_tracker	Y
+S5	berb/llm/deep_query_client.py:100	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:101	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:112	global _cb_state | global _cb_state  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:132	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:143	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:144	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/logging_setup.py:71	global _factory_installed | global _factory_installed  # noqa: PLW0603	berb.logging_setup	Y
+S5	berb/memory/shared_memory.py:684	global _memory | global _memory	berb.memory.shared_memory	N
+S5	berb/metrics/collector.py:184	global _COLLECTOR | global _COLLECTOR	berb.metrics.collector	Y
+S5	berb/metrics/reasoning_cost_tracker.py:745	global _tracker | global _tracker	berb.metrics.reasoning_cost_tracker	Y
+S5	berb/optimization/cost_quality.py:572	global _optimizer | global _optimizer	berb.optimization.cost_quality	N
+S5	berb/pipeline/contracts.py:449	CONTRACTS mutated in rebuild_from_registry | CONTRACTS[stage] = reg.contract	berb.pipeline.contracts	Y
+S5	berb/pipeline/registry.py:79	_registry mutated in register_stage | _registry[stage] = registration	berb.pipeline.registry	Y
+S5	berb/pipeline/registry.py:79	_registry mutated in decorator | _registry[stage] = registration	berb.pipeline.registry	Y
+S5	berb/pipeline/registry.py:97	_registry mutated in clear_registry | _registry.clear()	berb.pipeline.registry	Y
+S5	berb/pipeline/tracing.py:106	_traces mutated in clear_trace | _traces.pop(trace_id, None)	berb.pipeline.tracing	Y
+S5	berb/pipeline/tracing.py:205	_traces mutated in _record_span | _traces.setdefault(record.trace_id, []).append(record)	berb.pipeline.tracing	Y
+S5	berb/pipeline/tracing.py:82	global _output_dir | global _output_dir  # noqa: PLW0603	berb.pipeline.tracing	Y
+S5	berb/pipeline/tracing.py:92	_traces mutated in new_trace | _traces[trace_id] = []	berb.pipeline.tracing	Y
+S5	berb/plugins/__init__.py:502	global _manager | global _manager	berb.plugins	Y
+S5	berb/presets/registry.py:352	global _registry | global _registry	berb.presets.registry	Y
+S5	berb/server/app.py:44	_app_state mutated in create_app | _app_state["config"] = config	berb.server.app	Y
+S5	berb/server/app.py:45	_app_state mutated in create_app | _app_state["monitor_dir"] = monitor_dir	berb.server.app	Y
+S5	berb/server/app.py:74	_app_state mutated in create_app | _app_state["event_manager"] = event_manager	berb.server.app	Y
+S5	berb/server/routes/chat.py:23	global _chat_manager | global _chat_manager	berb.server.routes.chat	Y
+S5	berb/server/routes/pipeline.py:112	global _active_run | global _active_run	berb.server.routes.pipeline	Y
+S5	berb/server/routes/pipeline.py:154	global _active_run,_run_task | global _active_run, _run_task	berb.server.routes.pipeline	Y
+S5	berb/server/routes/pipeline.py:68	global _active_run,_run_task | global _active_run, _run_task	berb.server.routes.pipeline	Y
+S5	berb/ui/dashboard.py:477	global _dashboard | global _dashboard	berb.ui.dashboard	Y
+S5	berb/utils/time.py:88	global _last_timestamp,_last_monotonic | global _last_timestamp, _last_monotonic	berb.utils.time	Y
+S6	berb\cli.py:313	d.is_dir() and d.name.startswith("rc-") and (d / "checkpoint.json").exists()	berb.cli	Y
+S6	berb\cli.py:321	if topic_file.exists():	berb.cli	Y
+S6	berb\cli.py:351	if topic_file.exists():	berb.cli	Y
+S6	berb\copilot\feedback.py:125	if request_path.exists():	berb.copilot.feedback	Y
+S6	berb\copilot\feedback.py:73	if not response_path.exists():	berb.copilot.feedback	Y
+S6	berb\dashboard\collector.py:101	if hb_path.exists():	berb.dashboard.collector	Y
+S6	berb\dashboard\collector.py:87	if ckpt_path.exists():	berb.dashboard.collector	Y
+S6	berb\evolution.py:268	if decision_file.exists():	berb.evolution	Y
+S6	berb\experiment\colab_sandbox.py:117	(run_dir / "result.json").write_text(json.dumps(result))	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:327	if task_pending.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:339	if task_done.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:345	if task_pending.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\experiment\colab_sandbox.py:374	if not result_file.exists():	berb.experiment.colab_sandbox	Y
+S6	berb\mcp\server.py:75	if checkpoint_file.exists():	berb.mcp.server	Y
+S6	berb\pipeline\checkpoint.py:141	if not cp_path.exists():	berb.pipeline.checkpoint	Y
+S6	berb\pipeline\checkpoint.py:49	(run_dir / "heartbeat.json").write_text(	berb.pipeline.checkpoint	Y
+S6	berb\pipeline\discovery.py:177	if not index.exists():	berb.pipeline.discovery	Y
+S6	berb\pipeline\discovery.py:66	if saved.exists():	berb.pipeline.discovery	Y
+S6	berb\pipeline\experiment_repair.py:521	best_path.write_text(json.dumps(best_summary, indent=2), encoding="utf-8")	berb.pipeline.experiment_repair	Y
+S6	berb\pipeline\iterative.py:70	if not history_path.exists():	berb.pipeline.iterative	Y
+S6	berb\pipeline\iterative.py:87	if history_path.exists():	berb.pipeline.iterative	Y
+S6	berb\pipeline\packaging.py:57	_was_sanitized = _sanitization_report.exists()	berb.pipeline.packaging	Y
+S6	berb\pipeline\runner.py:375	if not topic_file.exists():	berb.pipeline.runner	Y
+S6	berb\pipeline\runner.py:682	_qw_path = run_dir / "quality_warning.txt"	berb.pipeline.runner	Y
+S6	berb\pipeline\runner.py:722	if _diag_path.exists():	berb.pipeline.runner	Y
+S6	berb\pipeline\runner.py:732	(run_dir / "experiment_repair_result.json").write_text(	berb.pipeline.runner	Y
+S6	berb\pipeline\stage_impls\_code_generation.py:1535	if (stage_dir / "validation_report.md").exists():	berb.pipeline.stage_impls._code_generation	Y
+S6	berb\pipeline\stage_impls\_export.py:394	if _degradation_signal_path.exists():	berb.pipeline.stage_impls._export	Y
+S6	berb\pipeline\stage_impls\_export.py:960	if _invalid_citations_path.is_file():	berb.pipeline.stage_impls._export	Y
+S6	berb\pipeline\stage_impls\_literature.py:627	(stage_dir / "web_search_result.json").write_text(	berb.pipeline.stage_impls._literature	Y
+S6	berb\pipeline\stage_impls\_literature.py:720	if (stage_dir / "web_search_result.json").exists():	berb.pipeline.stage_impls._literature	Y
+S6	berb\pipeline\stage_impls\_review.py:865	if not _veto_marker.is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:871	_veto_marker.write_text(	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:901	if (stage_dir / "ensemble_review.md").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:903	if (stage_dir / "claim_adjudication.json").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:946	if (stage_dir / "ensemble_review.md").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:948	if (stage_dir / "claim_adjudication.json").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_topic.py:235	if _goal_path.exists():	berb.pipeline.stage_impls._topic	Y
+S6	berb\server\routes\pipeline.py:201	if ckpt.exists():	berb.server.routes.pipeline	Y
+S6	berb\server\routes\pipeline.py:221	if ckpt.exists():	berb.server.routes.pipeline	Y
+S6	berb\server\routes\projects.py:27	if ckpt.exists():	berb.server.routes.projects	Y
+S7	berb\copilot\branching.py:43	src = self.run_dir / f"stage-{stage_num:02d}"	berb.copilot.branching	Y
+S7	berb\copilot\branching.py:45	dest = branch_dir / f"stage-{stage_num:02d}"	berb.copilot.branching	Y
+S7	berb\experiment\colab_sandbox.py:118	run_dir.rename(done_dir)	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:326	task_pending = self.pending_dir / task_id	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:333	task_done = self.done_dir / task_id	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\colab_sandbox.py:71	task_dir.rename(run_dir)	berb.experiment.colab_sandbox	Y
+S7	berb\experiment\evolutionary_search.py:230	variant_design.id = f"{base_experiment.id}_v{i}"	berb.experiment.evolutionary_search	N
+S7	berb\hyperagent\meta_agent.py:350	self.state.variant_id = f"meta_v{self.state.modification_code_version}"	berb.hyperagent.meta_agent	N
+S7	berb\literature\cache.py:151	fd, tmp_path = tempfile.mkstemp(dir=d, suffix=".tmp", prefix=f"{key}_")	berb.literature.cache	Y
+S7	berb\pipeline\_metric_helpers.py:55	stage_dir = run_dir / f"stage-{s:02d}"	berb.pipeline._metric_helpers	Y
+S7	berb\pipeline\checkpoint.py:78	fd, tmp_path = tempfile.mkstemp(dir=run_dir, suffix=".tmp", prefix="checkpoint_")	berb.pipeline.checkpoint	Y
+S7	berb\pipeline\discovery.py:104	task_dir = run_dir / "discovery" / f"cycle-{cycle}" / uuid.uuid4().hex[:8]	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:201	stage_src = src / f"stage-{stage:02d}"	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:219	src = run_dir / f"stage-{stage:02d}"	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:295	path = task_dir / f"stage-{int(DISCOVERY_LAST_STAGE):02d}" / "decision_structured.json"	berb.pipeline.discovery	Y
+S7	berb\pipeline\discovery.py:307	path = task_dir / f"stage-{int(Stage.RESULT_ANALYSIS):02d}" / "metrics.json"	berb.pipeline.discovery	Y
+S7	berb\pipeline\executor.py:163	stage_dir = run_dir / f"stage-{int(stage):02d}"	berb.pipeline.executor	Y
+S7	berb\pipeline\executor.py:186	f"stage-{int(stage):02d}-start",	berb.pipeline.executor	Y
+S7	berb\pipeline\experiment_repair.py:217	path = run_dir / f"stage-14_repair_v{i}" / "experiment_summary.json"	berb.pipeline.experiment_repair	Y
+S7	berb\pipeline\experiment_repair.py:410	repair_dir = run_dir / f"stage-14_repair_v{cycle}"	berb.pipeline.experiment_repair	Y
+S7	berb\pipeline\experiment_repair.py:697	workspace = run_dir / f"_repair_opencode_v{cycle}"	berb.pipeline.experiment_repair	Y
+S7	berb\pipeline\iterative.py:145	stage_dir = run_dir / f"stage-{stage_num:02d}"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:147	version_dir = run_dir / f"stage-{stage_num:02d}_v{attempt}"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:150	stage_dir.rename(version_dir)	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:255	alt = run_dir / f"stage-14_v{v}" / "experiment_summary.json"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:40	alt = run_dir / f"stage-14_v{_v}" / "experiment_summary.json"	berb.pipeline.iterative	Y
+S7	berb\pipeline\iterative.py:44	prev = run_dir / f"stage-14_v{pivot_count}" / "experiment_summary.json"	berb.pipeline.iterative	Y
+S7	berb\pipeline\runner.py:248	stage_dir = run_dir / f"stage-{int(stage):02d}"	berb.pipeline.runner	Y
+S7	berb\pipeline\stage_impls\_execution.py:1136	version_dir = stage_dir / f"experiment_v{iteration}"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:1161	stage_dir / f"refine_sandbox_v{iteration}",	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:1263	stage_dir / f"refine_sandbox_v{iteration}_fix",	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:1285	best_version = f"experiment_v{iteration}/"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:619	src_dir = run_dir / f"stage-{stage_num:02d}" / "experiment"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:626	src_file = run_dir / f"stage-{stage_num:02d}" / "experiment.py"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stages.py:550	temp_path = path.with_suffix(".tmp")	berb.pipeline.stages	Y
+S7	berb\pipeline\stages.py:555	temp_path.rename(path)	berb.pipeline.stages	Y
+S8	berb/hyperagent/base.py:158	Hyperagent.self.iteration | improvement iteration count recorded per result | self.iteration += 1	berb.hyperagent.base	N
+S8	berb/hyperagent/improvement_loop.py:78	ImprovementLoop.self.current_iteration | iteration counter across run_iteration calls | self.current_iteration += 1	berb.hyperagent.improvement_loop	N
+S8	berb/literature/arxiv_client.py:100	module global _cb_cooldown_sec | cooldown doubles on half-open failure | _cb_cooldown_sec = min(_cb_cooldown_sec * 2, _CB_MAX_COOLDOWN)	berb.literature.arxiv_client	Y
+S8	berb/literature/arxiv_client.py:101	module global _cb_state | breaker state set to open (gates arXiv calls) | _cb_state = _CB_OPEN	berb.literature.arxiv_client	Y
+S8	berb/literature/arxiv_client.py:103	module global _cb_trip_count | total breaker trips in process | _cb_trip_count += 1	berb.literature.arxiv_client	Y
+S8	berb/literature/arxiv_client.py:97	module global _cb_consecutive_429s | counts 429s toward arXiv breaker trip | _cb_consecutive_429s += 1	berb.literature.arxiv_client	Y
+S8	berb/literature/openalex_client.py:43	module global _rate_limiter | min-interval gate state across all OpenAlex calls | _rate_limiter = RateLimiter(min_interval_sec=_RATE_LIMIT_SEC)	berb.literature.openalex_client	Y
+S8	berb/literature/semantic_scholar.py:115	module global _cb_consecutive_429s | counts 429s toward S2 breaker trip | _cb_consecutive_429s += 1	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:119	module global _cb_cooldown_sec | cooldown doubles on half-open failure | _cb_cooldown_sec = min(_cb_cooldown_sec * 2, _CB_MAX_COOLDOWN)	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:131	module global _cb_state | breaker state set to open on threshold (gates S2 calls) | _cb_state = _CB_OPEN	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:133	module global _cb_trip_count | total breaker trips in process | _cb_trip_count += 1	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:43	module global _rate_limiter | min-interval gate state across all S2 calls | _rate_limiter = RateLimiter(min_interval_sec=_RATE_LIMIT_SEC)	berb.literature.semantic_scholar	Y
+S8	berb/llm/adaptive_temp.py:227	AdaptiveTemperatureClient.self._retry_counts | histogram of retries per call, kept for stats | self._retry_counts[retry_count] = self._retry_counts.get(retry_count, 0) + 1	berb.llm.adaptive_temp	N
+S8	berb/llm/client.py:378	CircuitBreaker._state (held on LLMClient) | breaker moves open to half_open after reset timeout | state.state = "half_open"	berb.llm.client	Y
+S8	berb/llm/client.py:404	CircuitBreaker._state (held on LLMClient) | failure_count across requests, drives trip | state.failure_count += 1	berb.llm.client	Y
+S8	berb/llm/client.py:412	CircuitBreaker._state (held on LLMClient) | breaker opens at fail_max failures | state.state = "open"	berb.llm.client	Y
+S8	berb/llm/client.py:451	LLMClient.self._rate_limiter | token-bucket rate limiter for all calls of this client | self._rate_limiter = TokenBucketRateLimiter(	berb.llm.client	Y
+S8	berb/llm/deep_query_client.py:146	module global _cb_consecutive_429s | counts 429s toward deep-query breaker trip | _cb_consecutive_429s += 1	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:149	module global _cb_cooldown_sec | cooldown doubles on half-open failure | _cb_cooldown_sec = min(_cb_cooldown_sec * 2, _CB_MAX_COOLDOWN)	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:161	module global _cb_state | breaker state set to open on threshold (gates calls) | _cb_state = _CB_OPEN	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:163	module global _cb_trip_count | total breaker trips in process | _cb_trip_count += 1	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:76	module global _rate_limiter | min-interval gate state across all deep-query calls | _rate_limiter = RateLimiter(min_interval_sec=_RATE_LIMIT_SEC)	berb.llm.deep_query_client	Y
+S8	berb/pipeline/runner.py:621	read_pivot_count(run_dir) | pivot count read from run dir on disk, gates forced PROCEED | pivot_count = read_pivot_count(run_dir)	berb.pipeline.runner	Y
+S8	berb/pipeline/stages.py:427	PipelineState.pivot_count | pivot decisions rebuilt from event log, caps pivots | self.pivot_count += 1	berb.pipeline.stages	Y
+S8	berb/pipeline/stages.py:429	PipelineState.retry_count | retry decisions rebuilt from event log | self.retry_count += 1	berb.pipeline.stages	Y
+S8	berb/research/discovery_loop.py:290	DiscoveryLoop.self.wm.current_cycle | discovery cycle loop sets world-model cycle | self.wm.current_cycle = cycle	berb.research.discovery_loop	Y
+S8	berb/research/world_model.py:166	WorldModel.self.current_cycle | discovery cycle count persisted on world model | self.current_cycle += 1	berb.research.world_model	Y
+S8	berb/self_evolve/__init__.py:597	SelfEvolve.self._improvement_count | count of applied improvements across cycles | self._improvement_count += len(applied)	berb.self_evolve	N
+S9	berb\assessor\comparator.py:60	history_file.write_text(json.dumps(self._entries, indent=2), encoding="utf-8")	berb.assessor.comparator	N
+S9	berb\audit\reproducibility.py:364	json.dump({"entries": trail, "run_id": self.run_id}, f, indent=2)	berb.audit.reproducibility	Y
+S9	berb\audit\reproducibility.py:444	json.dump(report, f, indent=2)	berb.audit.reproducibility	Y
+S9	berb\audit\reproducibility.py:495	json.dump(metadata, f, indent=2)	berb.audit.reproducibility	Y
+S9	berb\copilot\branching.py:55	(branch_dir / "branch_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")	berb.copilot.branching	Y
+S9	berb\copilot\feedback.py:67	request_path.write_text(json.dumps(request, indent=2), encoding="utf-8")	berb.copilot.feedback	Y
+S9	berb\experiment\journal.py:449	return json.dumps(data, indent=2, default=str)	berb.experiment.journal	Y
+S9	berb\integrity\claims.py:221	return json.dumps(self.to_dict(), indent=indent, default=str)	berb.integrity.claims	Y
+S9	berb\literature\verify.py:565	json.dumps(result.to_dict(), indent=2),	berb.literature.verify	Y
+S9	berb\metrics\reasoning_cost_tracker.py:721	output_path.write_text(json.dumps(report, indent=2))	berb.metrics.reasoning_cost_tracker	Y
+S9	berb\pipeline\_helpers.py:161	(stage_dir / "decision.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")	berb.pipeline._helpers	Y
+S9	berb\pipeline\checkpoint.py:82	fh.write(json.dumps(checkpoint, indent=2))	berb.pipeline.checkpoint	Y
+S9	berb\pipeline\executor.py:384	json.dumps(stage_health, indent=2), encoding="utf-8"	berb.pipeline.executor	Y
+S9	berb\pipeline\iterative.py:103	history_path.write_text(json.dumps(history, indent=2), encoding="utf-8")	berb.pipeline.iterative	Y
+S9	berb\pipeline\packaging.py:263	(dest / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")	berb.pipeline.packaging	Y
+S9	berb\pipeline\stage_impls\_analysis.py:1009	json.dumps(decision_payload, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._analysis	Y
+S9	berb\pipeline\stage_impls\_archive.py:107	(stage_dir / "bundle_index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")	berb.pipeline.stage_impls._archive	Y
+S9	berb\pipeline\stage_impls\_code_generation.py:1162	json.dumps(review_report, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._code_generation	Y
+S9	berb\pipeline\stage_impls\_execution.py:279	(runs_dir / "run-1.json").write_text(json.dumps(run_payload, indent=2), encoding="utf-8")	berb.pipeline.stage_impls._execution	Y
+S9	berb\pipeline\stage_impls\_execution.py:546	json.dumps(run_payload, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._execution	Y
+S9	berb\pipeline\stage_impls\_review.py:922	json.dumps(signal, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._review	Y
+S9	berb\pipeline\stages.py:551	temp_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")	berb.pipeline.stages	Y
+S9	berb\pipeline\summary.py:54	json.dumps(summary, indent=2),	berb.pipeline.summary	Y
+S9	berb\pipeline\tracing.py:217	fh.write(json.dumps(record.to_dict()) + "\n")	berb.pipeline.tracing	Y
+S9	berb\project\manager.py:54	json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"	berb.project.manager	Y
+S10	src/hooks/useResearch.ts:38	status: response.status as ResearchJob['status'],	src/hooks/useResearch.ts	-
+S10	src/hooks/useResearch.ts:79	if (!job?.id || job.status === 'completed' || job.status === 'failed') {	src/hooks/useResearch.ts	-
+S10	src/utils/api.ts:15	status: 'queued' | 'running' | 'completed' | 'failed';	src/utils/api.ts	-
+S10	src/utils/api.ts:35	status: string;	src/utils/api.ts	-
+S10	src/views/PipelineMonitor.tsx:149	phase.status === 'completed' ? 'bg-successLight text-success' :	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:151	phase.status === 'failed' ? 'bg-errorLight text-error' :	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:165	{phase.status === 'running' && (	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:19	import type { Stage, Phase, StageStatus } from '@types';	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:204	stage.status === 'completed' ? 'bg-successLight text-success' :	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:214	{stage.status === 'paused' && (	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:22	{ phase_id: 'A', phase_name: 'Scoping', stages: [1, 2], status: 'completed', total_cost_usd: 0.02 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:223	{stage.status === 'running' && (	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:24	{ phase_id: 'C', phase_name: 'Synthesis', stages: [7, 8], status: 'running', total_cost_usd: 0.10 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:25	{ phase_id: 'D', phase_name: 'Design', stages: [9, 10, 11], status: 'pending', total_cost_usd: 0 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:39	{ stage_number: 7, stage_name: 'SYNTHESIS', status: 'running', progress: 78, message: 'Identifying thematic clusters', cost_usd: 0.06 },	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:58	const statusColors: Record<StageStatus, string> = {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:60	running: 'bg-accentLight text-accent',	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:73	const completedStages = stages.filter(s => s.status === 'completed').length;	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:77	const getStatusIcon = (status: StageStatus) => {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:78	switch (status) {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:81	case 'running':	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:92	const getStatusBadge = (status: StageStatus) => {	src/views/PipelineMonitor.tsx	-
+S10	src/views/PipelineMonitor.tsx:95	{status.charAt(0).toUpperCase() + status.slice(1)}	src/views/PipelineMonitor.tsx	-
+S10	src/views/Wizard.tsx:586	{job.status === 'running' && (	src/views/Wizard.tsx	-
+S10	src/views/Wizard.tsx:610	Status: <span className="font-medium text-accent">{job.status}</span>	src/views/Wizard.tsx	-
+S10	src/views/Wizard.tsx:623	{job.status === 'running' && (	src/views/Wizard.tsx	-
+S10	types/index.ts:255	status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';	types/index.ts	-
+S10	types/index.ts:346	export interface WizardState {	types/index.ts	-
+S10	types/index.ts:61	export type StageStatus = 'pending' | 'running' | 'completed' | 'failed' | 'paused';	types/index.ts	-
+S10	types/index.ts:67	status: StageStatus;	types/index.ts	-
+S10	types/index.ts:81	status: StageStatus;	types/index.ts	-
+S11	berb/integrity/claims.py:133	"verdict": self.verdict.value,	berb.integrity.claims	Y
+S11	berb/integrity/claims.py:147	verdict = ClaimVerdict(data.get("verdict", "not_checked"))	berb.integrity.claims	Y
+S11	berb/pipeline/_helpers.py:154	"decision": result.decision,	berb.pipeline._helpers	Y
+S11	berb/pipeline/_helpers.py:81	decision: str = "proceed"	berb.pipeline._helpers	Y
+S11	berb/pipeline/code_agent.py:1360	verdict = review.get("verdict", "APPROVE")	berb.pipeline.code_agent	Y
+S11	berb/pipeline/code_agent.py:1369	if verdict == "APPROVE" or not critical:	berb.pipeline.code_agent	Y
+S11	berb/pipeline/discovery.py:245	decision = _read_decision(task_dir)	berb.pipeline.discovery	Y
+S11	berb/pipeline/discovery.py:248	if decision == "PROCEED":	berb.pipeline.discovery	Y
+S11	berb/pipeline/discovery.py:302	return str(data.get("decision", "")).upper() if isinstance(data, dict) else ""	berb.pipeline.discovery	Y
+S11	berb/pipeline/executor.py:177	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:259	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:272	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:284	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:341	decision="retry",	berb.pipeline.executor	Y
+S11	berb/pipeline/executor.py:357	decision="block",	berb.pipeline.executor	Y
+S11	berb/pipeline/iterative.py:96	"decision": decision,	berb.pipeline.iterative	Y
+S11	berb/pipeline/runner.py:216	if result.decision == "degraded":	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:239	"decision": result.decision,	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:61	return result.decision in DECISION_ROLLBACK and pivot_depth < MAX_DECISION_PIVOTS	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:641	rollback_target = _get_rollback_target(stage, result.decision)	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:642	record_decision_history(run_dir, result.decision, rollback_target, pivot_count + 1)	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:65	return DECISION_ROLLBACK.get(decision, stage)	berb.pipeline.runner	Y
+S11	berb/pipeline/runner.py:86	"decision": "pivot",	berb.pipeline.runner	Y
+S11	berb/pipeline/stage_impls/_analysis.py:1003	"decision": decision,	berb.pipeline.stage_impls._analysis	Y
+S11	berb/pipeline/stage_impls/_analysis.py:1018	decision=decision,	berb.pipeline.stage_impls._analysis	Y
+S11	berb/pipeline/stage_impls/_analysis.py:988	decision = _parse_decision(decision_md)	berb.pipeline.stage_impls._analysis	Y
+S11	berb/pipeline/stage_impls/_archive.py:57	decision = _read_prior_artifact(run_dir, "decision.md") or ""	berb.pipeline.stage_impls._archive	Y
+S11	berb/pipeline/stage_impls/_archive.py:66	decision=decision,	berb.pipeline.stage_impls._archive	Y
+S11	berb/pipeline/stage_impls/_code_generation.py:1151	review_verdict = review_data.get("verdict", "unknown")	berb.pipeline.stage_impls._code_generation	Y
+S11	berb/pipeline/stage_impls/_code_generation.py:1157	"verdict": review_verdict,	berb.pipeline.stage_impls._code_generation	Y
+S11	berb/pipeline/stage_impls/_execution.py:223	run_status = "rejected"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:229	run_status = "completed"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:231	run_status = "partial"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:237	run_status = "failed"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:242	if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:259	"status": run_status,	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_export.py:292	verdict = parse_cross_model_verdict(	berb.pipeline.stage_impls._export	Y
+S11	berb/pipeline/stage_impls/_export.py:295	if verdict is None:	berb.pipeline.stage_impls._export	Y
+S11	berb/pipeline/stage_impls/_export.py:309	"verdict": verdict.verdict.value,	berb.pipeline.stage_impls._export	Y
+S11	berb/pipeline/stage_impls/_paper_writing.py:111	decision=decision,	berb.pipeline.stage_impls._paper_writing	Y
+S11	berb/pipeline/stage_impls/_paper_writing.py:68	decision = _read_prior_artifact(run_dir, "decision.md") or ""	berb.pipeline.stage_impls._paper_writing	Y
+S11	berb/pipeline/stage_impls/_review.py:656	verdict = report.get("verdict", "proceed")	berb.pipeline.stage_impls._review	Y
+S11	berb/pipeline/stage_impls/_review.py:915	"verdict": verdict,	berb.pipeline.stage_impls._review	Y
+S11	berb/pipeline/stage_impls/_review.py:929	decision="degraded",	berb.pipeline.stage_impls._review	Y
+S11	berb/pipeline/stages.py:216	decision: str = "proceed"	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:268	decision="block",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:296	decision="pivot",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:306	decision="block",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:316	decision="retry",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:325	decision="retry",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:339	decision="block",	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:426	if event.metadata.get("decision") == "pivot":	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:428	elif event.metadata.get("decision") == "retry":	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:437	if event.metadata.get("decision"):	berb.pipeline.stages	Y
+S11	berb/pipeline/stages.py:438	self.decisions.append(event.metadata["decision"])	berb.pipeline.stages	Y
+S11	berb/pipeline/summary.py:41	"degraded": any(r.decision == "degraded" for r in results),	berb.pipeline.summary	Y
+S11	berb/review/ensemble.py:473	decision = Decision(review_data["decision"])	berb.review.ensemble	Y
+S11	berb/review/ensemble.py:478	decision = Decision(review_data["decision"])	berb.review.ensemble	Y
+S11	berb/review/ensemble.py:485	decision=decision,	berb.review.ensemble	Y
+S12	berb/mcp/server.py:15	class BerbMCPServer: start,stop; if-guard in first 2 stmts: none | class BerbMCPServer:	berb.mcp.server	Y
+S12	berb/mcp/transport.py:22	class StdioTransport: close,start; if-guard in first 2 stmts: close | class StdioTransport:	berb.mcp.transport	Y
+S12	berb/mcp/transport.py:73	class SSETransport: close,start; if-guard in first 2 stmts: none | class SSETransport:	berb.mcp.transport	Y
+S12	berb/ui/dashboard.py:45	class PipelineDashboard: start,stop; if-guard in first 2 stmts: start,stop | class PipelineDashboard:	berb.ui.dashboard	Y

@@ -1,0 +1,56 @@
+signal	file:line	snippet	module	wired
+S1	berb/calendar/planner.py:60	dict-key | "stage": stage_name,	berb.calendar.planner	Y
+S1	berb/evolution.py:559	dict-key | "stage": lesson.stage_name,	berb.evolution	Y
+S1	berb/logging_setup.py:83	attr | record.stage = f"s{stage:02d}" if stage is not None else "--"	berb.logging_setup	Y
+S1	berb/metrics/reasoning_cost_tracker.py:99	dict-key | "phase": self.phase,	berb.metrics.reasoning_cost_tracker	Y
+S1	berb/mnemo_bridge/__init__.py:351	dict-key | return {"status": "error", "error": str(e)}	berb.mnemo_bridge	N
+S1	berb/mnemo_bridge/__init__.py:369	dict-key | return {"status": "unhealthy", "error": str(e)}	berb.mnemo_bridge	N
+S1	berb/reasoning/jury.py:212	dict-key | "verdict": verdict,	berb.reasoning.jury	Y
+S1	berb/reasoning/jury.py:216	dict-key | "verdict": j.verdict,	berb.reasoning.jury	Y
+S1	berb/reasoning/jury.py:329	attr | juror.verdict = data.get("verdict", "abstain")	berb.reasoning.jury	Y
+S1	berb/reasoning/jury.py:339	attr | juror.verdict = "abstain"	berb.reasoning.jury	Y
+S2	berb/metaclaw_bridge/session.py:45	in end | self._active = False	berb.metaclaw_bridge.session	Y
+S3	berb/report.py:56	status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	Y
+S4	berb/domains/adapters/math.py:59	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.math	Y
+S4	berb/domains/adapters/math.py:78	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.math	Y
+S4	berb/domains/adapters/neuroscience.py:91	raw string 'simulation' | if paradigm == "simulation":	berb.domains.adapters.neuroscience	Y
+S4	berb/domains/adapters/physics.py:120	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.physics	Y
+S4	berb/domains/adapters/physics.py:75	raw string 'convergence' | if paradigm == "convergence":	berb.domains.adapters.physics	Y
+S4	berb/domains/detector.py:34	enum ExperimentParadigm | class ExperimentParadigm(StrEnum):	berb.domains.detector	Y
+S4	berb/domains/detector.py:44	enum MetricType | class MetricType(StrEnum):	berb.domains.detector	Y
+S4	berb/domains/experiment_schema.py:17	enum ConditionRole | class ConditionRole(StrEnum):	berb.domains.experiment_schema	N
+S4	berb/domains/experiment_schema.py:25	enum ExperimentType | class ExperimentType(StrEnum):	berb.domains.experiment_schema	N
+S4	berb/domains/prompt_adapter.py:190	raw string 'convergence' | if paradigm == "convergence":	berb.domains.prompt_adapter	Y
+S4	berb/domains/prompt_adapter.py:198	raw string 'progressive_spec' | elif paradigm == "progressive_spec":	berb.domains.prompt_adapter	Y
+S4	berb/domains/prompt_adapter.py:206	raw string 'simulation' | elif paradigm == "simulation":	berb.domains.prompt_adapter	Y
+S4	berb/evolution.py:40	enum LessonCategory | class LessonCategory(StrEnum):	berb.evolution	Y
+S4	berb/evolution.py:460	raw string 'error' | if lesson.severity == "error":	berb.evolution	Y
+S4	berb/export/latex_exporter.py:229	raw string 'ieee' | elif template == "ieee":	berb.export.latex_exporter	Y
+S4	berb/export/multi_format.py:29	enum ExportFormat | class ExportFormat(StrEnum):	berb.export.multi_format	Y
+S4	berb/i18n/academic_languages.py:33	enum WritingDirection | class WritingDirection(StrEnum):	berb.i18n.academic_languages	N
+S4	berb/i18n/multilingual.py:34	enum SupportedLanguage | class SupportedLanguage(StrEnum):	berb.i18n.multilingual	N
+S4	berb/integrations/scite_mcp.py:32	enum SciteCitationType | class SciteCitationType(StrEnum):	berb.integrations.scite_mcp	N
+S4	berb/metrics/reasoning_cost_tracker.py:48	enum Provider | class Provider(StrEnum):	berb.metrics.reasoning_cost_tracker	Y
+S4	berb/reasoner_bridge/__init__.py:34	enum PerspectiveType | class PerspectiveType(StrEnum):	berb.reasoner_bridge	N
+S4	berb/reasoner_bridge/__init__.py:43	enum StressScenario | class StressScenario(StrEnum):	berb.reasoner_bridge	N
+S4	berb/reasoning/base.py:21	enum MethodType | class MethodType(StrEnum):	berb.reasoning.base	Y
+S4	berb/reasoning/jury.py:50	enum JurorRole | class JurorRole(StrEnum):	berb.reasoning.jury	Y
+S4	berb/reasoning/multi_perspective.py:56	enum PerspectiveType | class PerspectiveType(StrEnum):	berb.reasoning.multi_perspective	Y
+S4	berb/report.py:56	raw string 'done' | status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	Y
+S4	berb/report.py:56	raw string 'failed' | status_icon = "✅" if status == "done" else "❌" if status == "failed" else "⚠️"	berb.report	Y
+S4	berb/templates/converter.py:1827	raw string 'abstract' | if sec.heading_lower == "abstract":	berb.templates.converter	Y
+S4	berb/templates/converter.py:841	raw string 'abstract' | if sec.heading_lower == "abstract":	berb.templates.converter	Y
+S4	berb/voice/commands.py:10	enum VoiceCommand | class VoiceCommand(StrEnum):	berb.voice.commands	N
+S5	berb/data/__init__.py:127	global _CACHE | global _CACHE  # noqa: PLW0603	berb.data	Y
+S5	berb/domains/detector.py:157	global _profile_cache | global _profile_cache	berb.domains.detector	Y
+S5	berb/domains/detector.py:168	_profile_cache mutated in load_all_profiles | _profile_cache[profile.domain_id] = profile	berb.domains.detector	Y
+S5	berb/i18n/multilingual.py:598	global _adapter | global _adapter	berb.i18n.multilingual	N
+S5	berb/logging_setup.py:71	global _factory_installed | global _factory_installed  # noqa: PLW0603	berb.logging_setup	Y
+S5	berb/metrics/collector.py:184	global _COLLECTOR | global _COLLECTOR	berb.metrics.collector	Y
+S5	berb/metrics/reasoning_cost_tracker.py:745	global _tracker | global _tracker	berb.metrics.reasoning_cost_tracker	Y
+S5	berb/utils/time.py:88	global _last_timestamp,_last_monotonic | global _last_timestamp, _last_monotonic	berb.utils.time	Y
+S6	berb\evolution.py:268	if decision_file.exists():	berb.evolution	Y
+S9	berb\audit\reproducibility.py:364	json.dump({"entries": trail, "run_id": self.run_id}, f, indent=2)	berb.audit.reproducibility	Y
+S9	berb\audit\reproducibility.py:444	json.dump(report, f, indent=2)	berb.audit.reproducibility	Y
+S9	berb\audit\reproducibility.py:495	json.dump(metadata, f, indent=2)	berb.audit.reproducibility	Y
+S9	berb\metrics\reasoning_cost_tracker.py:721	output_path.write_text(json.dumps(report, indent=2))	berb.metrics.reasoning_cost_tracker	Y

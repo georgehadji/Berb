@@ -167,6 +167,11 @@ class CascadingLLMClient:
             RuntimeError: Every rung failed and no fallback succeeded.
         """
         kwargs.pop("model", None)
+        # Both are passed explicitly per rung below; leaving them in kwargs makes
+        # every rung raise "multiple values for keyword argument". A rung's own
+        # temperature always wins; its max_tokens wins only when it sets one.
+        caller_max_tokens = kwargs.pop("max_tokens", None)
+        caller_temperature = kwargs.pop("temperature", None)
 
         with self._stats_lock:
             self._total_requests += 1
@@ -179,7 +184,9 @@ class CascadingLLMClient:
                 response = self._base_client.chat(
                     messages,
                     model=step.model,
-                    max_tokens=step.max_tokens,
+                    max_tokens=step.max_tokens
+                    if step.max_tokens is not None
+                    else caller_max_tokens,
                     temperature=step.temperature,
                     **kwargs,
                 )
@@ -224,7 +231,13 @@ class CascadingLLMClient:
                 self._config.fallback_model,
             )
             try:
-                return self._base_client.chat(messages, model=self._config.fallback_model, **kwargs)
+                return self._base_client.chat(
+                    messages,
+                    model=self._config.fallback_model,
+                    max_tokens=caller_max_tokens,
+                    temperature=caller_temperature,
+                    **kwargs,
+                )
             except Exception as exc:  # noqa: BLE001
                 raise RuntimeError(
                     f"All cascade steps and fallback model "
@@ -232,6 +245,10 @@ class CascadingLLMClient:
                 ) from exc
 
         raise RuntimeError(f"All cascade steps failed: {last_error}")
+
+    def preflight(self) -> tuple[bool, str]:
+        """Delegate to the wrapped client; `berb run` calls this on the factory's result."""
+        return self._base_client.preflight()
 
     def get_stats(self) -> dict[str, Any]:
         """Return the exit distribution — the measurement that calibrates the cascade.

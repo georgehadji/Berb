@@ -1,0 +1,26 @@
+modules 414 | reachable 341 | UNREACHED 73
+loc 145607 | UNREACHABLE 22192 (15%)
+
+--- scientific-capability packages (the ones that matter) ---
+  berb.memory                1125 loc  (4 mods): experiment_memory, ideation_memory, shared_memory, writing_memory
+  berb.knowledge              736 loc  (6 mods): builder, entities, graph, query, relations, visualizer
+  berb.self_evolve            672 loc  (1 mods): self_evolve
+  berb.integrity              605 loc  (2 mods): eval, hidden_eval
+  berb.learning               561 loc  (2 mods): cross_project_learning, learning
+  berb.assessor               442 loc  (5 mods): assessor, comparator, rubrics, scorer, venue_recommender
+
+--- all other unreachable, by size ---
+  berb.experiment            3624 loc  (9 mods)
+  berb.literature            2168 loc  (5 mods)
+  berb.hyperagent            2107 loc  (6 mods)
+  berb.llm                   2103 loc  (7 mods)
+  berb.pipeline              1520 loc  (7 mods)
+  berb.writing               1497 loc  (3 mods)
+  berb.i18n                  1448 loc  (3 mods)
+  berb.experimental           921 loc  (3 mods)
+  berb.integrations           634 loc  (2 mods)
+  berb.reasoner_bridge        600 loc  (1 mods)
+  berb.optimization           597 loc  (2 mods)
+  berb.mnemo_bridge           400 loc  (1 mods)
+
+[OK] Reachability check passed.

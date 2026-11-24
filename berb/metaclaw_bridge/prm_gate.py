@@ -12,8 +12,9 @@ import os
 import re
 import urllib.error
 import urllib.request
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from statistics import mode
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,21 @@ Based on the evaluation criteria and the provided output, decide:
 
 Respond with ONLY "Score: 1", "Score: -1", or "Score: 0" on the first line,
 followed by a brief justification."""
+
+
+@dataclass(frozen=True)
+class PRMOutcome:
+    """Result of one gate evaluation.
+
+    ``score`` is -1.0, 0.0 or 1.0. ``status`` says what the score means:
+    ``ok`` (a clear majority voted), ``ambiguous`` (the votes split or the
+    majority voted 0), or ``unavailable`` (no judge call returned a score,
+    so there was no evaluation at all). Only ``ok`` is evidence.
+    """
+
+    score: float
+    status: str
+    n_votes: int
 
 
 def _single_judge_call(
@@ -160,6 +176,22 @@ class ResearchPRMGate:
         *,
         custom_instruction: str | None = None,
     ) -> float:
+        """Score only: -1.0 (fail), 0.0 (ambiguous or unavailable), 1.0 (pass).
+
+        Use :meth:`evaluate_stage_outcome` when the caller must tell an
+        outage apart from a genuinely ambiguous verdict.
+        """
+        return self.evaluate_stage_outcome(
+            stage_num, output_text, custom_instruction=custom_instruction
+        ).score
+
+    def evaluate_stage_outcome(
+        self,
+        stage_num: int,
+        output_text: str,
+        *,
+        custom_instruction: str | None = None,
+    ) -> PRMOutcome:
         """Evaluate a stage output using majority-vote PRM scoring.
 
         Args:
@@ -168,7 +200,8 @@ class ResearchPRMGate:
             custom_instruction: Override the default evaluation instruction.
 
         Returns:
-            -1.0 (fail), 0.0 (ambiguous), or 1.0 (pass).
+            A :class:`PRMOutcome`. A tie between the leading scores is
+            ``ambiguous`` (0.0) regardless of the order the votes arrived in.
         """
         instruction = custom_instruction or _GATE_INSTRUCTIONS.get(
             stage_num,
@@ -197,13 +230,15 @@ class ResearchPRMGate:
 
         if not scores:
             logger.warning("All PRM judge calls failed for stage %d", stage_num)
-            return 0.0
+            return PRMOutcome(0.0, "unavailable", 0)
 
-        try:
-            return float(mode(scores))
-        except Exception:
-            # Tie — return 0.0 (ambiguous)
-            return 0.0
+        # Explicit majority: statistics.mode returns whichever tied value was
+        # seen first, which here means whichever judge thread finished first.
+        ranked = Counter(scores).most_common()
+        if len(ranked) > 1 and ranked[0][1] == ranked[1][1]:
+            return PRMOutcome(0.0, "ambiguous", len(scores))
+        winner = float(ranked[0][0])
+        return PRMOutcome(winner, "ok" if winner != 0.0 else "ambiguous", len(scores))
 
     def should_gate(self, stage_num: int) -> bool:
         """Check if PRM gating is configured for this stage."""

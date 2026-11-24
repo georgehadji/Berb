@@ -26,7 +26,7 @@ import logging
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
@@ -91,6 +91,10 @@ _ADVERSE_TYPES: dict[str, RetractionState] = {
     "expression of concern": RetractionState.CONCERN,
     "expression_of_concern": RetractionState.CONCERN,
 }
+# Returned by the fetchers when the index answered 404: the work is not in
+# that index. That is a complete answer ("no data"), unlike an outage (None).
+_NOT_FOUND: dict[str, Any] = {"__not_found__": True}
+_ADVERSE_STATES = frozenset({RetractionState.RETRACTED, RetractionState.CONCERN})
 _STATE_RANK: dict[RetractionState, int] = {
     RetractionState.UNKNOWN: 0,
     RetractionState.NONE: 1,
@@ -129,7 +133,7 @@ def _truncate(value: Any) -> str:
 
 
 def _from_crossref(message: dict[str, Any] | None) -> tuple[RetractionState, str]:
-    if not isinstance(message, dict):
+    if not isinstance(message, dict) or message.get("__not_found__"):
         return RetractionState.UNKNOWN, ""
     updates = message.get("update-to")
     if not isinstance(updates, list) or not updates:
@@ -157,7 +161,7 @@ def _from_crossref(message: dict[str, Any] | None) -> tuple[RetractionState, str
 
 
 def _from_openalex(work: dict[str, Any] | None) -> tuple[RetractionState, str]:
-    if not isinstance(work, dict):
+    if not isinstance(work, dict) or work.get("__not_found__"):
         return RetractionState.UNKNOWN, ""
     if "is_retracted" not in work:
         return RetractionState.UNKNOWN, ""
@@ -256,8 +260,8 @@ def store_lookup(record: RetractionRecord, *, cache_base: Path | None = None) ->
 def _fetch_crossref_message(doi: str) -> dict[str, Any] | None:
     """GET the Crossref work record for *doi*. Returns the raw ``message``
     dict (the same shape ``berb.literature.verify.verify_by_doi`` already
-    parses), or None on any failure — network, 404, or malformed JSON.
-    Never raises."""
+    parses), None on an outage or malformed JSON, or ``_NOT_FOUND`` on a 404
+    (the work is not in that index). Never raises."""
     encoded = urllib.parse.quote(doi, safe="")
     url = f"{_CROSSREF_WORKS_URL}/{encoded}"
     try:
@@ -270,6 +274,11 @@ def _fetch_crossref_message(doi: str) -> dict[str, Any] | None:
         )
         with urllib.request.urlopen(req, timeout=_FETCH_TIMEOUT_SEC) as resp:  # noqa: S310
             body = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return _NOT_FOUND
+        logger.debug("Crossref retraction lookup failed for %s: %s", doi, exc)
+        return None
     except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
         logger.debug("Crossref retraction lookup failed for %s: %s", doi, exc)
         return None
@@ -279,7 +288,8 @@ def _fetch_crossref_message(doi: str) -> dict[str, Any] | None:
 
 def _fetch_openalex_work(doi: str, *, email: str = _POLITE_EMAIL) -> dict[str, Any] | None:
     """GET the OpenAlex work record for *doi* via its ``doi:`` shorthand
-    path. Returns the raw work dict, or None on any failure. Never raises."""
+    path. Returns the raw work dict, None on an outage, or ``_NOT_FOUND`` on a
+    404. Never raises."""
     encoded = urllib.parse.quote(doi, safe="")
     params = urllib.parse.urlencode({"mailto": email})
     url = f"{_OPENALEX_WORKS_URL}/doi:{encoded}?{params}"
@@ -287,6 +297,11 @@ def _fetch_openalex_work(doi: str, *, email: str = _POLITE_EMAIL) -> dict[str, A
         req = urllib.request.Request(url, headers={"Accept": "application/json"})
         with urllib.request.urlopen(req, timeout=_FETCH_TIMEOUT_SEC) as resp:  # noqa: S310
             body = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return _NOT_FOUND
+        logger.debug("OpenAlex retraction lookup failed for %s: %s", doi, exc)
+        return None
     except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
         logger.debug("OpenAlex retraction lookup failed for %s: %s", doi, exc)
         return None
@@ -308,12 +323,24 @@ def resolve_retraction(
     if not doi:
         return RetractionRecord(cite_key, RetractionState.UNKNOWN)
 
-    cached = cached_lookup(cite_key, cache_base=cache_base)
+    # Keyed by DOI: cite_keys like "smith2023" collide across papers and runs.
+    doi_key = f"doi:{doi.lower()}"
+    cached = cached_lookup(doi_key, cache_base=cache_base)
     if cached is not None:
-        return cached
+        return replace(cached, cite_key=cite_key)
+    # Records keyed by cite_key (written before the DOI key existed) are
+    # deliberately not read: a cite_key can name a different paper, and a
+    # re-lookup recovers a real adverse record.
 
     crossref = _fetch_crossref_message(doi)
     openalex = _fetch_openalex_work(doi, email=email)
     record = parse_retraction(cite_key, crossref=crossref, openalex=openalex)
-    store_lookup(record, cache_base=cache_base)
+    complete = crossref is not None and openalex is not None
+    if not complete and record.state is RetractionState.NONE:
+        # One index was unreachable, so "no event found" covers only half the
+        # evidence. Absence of evidence is not a clean result.
+        logger.warning("Retraction check incomplete for %s (%s): reporting unknown", cite_key, doi)
+        return RetractionRecord(cite_key, RetractionState.UNKNOWN, "one index unreachable")
+    if complete or record.state in _ADVERSE_STATES:
+        store_lookup(replace(record, cite_key=doi_key), cache_base=cache_base)
     return record

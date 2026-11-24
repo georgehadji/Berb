@@ -1,0 +1,553 @@
+C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pytest_asyncio\plugin.py:300: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the "fixture" caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to "function" scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+....................................ss.................................. [  1%]
+................................................s....................... [  3%]
+...................................................s.................... [  4%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 12%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 23%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+..................................E..........E.E.E...................... [ 28%]
+........................................................................ [ 29%]
+........................................................ss.............. [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 34%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+...........................................................s............ [ 39%]
+.............................ss......................................... [ 40%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 45%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 50%]
+......F....................................ss.....sss................... [ 51%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 56%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+...............ssss......F.............................................. [ 78%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+......................ss................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 92%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+....................ssss................................................ [ 97%]
+........................................................................ [ 98%]
+.....................................................                    [100%]
+=================================== ERRORS ====================================
+___________ ERROR at teardown of test_extract_text_from_corrupt_pdf ___________
+
+    @pytest.fixture
+    def corrupt_pdf() -> Path:
+        """Create an invalid file that looks like a PDF but isn't."""
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        tmp.write(b"%PDF-1.4 garbage data that is not a valid PDF")
+        tmp.close()
+        p = Path(tmp.name)
+        yield p
+>       p.unlink(missing_ok=True)
+
+tests\test_berb_pdf_ingestor.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/tesse/AppData/Local/Temp/tmpxq0gp95q.pdf')
+missing_ok = True
+
+    def unlink(self, missing_ok=False):
+        """
+        Remove this file or link.
+        If the path is a directory, use rmdir() instead.
+        """
+        try:
+>           os.unlink(self)
+E           PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpxq0gp95q.pdf'
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\pathlib.py:1342: PermissionError
+------------------------------ Captured log call ------------------------------
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:83 Failed to extract text from PDF: C:\Users\tesse\AppData\Local\Temp\tmpxq0gp95q.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 63, in extract_text_from_pdf
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpxq0gp95q.pdf' as type pdf.
+_______________ ERROR at teardown of test_pdf_to_paper_corrupt ________________
+
+    @pytest.fixture
+    def corrupt_pdf() -> Path:
+        """Create an invalid file that looks like a PDF but isn't."""
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        tmp.write(b"%PDF-1.4 garbage data that is not a valid PDF")
+        tmp.close()
+        p = Path(tmp.name)
+        yield p
+>       p.unlink(missing_ok=True)
+
+tests\test_berb_pdf_ingestor.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/tesse/AppData/Local/Temp/tmpcins61b4.pdf')
+missing_ok = True
+
+    def unlink(self, missing_ok=False):
+        """
+        Remove this file or link.
+        If the path is a directory, use rmdir() instead.
+        """
+        try:
+>           os.unlink(self)
+E           PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpcins61b4.pdf'
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\pathlib.py:1342: PermissionError
+------------------------------ Captured log call ------------------------------
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:125 Failed to extract PDF metadata: C:\Users\tesse\AppData\Local\Temp\tmpcins61b4.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 111, in extract_metadata
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpcins61b4.pdf' as type pdf.
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:83 Failed to extract text from PDF: C:\Users\tesse\AppData\Local\Temp\tmpcins61b4.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 63, in extract_text_from_pdf
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpcins61b4.pdf' as type pdf.
+_________________ ERROR at teardown of test_ingest_pdfs_mixed _________________
+
+    @pytest.fixture
+    def corrupt_pdf() -> Path:
+        """Create an invalid file that looks like a PDF but isn't."""
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        tmp.write(b"%PDF-1.4 garbage data that is not a valid PDF")
+        tmp.close()
+        p = Path(tmp.name)
+        yield p
+>       p.unlink(missing_ok=True)
+
+tests\test_berb_pdf_ingestor.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/tesse/AppData/Local/Temp/tmp_sb2e5s3.pdf')
+missing_ok = True
+
+    def unlink(self, missing_ok=False):
+        """
+        Remove this file or link.
+        If the path is a directory, use rmdir() instead.
+        """
+        try:
+>           os.unlink(self)
+E           PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmp_sb2e5s3.pdf'
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\pathlib.py:1342: PermissionError
+------------------------------ Captured log call ------------------------------
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:125 Failed to extract PDF metadata: C:\Users\tesse\AppData\Local\Temp\tmp_sb2e5s3.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 111, in extract_metadata
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmp_sb2e5s3.pdf' as type pdf.
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:83 Failed to extract text from PDF: C:\Users\tesse\AppData\Local\Temp\tmp_sb2e5s3.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 63, in extract_text_from_pdf
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmp_sb2e5s3.pdf' as type pdf.
+______________ ERROR at teardown of test_ingest_pdfs_nonexistent ______________
+
+    @pytest.fixture
+    def corrupt_pdf() -> Path:
+        """Create an invalid file that looks like a PDF but isn't."""
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        tmp.write(b"%PDF-1.4 garbage data that is not a valid PDF")
+        tmp.close()
+        p = Path(tmp.name)
+        yield p
+>       p.unlink(missing_ok=True)
+
+tests\test_berb_pdf_ingestor.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/tesse/AppData/Local/Temp/tmpujh3x7qg.pdf')
+missing_ok = True
+
+    def unlink(self, missing_ok=False):
+        """
+        Remove this file or link.
+        If the path is a directory, use rmdir() instead.
+        """
+        try:
+>           os.unlink(self)
+E           PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpujh3x7qg.pdf'
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\pathlib.py:1342: PermissionError
+------------------------------ Captured log call ------------------------------
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:391 Uploaded PDF not found, skipping: \nonexistent\paper.pdf
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:125 Failed to extract PDF metadata: C:\Users\tesse\AppData\Local\Temp\tmpujh3x7qg.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 111, in extract_metadata
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpujh3x7qg.pdf' as type pdf.
+WARNING  berb.literature.pdf_ingestor:pdf_ingestor.py:83 Failed to extract text from PDF: C:\Users\tesse\AppData\Local\Temp\tmpujh3x7qg.pdf
+Traceback (most recent call last):
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3034, in __init__
+    doc = mupdf.fz_open_document_with_stream_and_dir(suffix, fz_stream, archive.this)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\mupdf.py", line 53204, in fz_open_document_with_stream_and_dir
+    return _mupdf.fz_open_document_with_stream_and_dir(magic, stream, dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pymupdf.mupdf.FzErrorFormat: code=7: no objects found
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tesse\Documents\Vibe Coding\Berb\berb\literature\pdf_ingestor.py", line 63, in extract_text_from_pdf
+    doc = fitz.open(str(path))
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymupdf\__init__.py", line 3037, in __init__
+    raise FileDataError(f'Failed to open file {filename!r} as type {suffix}.') from e
+pymupdf.FileDataError: Failed to open file 'C:\\Users\\tesse\\AppData\\Local\\Temp\\tmpujh3x7qg.pdf' as type pdf.
+================================== FAILURES ===================================
+_________ TestValidateEntryPointResolved.test_symlink_escape_rejected _________
+
+self = <tests.test_entry_point_validation.TestValidateEntryPointResolved object at 0x000001B93A6620F0>
+tmp_path = WindowsPath('C:/Users/tesse/AppData/Local/Temp/pytest-of-tesse/pytest-3712/test_symlink_escape_rejected0')
+
+    def test_symlink_escape_rejected(self, tmp_path: Path) -> None:
+        """A symlink pointing outside staging must be caught."""
+        escape_target = tmp_path / "outside" / "secret.py"
+        escape_target.parent.mkdir()
+        escape_target.write_text("print('escaped!')")
+    
+        staging = tmp_path / "staging"
+        staging.mkdir()
+>       (staging / "legit.py").symlink_to(escape_target)
+
+tests\test_entry_point_validation.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/tesse/AppData/Local/Temp/pytest-of-tesse/pytest-3712/test_symlink_escape_rejected0/staging/legit.py')
+target = WindowsPath('C:/Users/tesse/AppData/Local/Temp/pytest-of-tesse/pytest-3712/test_symlink_escape_rejected0/outside/secret.py')
+target_is_directory = False
+
+    def symlink_to(self, target, target_is_directory=False):
+        """
+        Make this path a symlink pointing to the target path.
+        Note the order of arguments (link, target) is the reverse of os.symlink.
+        """
+        if not hasattr(os, "symlink"):
+            raise NotImplementedError("os.symlink() not available on this system")
+>       os.symlink(target, self, target_is_directory)
+E       OSError: [WinError 1314] A required privilege is not held by the client: 'C:\\Users\\tesse\\AppData\\Local\\Temp\\pytest-of-tesse\\pytest-3712\\test_symlink_escape_rejected0\\outside\\secret.py' -> 'C:\\Users\\tesse\\AppData\\Local\\Temp\\pytest-of-tesse\\pytest-3712\\test_symlink_escape_rejected0\\staging\\legit.py'
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\pathlib.py:1386: OSError
+____________ TestObsidianExporter.test_exporter_missing_vault_path ____________
+
+self = <tests.test_phase3_knowledge.TestObsidianExporter object at 0x000001B93ACA9520>
+
+    def test_exporter_missing_vault_path(self):
+        """Test error on missing vault path."""
+>       with pytest.raises(ValueError, match="vault path required"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_phase3_knowledge.py:104: Failed
+============================== warnings summary ===============================
+berb\llm\structured_outputs.py:178
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\llm\structured_outputs.py:178: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.14/migration/
+    class PeerReviewOutput(BaseModel):
+
+tests/optimization/test_upgrades_4_to_12.py::TestEvolutionaryExperimentSearch::test_initialization
+  C:\Users\tesse\Documents\Vibe Coding\Berb\tests\optimization\test_upgrades_4_to_12.py:384: DeprecationWarning: EvolutionaryExperimentSearch is deprecated. Use DesignProposalEvolver instead. The class has been renamed to reflect that fitness is LLM-judged, not execution-grounded (see Phase 0, F6).
+    searcher = EvolutionaryExperimentSearch(
+
+tests/optimization/test_upgrades_4_to_12.py::TestEvolutionaryExperimentSearch::test_create_initial_population
+  C:\Users\tesse\Documents\Vibe Coding\Berb\tests\optimization\test_upgrades_4_to_12.py:397: DeprecationWarning: EvolutionaryExperimentSearch is deprecated. Use DesignProposalEvolver instead. The class has been renamed to reflect that fitness is LLM-judged, not execution-grounded (see Phase 0, F6).
+    searcher = EvolutionaryExperimentSearch(population_size=4)
+
+tests/optimization/test_upgrades_4_to_12.py::TestEvolutionaryExperimentSearch::test_has_converged
+  C:\Users\tesse\Documents\Vibe Coding\Berb\tests\optimization\test_upgrades_4_to_12.py:412: DeprecationWarning: EvolutionaryExperimentSearch is deprecated. Use DesignProposalEvolver instead. The class has been renamed to reflect that fitness is LLM-judged, not execution-grounded (see Phase 0, F6).
+    searcher = EvolutionaryExperimentSearch()
+
+tests/test_code_agent.py::TestSolutionNodeScoring::test_score_running_node
+  C:\Users\tesse\Documents\Vibe Coding\Berb\tests\test_code_agent.py:581: DeprecationWarning: CodeAgent._score_node is deprecated. Use berb.experiment.search.scoring.score_node instead.
+    score = CodeAgent._score_node(node, "metric")
+
+tests/test_code_agent.py::TestSolutionNodeScoring::test_score_crashing_node
+  C:\Users\tesse\Documents\Vibe Coding\Berb\tests\test_code_agent.py:591: DeprecationWarning: CodeAgent._score_node is deprecated. Use berb.experiment.search.scoring.score_node instead.
+    score = CodeAgent._score_node(node, "metric")
+
+tests/test_code_agent.py::TestSolutionNodeScoring::test_score_partial_output
+  C:\Users\tesse\Documents\Vibe Coding\Berb\tests\test_code_agent.py:602: DeprecationWarning: CodeAgent._score_node is deprecated. Use berb.experiment.search.scoring.score_node instead.
+    score = CodeAgent._score_node(node, "metric")
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\debate.py:156: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    pro_args = await self._generate_arguments(position, "pro", context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\debate.py:157: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    con_args = await self._generate_arguments(position, "con", context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\debate.py:164: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    judge_result = await self._judge_debate(position, pro_args, con_args, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\dialectical.py:153: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    thesis = await self._establish_thesis(topic, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\dialectical.py:156: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    antithesis = await self._generate_antithesis(thesis, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\dialectical.py:159: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    contradictions = await self._identify_contradictions(thesis, antithesis)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\dialectical.py:162: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    synthesis = await self._resolve_synthesis(thesis, antithesis, contradictions, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\research.py:223: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    query = await self._formulate_query(topic, gaps, iteration_num)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\research.py:226: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    findings = await self._gather_information(query, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\research.py:229: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    new_gaps = await self._identify_gaps(topic, findings, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\research.py:171: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    final_synthesis = await self._synthesize_findings(
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\socratic.py:161: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    sq = await self._generate_question(question, category, i, questions, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\socratic.py:166: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    final_understanding = await self._synthesize_understanding(
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\socratic.py:171: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    remaining = await self._identify_remaining_questions(question, questions, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\scientific.py:209: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    hypothesis = await self._formulate_hypothesis(observation, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\scientific.py:212: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    experiment = await self._design_experiment(hypothesis, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\scientific.py:215: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    analysis = await self._analyze_results(hypothesis, experiment, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\scientific.py:218: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    conclusion = await self._draw_conclusion(observation, hypothesis, analysis, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\scientific.py:221: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    next_steps = await self._identify_next_steps(conclusion, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\jury.py:186: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    await self._juror_deliberation(juror, case, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_reasoning_integration.py::TestBackwardCompatibility::test_all_methods_with_llm_client
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\reasoning\jury.py:189: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    verdict, synthesis, vote_count = await self._foreman_synthesis(jurors, case, context)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_servers.py::TestSSHExecutor::test_run_experiment_timeout
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\servers\ssh_executor.py:70: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    proc.kill()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_web_platform.py: 14 warnings
+  C:\Users\tesse\Documents\Vibe Coding\Berb\berb\server\app.py:151: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+tests/test_web_platform.py: 14 warnings
+  C:\Users\tesse\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py:4723: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_entry_point_validation.py::TestValidateEntryPointResolved::test_symlink_escape_rejected
+FAILED tests/test_phase3_knowledge.py::TestObsidianExporter::test_exporter_missing_vault_path
+ERROR tests/test_berb_pdf_ingestor.py::test_extract_text_from_corrupt_pdf - P...
+ERROR tests/test_berb_pdf_ingestor.py::test_pdf_to_paper_corrupt - Permission...
+ERROR tests/test_berb_pdf_ingestor.py::test_ingest_pdfs_mixed - PermissionErr...
+ERROR tests/test_berb_pdf_ingestor.py::test_ingest_pdfs_nonexistent - Permiss...
+2 failed, 4559 passed, 24 skipped, 7 deselected, 57 warnings, 4 errors in 491.83s (0:08:11)
+exit 1

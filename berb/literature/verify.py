@@ -28,7 +28,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import StrEnum
 from pathlib import Path
 
@@ -80,6 +80,7 @@ class CitationResult:
                 "authors": [a.name for a in self.matched_paper.authors],
                 "year": self.matched_paper.year,
                 "source": self.matched_paper.source,
+                "doi": self.matched_paper.doi,
             }
         return d
 
@@ -535,36 +536,77 @@ def verify_by_openalex(title: str) -> CitationResult | None:
 _CACHE_DIR = Path.home() / ".cache" / "berb" / "citation_verify"
 
 
-def _cache_key(title: str) -> str:
-    return hashlib.sha256(title.lower().strip().encode()).hexdigest()[:16]
+# Bump when the meaning of a cached verdict changes. v2: entries written
+# before it may be outage artefacts (a HALLUCINATED recorded while every
+# source was down), so they are never read again.
+_CACHE_VERSION = "v2"
 
 
-def _read_cache(title: str) -> CitationResult | None:
-    _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = _CACHE_DIR / f"{_cache_key(title)}.json"
-    if cache_file.exists():
-        try:
-            data = json.loads(cache_file.read_text(encoding="utf-8"))
-            return CitationResult(
-                cite_key=data.get("cite_key", ""),
-                title=data.get("title", title),
-                status=VerifyStatus(data["status"]),
-                confidence=data["confidence"],
-                method=data["method"],
-                details=data.get("details", ""),
+def _cache_key(title: str, doi: str = "", arxiv_id: str = "") -> str:
+    # The DOI and arXiv id are part of the key: a verdict for the bare title
+    # must not answer for an entry that cites a different (maybe fake) id.
+    raw = "|".join((_CACHE_VERSION, title.lower().strip(), doi.lower().strip(), arxiv_id.strip()))
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+# HALLUCINATED is not persisted (see _write_cache), but re-querying every
+# source for the same fabricated title at stages 17, 22 and 23 is slow enough
+# to hit the verification timeout. Remember misses in-process for a short time.
+_MISS_TTL_SEC = 1800.0
+_session_misses: dict[tuple[str, str], tuple[float, CitationResult]] = {}
+
+
+def _session_key(title: str, doi: str, arxiv_id: str) -> tuple[str, str]:
+    return (str(_CACHE_DIR), _cache_key(title, doi, arxiv_id))
+
+
+def _read_cache(title: str, doi: str = "", arxiv_id: str = "") -> CitationResult | None:
+    hit = _session_misses.get(_session_key(title, doi, arxiv_id))
+    if hit is not None:
+        if time.monotonic() - hit[0] < _MISS_TTL_SEC:
+            return replace(hit[1])
+        _session_misses.pop(_session_key(title, doi, arxiv_id), None)
+    cache_file = _CACHE_DIR / f"{_cache_key(title, doi, arxiv_id)}.json"
+    try:
+        data = json.loads(cache_file.read_text(encoding="utf-8"))
+        paper = None
+        mp = data.get("matched_paper")
+        if isinstance(mp, dict) and mp.get("doi"):
+            paper = Paper(
+                paper_id="",
+                title=str(mp.get("title", "")),
+                year=int(mp.get("year") or 0),
+                doi=str(mp["doi"]),
+                source=str(mp.get("source", "")),
             )
-        except (json.JSONDecodeError, KeyError, ValueError):
-            return None
-    return None
+        return CitationResult(
+            cite_key=data.get("cite_key", ""),
+            title=data.get("title", title),
+            status=VerifyStatus(data["status"]),
+            confidence=data["confidence"],
+            method=data["method"],
+            details=data.get("details", ""),
+            matched_paper=paper,
+        )
+    except (OSError, json.JSONDecodeError, KeyError, ValueError, TypeError):
+        return None  # missing, unreadable or corrupt: treat as a miss
 
 
-def _write_cache(title: str, result: CitationResult) -> None:
-    _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = _CACHE_DIR / f"{_cache_key(title)}.json"
-    cache_file.write_text(
-        json.dumps(result.to_dict(), indent=2),
-        encoding="utf-8",
-    )
+def _write_cache(title: str, result: CitationResult, doi: str = "", arxiv_id: str = "") -> None:
+    """Persist a verdict. HALLUCINATED is never written to disk: it is the
+    verdict most likely to be an outage artefact. It is only remembered
+    in-process for ``_MISS_TTL_SEC``."""
+    if result.status is VerifyStatus.HALLUCINATED:
+        _session_misses[_session_key(title, doi, arxiv_id)] = (time.monotonic(), result)
+        return
+    if result.status is VerifyStatus.SKIPPED:
+        return
+    try:
+        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        cache_file = _CACHE_DIR / f"{_cache_key(title, doi, arxiv_id)}.json"
+        cache_file.write_text(json.dumps(result.to_dict(), indent=2), encoding="utf-8")
+    except OSError as exc:
+        logger.debug("Citation cache write failed: %s", exc)
 
 
 # ---------------------------------------------------------------------------
@@ -584,17 +626,36 @@ def verify_by_title_search(
     """
     from berb.literature.search import search_papers
 
+    failed_sources: dict[str, int] = {}
     try:
         results = search_papers(
             title,
             limit=5,
             s2_api_key=s2_api_key,
             deduplicate=True,
+            failure_counter=failed_sources,
         )
     except Exception as exc:
         logger.debug("Title search failed for %r: %s", title, exc)
         return None
 
+    if not results and failed_sources:
+        # Empty because a source was down, not because the paper is absent.
+        logger.debug("Title search for %r unverifiable: %s failed", title, sorted(failed_sources))
+        return None
+
+    result = _judge_title_matches(title, results)
+    if failed_sources and result.status is not VerifyStatus.VERIFIED:
+        # A positive stands whatever failed; a negative or partial match drawn
+        # from incomplete sources is not evidence (the source that would have
+        # held the paper may be the one that was down).
+        logger.debug("Title search for %r inconclusive: %s failed", title, sorted(failed_sources))
+        return None
+    return result
+
+
+def _judge_title_matches(title: str, results: list[Paper]) -> CitationResult:
+    """Grade the best title match among *results* (may be empty)."""
     if not results:
         return CitationResult(
             cite_key="",
@@ -664,11 +725,13 @@ def verify_citations(
 ) -> VerificationReport:
     """Verify all BibTeX entries against real academic APIs.
 
-    Three-layer verification:
+    Layers, in order; the first definite answer wins:
 
-    1. If entry has ``eprint`` (arXiv ID) → arXiv API lookup
-    2. If entry has ``doi`` → CrossRef API lookup
-    3. Otherwise → title search via Semantic Scholar + arXiv
+    1. ``doi`` → CrossRef / DataCite (a verdict here is final)
+    2. title search via OpenAlex. A *miss* is provisional: it is kept as the
+       fallback verdict and the layers below still run. Only a match is final.
+    3. ``eprint`` (arXiv ID) → arXiv API lookup
+    4. title search via Semantic Scholar
 
     Parameters
     ----------
@@ -737,7 +800,7 @@ def verify_citations(
             continue
 
         # Check cache first
-        cached = _read_cache(title)
+        cached = _read_cache(title, doi, arxiv_id)
         if cached is not None:
             cached.cite_key = key
             report.results.append(cached)
@@ -776,6 +839,7 @@ def verify_citations(
                 )
 
         # L3a: OpenAlex title search (high rate limits, good coverage)
+        openalex_miss: CitationResult | None = None
         if result is None:
             if api_call_count > 0:
                 time.sleep(_DELAY_OPENALEX)
@@ -789,6 +853,11 @@ def verify_citations(
                     result.status.value,
                     result.confidence,
                 )
+                # A miss is not proof of absence: OpenAlex lags on new preprints.
+                # Keep it as the fallback verdict and let the arXiv-id and S2
+                # layers try; a positive from either overrides it.
+                if result.status == VerifyStatus.HALLUCINATED:
+                    openalex_miss, result = result, None
 
         # L1: arXiv ID — only if DOI and OpenAlex both failed
         if result is None and arxiv_id:
@@ -818,6 +887,19 @@ def verify_citations(
                     result.confidence,
                 )
 
+        # Later layers gave nothing (network error, rate limit): one index's
+        # miss is not proof of absence, so the citation is unverified, not
+        # hallucinated. OpenAlex lags on new preprints.
+        if result is None and openalex_miss is not None:
+            result = CitationResult(
+                cite_key=key,
+                title=title,
+                status=VerifyStatus.SKIPPED,
+                confidence=0.0,
+                method="openalex",
+                details="OpenAlex found no match; other sources unavailable, not confirmed absent",
+            )
+
         # Fallback: all layers failed (network issues)
         if result is None:
             result = CitationResult(
@@ -839,9 +921,8 @@ def verify_citations(
             matched_paper=result.matched_paper,
         )
 
-        # Cache the result (skip SKIPPED — network failures shouldn't be cached)
-        if result.status != VerifyStatus.SKIPPED:
-            _write_cache(title, result)
+        # SKIPPED and HALLUCINATED are not cached (see _write_cache).
+        _write_cache(title, result, doi, arxiv_id)
 
         if result.status == VerifyStatus.VERIFIED:
             report.verified += 1

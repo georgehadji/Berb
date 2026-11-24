@@ -22,11 +22,21 @@ pytest tests/test_berb_executor.py         # single file
 pytest -m "not slow"                       # skip slow
 pytest -m "not slow and not e2e and not llm"  # unit only
 pytest --cov=berb tests/                   # with coverage
+
+# Lint / type / gates (mirror .github/workflows/ci.yml)
+ruff check berb/ tests/
+ruff format --check berb/ tests/           # ruff is pinned (==0.15.22); format output drifts across versions
+mypy berb/ --python-version 3.11
+python scripts/check_reachability.py      # dead-code ratchet
 ```
+
+`asyncio_mode = "auto"` in pytest config: async tests need no decorator.
 
 ## Architecture
 
 Berb is a **23-stage autonomous research pipeline** that turns a single research idea into a publication-ready paper. The pipeline runs as a Python package (`berb/`) with a CLI entry point at `berb/cli.py`.
+
+Edit map (what each module is, live vs parked): `docs/map/CLAUDE.md`.
 
 ### Pipeline Phases
 

@@ -308,20 +308,34 @@ def execute_stage(
                                 except (UnicodeDecodeError, OSError):
                                     pass
                         if output_text:
-                            prm_score = prm_gate.evaluate_stage(int(stage), output_text)
+                            prm_outcome = prm_gate.evaluate_stage_outcome(int(stage), output_text)
+                            prm_score = prm_outcome.score
                             logger.info(
-                                "MetaClaw PRM score for stage %d: %.1f",
+                                "MetaClaw PRM score for stage %d: %.1f (%s)",
                                 int(stage),
                                 prm_score,
+                                prm_outcome.status,
                             )
+                            if prm_outcome.status == "unavailable":
+                                # Outage is not a score: the stage stays DONE
+                                # (the gate is advisory, fail-open) but the
+                                # artifact says it was not evaluated.
+                                logger.warning(
+                                    "MetaClaw PRM unavailable for stage %d; output NOT evaluated",
+                                    int(stage),
+                                )
                             # Write PRM score to stage health
                             import json as _prm_json
 
                             prm_report = {
                                 "stage": int(stage),
-                                "prm_score": prm_score,
+                                "prm_score": (
+                                    None if prm_outcome.status == "unavailable" else prm_score
+                                ),
+                                "status": prm_outcome.status,
                                 "model": prm_gate.model,
                                 "votes": prm_gate.votes,
+                                "votes_returned": prm_outcome.n_votes,
                             }
                             (stage_dir / "prm_score.json").write_text(
                                 _prm_json.dumps(prm_report, indent=2),

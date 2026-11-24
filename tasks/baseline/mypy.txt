@@ -1,0 +1,9 @@
+berb\config.py:10: error: Library stubs not installed for "yaml"  [import-untyped]
+berb\writing\reporting_guidelines.py:26: error: Library stubs not installed for "yaml"  [import-untyped]
+berb\literature\paper_mill.py:23: error: Library stubs not installed for "yaml"  [import-untyped]
+berb\literature\paper_mill.py:23: note: Hint: "python3 -m pip install types-PyYAML"
+berb\literature\paper_mill.py:23: note: (or run "mypy --install-types" to install all missing stub packages)
+berb\literature\paper_mill.py:23: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+berb\llm\client.py:1224: error: Library stubs not installed for "yaml"  [import-untyped]
+Found 4 errors in 4 files (checked 414 source files)
+exit 1

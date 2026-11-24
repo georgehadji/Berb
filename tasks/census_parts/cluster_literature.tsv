@@ -1,0 +1,46 @@
+signal	file:line	snippet	module	wired
+S1	berb/literature/grey_search.py:277	dict-key | "status": status_module.get("overallStatus"),	berb.literature.grey_search	N
+S1	berb/literature/grey_search.py:278	dict-key | "phase": protocol.get("designModule", {}).get("phases", []),	berb.literature.grey_search	N
+S1	berb/literature/retraction.py:112	dict-key | return {"cite_key": self.cite_key, "state": self.state.value, "detail": self.detail}	berb.literature.retraction	Y
+S1	berb/literature/verify.py:70	dict-key | "status": self.status.value,	berb.literature.verify	Y
+S3	berb/literature/verify.py:226	if "api/errors" in entry_id or not found_title or found_title.lower() == "error":	berb.literature.verify	Y
+S4	berb/literature/citation_classifier.py:35	enum CitationIntent | class CitationIntent(StrEnum):	berb.literature.citation_classifier	Y
+S4	berb/literature/citation_graph.py:25	enum ClusterAlgorithm | class ClusterAlgorithm(StrEnum):	berb.literature.citation_graph	Y
+S4	berb/literature/citation_graph.py:777	raw string 'results' | elif perspective == "results":	berb.literature.citation_graph	Y
+S4	berb/literature/evidence_map.py:27	enum ConsensusLevel | class ConsensusLevel(StrEnum):	berb.literature.evidence_map	Y
+S4	berb/literature/evidence_map.py:49	enum StudyType | class StudyType(StrEnum):	berb.literature.evidence_map	Y
+S4	berb/literature/novelty.py:404	raw string 'low' | elif assessment == "low":	berb.literature.novelty	Y
+S4	berb/literature/retraction.py:63	enum RetractionState | class RetractionState(StrEnum):	berb.literature.retraction	Y
+S4	berb/literature/section_analysis.py:26	enum PaperSection | class PaperSection(StrEnum):	berb.literature.section_analysis	Y
+S4	berb/literature/section_analysis.py:50	enum CitationPurpose | class CitationPurpose(StrEnum):	berb.literature.section_analysis	Y
+S4	berb/literature/structured_notes.py:271	raw string 'markdown' | if format == "markdown":	berb.literature.structured_notes	Y
+S4	berb/literature/verify.py:226	raw string 'error' | if "api/errors" in entry_id or not found_title or found_title.lower() == "error":	berb.literature.verify	Y
+S4	berb/literature/verify.py:44	enum VerifyStatus | class VerifyStatus(StrEnum):	berb.literature.verify	Y
+S4	berb/literature/zotero_integration.py:161	raw string 'author' | if c.get("creatorType") == "author"	berb.literature.zotero_integration	Y
+S4	berb/literature/zotero_integration.py:504	raw string 'markdown' | if format == "markdown":	berb.literature.zotero_integration	Y
+S4	berb/literature/zotero_integration.py:506	raw string 'json' | elif format == "json":	berb.literature.zotero_integration	Y
+S5	berb/literature/arxiv_client.py:122	global _client | global _client  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:55	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:56	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:66	global _cb_state | global _cb_state  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:84	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:94	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/arxiv_client.py:95	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.arxiv_client	Y
+S5	berb/literature/semantic_scholar.py:101	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:112	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:113	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:68	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:69	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S5	berb/literature/semantic_scholar.py:80	global _cb_state | global _cb_state  # noqa: PLW0603	berb.literature.semantic_scholar	Y
+S7	berb\literature\cache.py:151	fd, tmp_path = tempfile.mkstemp(dir=d, suffix=".tmp", prefix=f"{key}_")	berb.literature.cache	Y
+S8	berb/literature/arxiv_client.py:100	module global _cb_cooldown_sec | cooldown doubles on half-open failure | _cb_cooldown_sec = min(_cb_cooldown_sec * 2, _CB_MAX_COOLDOWN)	berb.literature.arxiv_client	Y
+S8	berb/literature/arxiv_client.py:101	module global _cb_state | breaker state set to open (gates arXiv calls) | _cb_state = _CB_OPEN	berb.literature.arxiv_client	Y
+S8	berb/literature/arxiv_client.py:103	module global _cb_trip_count | total breaker trips in process | _cb_trip_count += 1	berb.literature.arxiv_client	Y
+S8	berb/literature/arxiv_client.py:97	module global _cb_consecutive_429s | counts 429s toward arXiv breaker trip | _cb_consecutive_429s += 1	berb.literature.arxiv_client	Y
+S8	berb/literature/openalex_client.py:43	module global _rate_limiter | min-interval gate state across all OpenAlex calls | _rate_limiter = RateLimiter(min_interval_sec=_RATE_LIMIT_SEC)	berb.literature.openalex_client	Y
+S8	berb/literature/semantic_scholar.py:115	module global _cb_consecutive_429s | counts 429s toward S2 breaker trip | _cb_consecutive_429s += 1	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:119	module global _cb_cooldown_sec | cooldown doubles on half-open failure | _cb_cooldown_sec = min(_cb_cooldown_sec * 2, _CB_MAX_COOLDOWN)	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:131	module global _cb_state | breaker state set to open on threshold (gates S2 calls) | _cb_state = _CB_OPEN	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:133	module global _cb_trip_count | total breaker trips in process | _cb_trip_count += 1	berb.literature.semantic_scholar	Y
+S8	berb/literature/semantic_scholar.py:43	module global _rate_limiter | min-interval gate state across all S2 calls | _rate_limiter = RateLimiter(min_interval_sec=_RATE_LIMIT_SEC)	berb.literature.semantic_scholar	Y
+S9	berb\literature\verify.py:565	json.dumps(result.to_dict(), indent=2),	berb.literature.verify	Y

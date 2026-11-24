@@ -1,0 +1,83 @@
+signal	file:line	snippet	module	wired
+S1	berb/pipeline/stage_impls/_analysis.py:1003	dict-key | "decision": decision,	berb.pipeline.stage_impls._analysis	Y
+S1	berb/pipeline/stage_impls/_analysis.py:181	dict-key | "status": "completed",	berb.pipeline.stage_impls._analysis	Y
+S1	berb/pipeline/stage_impls/_code_generation.py:1157	dict-key | "verdict": review_verdict,	berb.pipeline.stage_impls._code_generation	Y
+S1	berb/pipeline/stage_impls/_execution.py:259	dict-key | "status": run_status,	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:358	dict-key | "status": "simulated",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:378	dict-key | "status": "completed" if item.error is None else "failed",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:509	dict-key | context={"phase": "baseline"},	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:539	dict-key | "status": "completed" if node.is_buggy is False else "failed",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:635	dict-key | "mode": "simulated",	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_execution.py:872	dict-key | "mode": config.experiment.mode,	berb.pipeline.stage_impls._execution	Y
+S1	berb/pipeline/stage_impls/_export.py:309	dict-key | "verdict": verdict.verdict.value,	berb.pipeline.stage_impls._export	Y
+S1	berb/pipeline/stage_impls/_literature.py:213	dict-key | "status": "available",	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_literature.py:222	dict-key | "status": "available",	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_literature.py:231	key | src["status"] = (	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_literature.py:236	key | src["status"] = "unknown"	berb.pipeline.stage_impls._literature	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:841	key | entry["status"] = "severely_short"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:849	key | entry["status"] = "short"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:857	key | entry["status"] = "long"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_paper_writing.py:859	key | entry["status"] = "ok"	berb.pipeline.stage_impls._paper_writing	Y
+S1	berb/pipeline/stage_impls/_review.py:771	dict-key | "status": v.status.value,	berb.pipeline.stage_impls._review	Y
+S1	berb/pipeline/stage_impls/_review.py:915	dict-key | "verdict": verdict,	berb.pipeline.stage_impls._review	Y
+S1	berb/pipeline/stage_impls/_synthesis.py:367	dict-key | "stage": "hypothesis_gen",	berb.pipeline.stage_impls._synthesis	Y
+S3	berb/pipeline/stage_impls/_execution.py:242	if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	Y
+S3	berb/pipeline/stage_impls/_review.py:570	_exp_failed = _best_run.get("status") == "failed" and not _best_run.get("metrics")	berb.pipeline.stage_impls._review	Y
+S3	berb/pipeline/stage_impls/_review.py:673	if cond_status == "failed":	berb.pipeline.stage_impls._review	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:177	raw string 'none' | if _net_policy == "none":	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:197	raw string 'high' | if tier == "high":	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:243	raw string 'none' | if _net_policy == "none":	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:784	raw string 'error' | issues=[i for i in validation.issues if i.severity == "error"]	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_code_generation.py:837	raw string 'error' | if issue.severity == "error" and issue.category in (	berb.pipeline.stage_impls._code_generation	Y
+S4	berb/pipeline/stage_impls/_execution.py:242	raw string 'completed' | if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	Y
+S4	berb/pipeline/stage_impls/_export.py:1000	raw string 'hallucinated' | r.cite_key for r in _export_report.results if r.status.value == "hallucinated"	berb.pipeline.stage_impls._export	Y
+S4	berb/pipeline/stage_impls/_export.py:1423	raw string 'text_without_insight' | if _contribution.contribution_type.value == "text_without_insight":	berb.pipeline.stage_impls._export	Y
+S4	berb/pipeline/stage_impls/_paper_writing.py:936	raw string 'abstract' | if hl == "abstract" and wc > 250:	berb.pipeline.stage_impls._paper_writing	Y
+S4	berb/pipeline/stage_impls/_review.py:570	raw string 'failed' | _exp_failed = _best_run.get("status") == "failed" and not _best_run.get("metrics")	berb.pipeline.stage_impls._review	Y
+S4	berb/pipeline/stage_impls/_review.py:673	raw string 'failed' | if cond_status == "failed":	berb.pipeline.stage_impls._review	Y
+S4	berb/pipeline/stage_impls/_review.py:780	raw string 'unsupported' | _unsupported = [v for v in _verdicts if v.status.value == "unsupported"]	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_code_generation.py:1535	if (stage_dir / "validation_report.md").exists():	berb.pipeline.stage_impls._code_generation	Y
+S6	berb\pipeline\stage_impls\_export.py:394	if _degradation_signal_path.exists():	berb.pipeline.stage_impls._export	Y
+S6	berb\pipeline\stage_impls\_export.py:960	if _invalid_citations_path.is_file():	berb.pipeline.stage_impls._export	Y
+S6	berb\pipeline\stage_impls\_literature.py:627	(stage_dir / "web_search_result.json").write_text(	berb.pipeline.stage_impls._literature	Y
+S6	berb\pipeline\stage_impls\_literature.py:720	if (stage_dir / "web_search_result.json").exists():	berb.pipeline.stage_impls._literature	Y
+S6	berb\pipeline\stage_impls\_review.py:865	if not _veto_marker.is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:871	_veto_marker.write_text(	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:901	if (stage_dir / "ensemble_review.md").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:903	if (stage_dir / "claim_adjudication.json").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:946	if (stage_dir / "ensemble_review.md").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_review.py:948	if (stage_dir / "claim_adjudication.json").is_file():	berb.pipeline.stage_impls._review	Y
+S6	berb\pipeline\stage_impls\_topic.py:235	if _goal_path.exists():	berb.pipeline.stage_impls._topic	Y
+S7	berb\pipeline\stage_impls\_execution.py:1136	version_dir = stage_dir / f"experiment_v{iteration}"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:1161	stage_dir / f"refine_sandbox_v{iteration}",	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:1263	stage_dir / f"refine_sandbox_v{iteration}_fix",	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:1285	best_version = f"experiment_v{iteration}/"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:619	src_dir = run_dir / f"stage-{stage_num:02d}" / "experiment"	berb.pipeline.stage_impls._execution	Y
+S7	berb\pipeline\stage_impls\_execution.py:626	src_file = run_dir / f"stage-{stage_num:02d}" / "experiment.py"	berb.pipeline.stage_impls._execution	Y
+S9	berb\pipeline\stage_impls\_analysis.py:1009	json.dumps(decision_payload, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._analysis	Y
+S9	berb\pipeline\stage_impls\_archive.py:107	(stage_dir / "bundle_index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")	berb.pipeline.stage_impls._archive	Y
+S9	berb\pipeline\stage_impls\_code_generation.py:1162	json.dumps(review_report, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._code_generation	Y
+S9	berb\pipeline\stage_impls\_execution.py:279	(runs_dir / "run-1.json").write_text(json.dumps(run_payload, indent=2), encoding="utf-8")	berb.pipeline.stage_impls._execution	Y
+S9	berb\pipeline\stage_impls\_execution.py:546	json.dumps(run_payload, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._execution	Y
+S9	berb\pipeline\stage_impls\_review.py:922	json.dumps(signal, indent=2), encoding="utf-8"	berb.pipeline.stage_impls._review	Y
+S11	berb/pipeline/stage_impls/_analysis.py:1003	"decision": decision,	berb.pipeline.stage_impls._analysis	Y
+S11	berb/pipeline/stage_impls/_analysis.py:1018	decision=decision,	berb.pipeline.stage_impls._analysis	Y
+S11	berb/pipeline/stage_impls/_analysis.py:988	decision = _parse_decision(decision_md)	berb.pipeline.stage_impls._analysis	Y
+S11	berb/pipeline/stage_impls/_archive.py:57	decision = _read_prior_artifact(run_dir, "decision.md") or ""	berb.pipeline.stage_impls._archive	Y
+S11	berb/pipeline/stage_impls/_archive.py:66	decision=decision,	berb.pipeline.stage_impls._archive	Y
+S11	berb/pipeline/stage_impls/_code_generation.py:1151	review_verdict = review_data.get("verdict", "unknown")	berb.pipeline.stage_impls._code_generation	Y
+S11	berb/pipeline/stage_impls/_code_generation.py:1157	"verdict": review_verdict,	berb.pipeline.stage_impls._code_generation	Y
+S11	berb/pipeline/stage_impls/_execution.py:223	run_status = "rejected"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:229	run_status = "completed"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:231	run_status = "partial"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:237	run_status = "failed"	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:242	if run_status == "completed" and result.elapsed_sec and result.elapsed_sec < 5.0:	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_execution.py:259	"status": run_status,	berb.pipeline.stage_impls._execution	Y
+S11	berb/pipeline/stage_impls/_export.py:292	verdict = parse_cross_model_verdict(	berb.pipeline.stage_impls._export	Y
+S11	berb/pipeline/stage_impls/_export.py:295	if verdict is None:	berb.pipeline.stage_impls._export	Y
+S11	berb/pipeline/stage_impls/_export.py:309	"verdict": verdict.verdict.value,	berb.pipeline.stage_impls._export	Y
+S11	berb/pipeline/stage_impls/_paper_writing.py:111	decision=decision,	berb.pipeline.stage_impls._paper_writing	Y
+S11	berb/pipeline/stage_impls/_paper_writing.py:68	decision = _read_prior_artifact(run_dir, "decision.md") or ""	berb.pipeline.stage_impls._paper_writing	Y
+S11	berb/pipeline/stage_impls/_review.py:656	verdict = report.get("verdict", "proceed")	berb.pipeline.stage_impls._review	Y
+S11	berb/pipeline/stage_impls/_review.py:915	"verdict": verdict,	berb.pipeline.stage_impls._review	Y
+S11	berb/pipeline/stage_impls/_review.py:929	decision="degraded",	berb.pipeline.stage_impls._review	Y

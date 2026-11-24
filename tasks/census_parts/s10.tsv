@@ -1,0 +1,32 @@
+signal	file:line	snippet	module	wired
+S10	types/index.ts:61	export type StageStatus = 'pending' | 'running' | 'completed' | 'failed' | 'paused';	types/index.ts	?
+S10	types/index.ts:67	status: StageStatus;	types/index.ts	?
+S10	types/index.ts:81	status: StageStatus;	types/index.ts	?
+S10	types/index.ts:255	status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';	types/index.ts	?
+S10	types/index.ts:346	export interface WizardState {	types/index.ts	?
+S10	src/utils/api.ts:15	status: 'queued' | 'running' | 'completed' | 'failed';	src/utils/api.ts	?
+S10	src/utils/api.ts:35	status: string;	src/utils/api.ts	?
+S10	src/hooks/useResearch.ts:38	status: response.status as ResearchJob['status'],	src/hooks/useResearch.ts	?
+S10	src/hooks/useResearch.ts:79	if (!job?.id || job.status === 'completed' || job.status === 'failed') {	src/hooks/useResearch.ts	?
+S10	src/views/Wizard.tsx:586	{job.status === 'running' && (	src/views/Wizard.tsx	?
+S10	src/views/Wizard.tsx:610	Status: <span className="font-medium text-accent">{job.status}</span>	src/views/Wizard.tsx	?
+S10	src/views/Wizard.tsx:623	{job.status === 'running' && (	src/views/Wizard.tsx	?
+S10	src/views/PipelineMonitor.tsx:19	import type { Stage, Phase, StageStatus } from '@types';	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:22	{ phase_id: 'A', phase_name: 'Scoping', stages: [1, 2], status: 'completed', total_cost_usd: 0.02 },	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:24	{ phase_id: 'C', phase_name: 'Synthesis', stages: [7, 8], status: 'running', total_cost_usd: 0.10 },	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:25	{ phase_id: 'D', phase_name: 'Design', stages: [9, 10, 11], status: 'pending', total_cost_usd: 0 },	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:39	{ stage_number: 7, stage_name: 'SYNTHESIS', status: 'running', progress: 78, message: 'Identifying thematic clusters', cost_usd: 0.06 },	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:58	const statusColors: Record<StageStatus, string> = {	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:60	running: 'bg-accentLight text-accent',	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:73	const completedStages = stages.filter(s => s.status === 'completed').length;	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:77	const getStatusIcon = (status: StageStatus) => {	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:78	switch (status) {	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:81	case 'running':	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:92	const getStatusBadge = (status: StageStatus) => {	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:95	{status.charAt(0).toUpperCase() + status.slice(1)}	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:149	phase.status === 'completed' ? 'bg-successLight text-success' :	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:151	phase.status === 'failed' ? 'bg-errorLight text-error' :	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:165	{phase.status === 'running' && (	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:204	stage.status === 'completed' ? 'bg-successLight text-success' :	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:214	{stage.status === 'paused' && (	src/views/PipelineMonitor.tsx	?
+S10	src/views/PipelineMonitor.tsx:223	{stage.status === 'running' && (	src/views/PipelineMonitor.tsx	?

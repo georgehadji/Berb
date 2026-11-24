@@ -1,0 +1,53 @@
+signal	file:line	snippet	module	wired
+S1	berb/llm/batch_api.py:206	attr | job.status = BatchStatus.PENDING	berb.llm.batch_api	N
+S1	berb/llm/batch_api.py:208	attr | job.status = BatchStatus.IN_PROGRESS	berb.llm.batch_api	N
+S1	berb/llm/batch_api.py:214	attr | job.status = BatchStatus.COMPLETED	berb.llm.batch_api	N
+S1	berb/llm/batch_api.py:279	attr | job.status = BatchStatus.CANCELLED	berb.llm.batch_api	N
+S1	berb/llm/client.py:378	attr | state.state = "half_open"	berb.llm.client	Y
+S1	berb/llm/client.py:394	attr | state.state = "closed"	berb.llm.client	Y
+S1	berb/llm/client.py:409	attr | state.state = "open"	berb.llm.client	Y
+S1	berb/llm/client.py:412	attr | state.state = "open"	berb.llm.client	Y
+S1	berb/llm/client.py:419	dict-key | "state": state.state,	berb.llm.client	Y
+S1	berb/llm/deep_query_client.py:387	dict-key | "status": status,	berb.llm.deep_query_client	Y
+S1	berb/llm/eval_dataset.py:233	dict-key | "stage": stage,	berb.llm.eval_dataset	N
+S1	berb/llm/nadirclaw_router.py:253	attr | self.mode = mode	berb.llm.nadirclaw_router	Y
+S2	berb/llm/cost_tracker.py:289	in close | self._closed = True	berb.llm.cost_tracker	Y
+S3	berb/llm/anthropic_adapter.py:163	if data.get("type") == "error" or "error" in data:	berb.llm.anthropic_adapter	Y
+S3	berb/llm/client.py:105	if provider.value != "unknown" and model_lower == provider.value:	berb.llm.client	Y
+S4	berb/llm/acp_client.py:517	raw string 'system' | if role == "system":	berb.llm.acp_client	Y
+S4	berb/llm/adaptive_temp.py:37	enum RetryStage | class RetryStage(StrEnum):	berb.llm.adaptive_temp	N
+S4	berb/llm/anthropic_adapter.py:163	raw string 'error' | if data.get("type") == "error" or "error" in data:	berb.llm.anthropic_adapter	Y
+S4	berb/llm/anthropic_adapter.py:90	raw string 'system' | if msg["role"] == "system":	berb.llm.anthropic_adapter	Y
+S4	berb/llm/batch_api.py:43	enum BatchStatus | class BatchStatus(StrEnum):	berb.llm.batch_api	N
+S4	berb/llm/batch_api.py:53	enum BatchPriority | class BatchPriority(StrEnum):	berb.llm.batch_api	N
+S4	berb/llm/client.py:105	raw string 'unknown' | if provider.value != "unknown" and model_lower == provider.value:	berb.llm.client	Y
+S4	berb/llm/client.py:1090	raw string 'system' | if msgs and msgs[0].get("role") == "system" and isinstance(msgs[0].get("content"), str):	berb.llm.client	Y
+S4	berb/llm/client.py:1342	raw string 'openrouter' | if fallback_provider == "openrouter"	berb.llm.client	Y
+S4	berb/llm/client.py:47	enum LLMProvider | class LLMProvider(StrEnum):	berb.llm.client	Y
+S4	berb/llm/client.py:542	raw string 'openrouter' | if provider == "openrouter":	berb.llm.client	Y
+S4	berb/llm/client.py:956	raw string 'system' | if msgs and msgs[0]["role"] == "system":	berb.llm.client	Y
+S4	berb/llm/cross_model.py:218	enum CrossModelVerdict | class CrossModelVerdict(StrEnum):	berb.llm.cross_model	Y
+S4	berb/llm/nadirclaw_router.py:330	raw string 'system' | if msg.get("role") == "system":	berb.llm.nadirclaw_router	Y
+S4	berb/llm/nadirclaw_router.py:342	raw string 'system' | if msg.get("role") == "system":	berb.llm.nadirclaw_router	Y
+S4	berb/llm/nadirclaw_router.py:526	raw string 'mid' | elif tier == "mid":	berb.llm.nadirclaw_router	Y
+S4	berb/llm/openrouter_adapter.py:81	enum ModelVariant | class ModelVariant(StrEnum):	berb.llm.openrouter_adapter	Y
+S4	berb/llm/output_limits.py:21	enum Stage | class Stage(IntEnum):	berb.llm.output_limits	Y
+S4	berb/llm/speculative_gen.py:39	enum SpeculativeOutcome | class SpeculativeOutcome(StrEnum):	berb.llm.speculative_gen	N
+S4	berb/llm/speculative_router.py:39	enum SpeculativeOutcome | class SpeculativeOutcome(StrEnum):	berb.llm.speculative_router	N
+S5	berb/llm/cost_tracker.py:315	global _tracker | global _tracker	berb.llm.cost_tracker	Y
+S5	berb/llm/deep_query_client.py:100	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:101	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:112	global _cb_state | global _cb_state  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:132	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:143	global _cb_state,_cb_consecutive_429s,_cb_cooldown_sec | global _cb_state, _cb_consecutive_429s, _cb_cooldown_sec  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S5	berb/llm/deep_query_client.py:144	global _cb_open_since,_cb_trip_count | global _cb_open_since, _cb_trip_count  # noqa: PLW0603	berb.llm.deep_query_client	Y
+S8	berb/llm/adaptive_temp.py:227	AdaptiveTemperatureClient.self._retry_counts | histogram of retries per call, kept for stats | self._retry_counts[retry_count] = self._retry_counts.get(retry_count, 0) + 1	berb.llm.adaptive_temp	N
+S8	berb/llm/client.py:378	CircuitBreaker._state (held on LLMClient) | breaker moves open to half_open after reset timeout | state.state = "half_open"	berb.llm.client	Y
+S8	berb/llm/client.py:404	CircuitBreaker._state (held on LLMClient) | failure_count across requests, drives trip | state.failure_count += 1	berb.llm.client	Y
+S8	berb/llm/client.py:412	CircuitBreaker._state (held on LLMClient) | breaker opens at fail_max failures | state.state = "open"	berb.llm.client	Y
+S8	berb/llm/client.py:451	LLMClient.self._rate_limiter | token-bucket rate limiter for all calls of this client | self._rate_limiter = TokenBucketRateLimiter(	berb.llm.client	Y
+S8	berb/llm/deep_query_client.py:146	module global _cb_consecutive_429s | counts 429s toward deep-query breaker trip | _cb_consecutive_429s += 1	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:149	module global _cb_cooldown_sec | cooldown doubles on half-open failure | _cb_cooldown_sec = min(_cb_cooldown_sec * 2, _CB_MAX_COOLDOWN)	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:161	module global _cb_state | breaker state set to open on threshold (gates calls) | _cb_state = _CB_OPEN	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:163	module global _cb_trip_count | total breaker trips in process | _cb_trip_count += 1	berb.llm.deep_query_client	Y
+S8	berb/llm/deep_query_client.py:76	module global _rate_limiter | min-interval gate state across all deep-query calls | _rate_limiter = RateLimiter(min_interval_sec=_RATE_LIMIT_SEC)	berb.llm.deep_query_client	Y

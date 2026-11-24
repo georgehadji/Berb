@@ -151,6 +151,7 @@ def search_semantic_scholar(
     limit: int = 20,
     year_min: int = 0,
     api_key: str = "",
+    raise_on_failure: bool = False,
 ) -> list[Paper]:
     """Search Semantic Scholar for papers matching *query*.
 
@@ -164,11 +165,16 @@ def search_semantic_scholar(
         If >0, restrict to papers published in this year or later.
     api_key:
         Optional S2 API key (raises rate limit to 10 req/s).
+    raise_on_failure:
+        Raise ``RuntimeError`` instead of returning ``[]`` when the request
+        fails or the circuit breaker is open, so callers can tell an outage
+        from a genuinely empty result.
 
     Returns
     -------
     list[Paper]
-        Parsed papers.  Empty list on network failure.
+        Parsed papers.  Empty list on network failure unless
+        ``raise_on_failure`` is set.
     """
     _rate_limiter.wait_sync()
 
@@ -188,6 +194,8 @@ def search_semantic_scholar(
         headers["x-api-key"] = api_key
     data = _request_with_retry(url, headers)
     if data is None:
+        if raise_on_failure:
+            raise RuntimeError("Semantic Scholar request failed")
         return []
 
     raw_papers = data.get("data", [])
