@@ -19,7 +19,7 @@ from berb.experiment.journal import ExperimentJournal, JournalNode
 from berb.experiment.plot_verdict import is_verdict_gating, verify_plots
 from berb.experiment.search.policy import SearchConfig, SearchPolicy
 from berb.experiment.search.scoring import ScoreBreakdown, score_node
-from berb.llm.cost_tracker import CostTracker, get_cost_tracker
+from berb.llm.cost_tracker import CostTracker, get_cost_tracker, node_attribution
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +69,12 @@ class BudgetGovernor:
         self._config = config
         self._cost_tracker = cost_tracker
         self._start_time = time.monotonic()
+        # The tracker is process-wide; the budget caps what *this* search spends.
+        self._baseline_usd = cost_tracker.total_usd()
+
+    def spent_usd(self) -> float:
+        """USD spent since this governor was created."""
+        return max(0.0, self._cost_tracker.total_usd() - self._baseline_usd)
 
     def check(self, nodes_completed: int) -> str | None:
         """Check budget limits.
@@ -82,7 +88,7 @@ class BudgetGovernor:
                 f"wallclock budget exceeded ({elapsed:.0f}s > {self._config.budget_wallclock_sec}s)"
             )
 
-        total_cost = self._cost_tracker.total_usd()
+        total_cost = self.spent_usd()
         if total_cost > self._config.budget_usd:
             return f"cost budget exceeded (${total_cost:.2f} > ${self._config.budget_usd:.2f})"
 
@@ -228,7 +234,7 @@ class SearchRunner:
             self._node_counter,
             best.node_id[:8] if best else "none",
             termination_reason,
-            self._cost_tracker.total_usd(),
+            self._governor.spent_usd(),
             elapsed,
         )
 
@@ -237,7 +243,7 @@ class SearchRunner:
             journal=self._journal,
             termination_reason=termination_reason,
             nodes_explored=self._node_counter,
-            total_cost_usd=self._cost_tracker.total_usd(),
+            total_cost_usd=self._governor.spent_usd(),
             total_wallclock_sec=elapsed,
         )
 
@@ -248,9 +254,23 @@ class SearchRunner:
         exp_plan: str,
         context: dict[str, Any],
     ) -> JournalNode | None:
+        """Expand one selection, charging its LLM calls to the new node."""
+        node_id = str(uuid.uuid4())
+        with node_attribution(node_id):
+            return await self._expand_node(node_id, selection, topic, exp_plan, context)
+
+    async def _expand_node(
+        self,
+        node_id: str,
+        selection: JournalNode | None,
+        topic: str,
+        exp_plan: str,
+        context: dict[str, Any],
+    ) -> JournalNode | None:
         """Expand one policy selection: generate code and evaluate it.
 
         Args:
+            node_id: Id for the node this expansion creates.
             selection: The node to expand, or None for a new root.
             topic: Research topic.
             exp_plan: Experiment plan.
@@ -286,7 +306,6 @@ class SearchRunner:
             return None
 
         candidate = candidates[0]
-        node_id = str(uuid.uuid4())
         phase = selection.phase if selection else context.get("phase", "baseline")
         depth = (selection.depth + 1) if selection else 0
 
@@ -304,6 +323,11 @@ class SearchRunner:
         # Evaluate in sandbox
         async with self._semaphore:
             node = await self._evaluate_node(node)
+
+        # This node's own spend (generation + evaluation), not the running total:
+        # ExperimentJournal sums node.cost_usd into its total_cost_usd. Set here,
+        # not in _evaluate_node, whose early return for a file-less node skips it.
+        node.cost_usd = self._cost_tracker.node_usd(node_id)
 
         self._node_counter += 1
         return node
@@ -391,9 +415,6 @@ class SearchRunner:
             maximize=self._metric_maximize,
             cohort=all_nodes if len(all_nodes) > 1 else None,
         )
-
-        # Update cost from tracker
-        node.cost_usd = self._cost_tracker.total_usd()
 
         # Update the journal with evaluation results
         self._journal.record_evaluation(

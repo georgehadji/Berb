@@ -141,6 +141,15 @@ def validate_model_for_provider(model: str, provider: LLMProvider) -> bool:
 _DEFAULT_TASK = "writing"
 
 
+def _usage_cost(usage: dict[str, Any]) -> float:
+    """Provider-reported cost in USD (OpenRouter's ``usage.cost``); 0.0 when absent or invalid."""
+    try:
+        value = float(usage.get("cost") or 0.0)
+    except (TypeError, ValueError):
+        return 0.0
+    return value if value > 0 else 0.0  # also rejects NaN
+
+
 def _default_model() -> str:
     """Model used when no configuration supplies one."""
     return resolve_chain(_DEFAULT_TASK)[0]
@@ -1051,7 +1060,7 @@ class LLMClient:
         callers, so nothing was ever recorded despite the tracker existing.
         """
         try:
-            from .cost_tracker import current_attribution, get_cost_tracker
+            from .cost_tracker import current_attribution, current_node, get_cost_tracker
 
             # A4-3: stage/phase come from the ambient contextvar the runner
             # sets around each stage; without them by_stage()/by_phase()
@@ -1063,6 +1072,8 @@ class LLMClient:
                 resp.completion_tokens,
                 stage=stage,
                 phase=phase,
+                node_id=current_node(),
+                reported_cost=resp.cost,
             )
         except Exception:  # noqa: BLE001
             logger.debug("Cost tracking failed", exc_info=True)
@@ -1161,6 +1172,7 @@ class LLMClient:
             truncated=(choice.get("finish_reason", "") == "length"),
             raw=data,
             cached_tokens=cached_tokens,
+            cost=_usage_cost(usage),
         )
 
     def _parse_responses_response(self, data: dict[str, Any], model: str) -> LLMResponse:

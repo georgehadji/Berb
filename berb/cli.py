@@ -420,6 +420,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             stop_on_gate=stop_on_gate,
             skip_noncritical=skip_noncritical,
             kb_root=kb_root_path,
+            reset_cost_tracker=True,
         )
     )
 
@@ -1011,6 +1012,7 @@ def cmd_literature(args: argparse.Namespace) -> int:
             stop_on_gate=False,
             skip_noncritical=True,
             kb_root=None,
+            reset_cost_tracker=True,
         )
     )
 

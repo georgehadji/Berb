@@ -79,6 +79,30 @@ def current_attribution() -> tuple[int | None, str | None]:
     return _current_stage.get(), _current_phase.get()
 
 
+_current_node: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "berb_cost_current_node", default=None
+)
+
+
+@contextmanager
+def node_attribution(node_id: str) -> Iterator[None]:
+    """Attribute every LLM cost recorded inside this block to search node *node_id*.
+
+    Search nodes expand concurrently under asyncio.gather, so a before/after
+    delta of the global total would charge each node for its siblings' calls.
+    """
+    token = _current_node.set(node_id)
+    try:
+        yield
+    finally:
+        _current_node.reset(token)
+
+
+def current_node() -> str | None:
+    """Return the ambient search node id for cost attribution."""
+    return _current_node.get()
+
+
 @dataclass(frozen=True)
 class CostEvent:
     """A single cost-tracking event.
@@ -130,6 +154,8 @@ class CostTracker:
         self._events: list[CostEvent] = []
         self._pricing = PricingTable(pricing_path)
         self._closed = False
+        # model -> calls that had neither a pricing entry nor a provider-reported cost
+        self._unpriced: dict[str, int] = {}
 
     # ─────────────────────────────────────────────────────────────────────────
     # Recording
@@ -159,11 +185,16 @@ class CostTracker:
         phase: str | None = None,
         node_id: str | None = None,
         purpose: str = "other",
+        reported_cost: float | None = None,
     ) -> CostEvent:
         """Convenience: build and record a CostEvent from LLM usage stats.
 
-        Computes cost from the pricing table. Unknown models are recorded
-        with cost_usd=0.0 and a warning is emitted.
+        A provider-reported cost above 0 wins: it is exact and reflects cache
+        discounts, while the pricing table is list price and may be a loose
+        suffix match. Otherwise the cost comes from the pricing table. With
+        neither, the call is recorded at $0.0, warned about once per model,
+        and listed under ``unpriced_models`` in the report, so a $0 here
+        reads as "unknown", not "free".
 
         Args:
             model: Full model identifier
@@ -173,17 +204,26 @@ class CostTracker:
             phase: Optional research phase
             node_id: Optional journal node ID
             purpose: Purpose category
+            reported_cost: Cost the provider returned for this call, if any.
 
         Returns:
             The recorded CostEvent.
         """
-        cost_usd = self._pricing.compute_cost(model, prompt_tokens, completion_tokens)
+        if reported_cost is not None and reported_cost > 0:
+            cost_usd: float | None = float(reported_cost)
+        else:
+            cost_usd = self._pricing.compute_cost(model, prompt_tokens, completion_tokens)
 
         if cost_usd is None:
-            logger.warning(
-                "pricing_unknown: model=%r has no pricing entry; cost set to 0.0",
-                model,
-            )
+            with self._lock:
+                first = model not in self._unpriced
+                self._unpriced[model] = self._unpriced.get(model, 0) + 1
+            if first:
+                logger.warning(
+                    "pricing_unknown: model=%r has no pricing entry and the provider "
+                    "reported no cost; recorded as $0.0, so spend is understated",
+                    model,
+                )
             cost_usd = 0.0
 
         event = CostEvent(
@@ -214,6 +254,11 @@ class CostTracker:
         """Total tokens across all events."""
         with self._lock:
             return sum(e.prompt_tokens + e.completion_tokens for e in self._events)
+
+    def node_usd(self, node_id: str) -> float:
+        """Cost attributed to one search node."""
+        with self._lock:
+            return sum(e.cost_usd for e in self._events if e.node_id == node_id)
 
     def by_stage(self) -> dict[int, float]:
         """Cost breakdown by pipeline stage."""
@@ -270,12 +315,14 @@ class CostTracker:
                 "by_phase": {k: round(v, 6) for k, v in self.by_phase().items()},
                 "num_events": len(self._events),
                 "pricing_version": self._pricing.version,
+                "unpriced_models": dict(self._unpriced),
             }
 
     def reset(self) -> None:
         """Clear all recorded events."""
         with self._lock:
             self._events.clear()
+            self._unpriced.clear()
 
     def close(self) -> dict[str, Any]:
         """Close the tracker and return the final report.

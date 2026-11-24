@@ -428,22 +428,44 @@ Output: VERIFIED, UNVERIFIED, or INACCURATE with evidence."""
         ``"perplexity" in model.lower()`` — model IDs like ``"sonar-pro"``
         don't match that, so record under the ``perplexity/<model>`` form.
         """
+        model = f"perplexity/{model_name}"
+        search_cost: float | None = None
         try:
             from berb.metrics.reasoning_cost_tracker import get_cost_tracker
 
             tracker = get_cost_tracker()
-            tracker.track(
+            record = tracker.track(
                 method="perplexity_search",
                 phase=model_name,
-                model=f"perplexity/{model_name}",
+                model=model,
                 input_tokens=usage.get("prompt_tokens", 0),
                 output_tokens=usage.get("completion_tokens", 0),
                 duration_ms=duration_ms,
                 run_id=self._run_id,
                 search_count=usage.get("num_search_queries", 1),
             )
+            search_cost = record.cost_usd  # includes the per-search add-on
         except Exception:  # noqa: BLE001
             logger.debug("Perplexity cost tracking failed (non-fatal)", exc_info=True)
+
+        # These calls bypass LLMClient, so without this they never reach the
+        # run's cost_report.json or the stage-12 budget.
+        try:
+            from berb.llm.cost_tracker import current_attribution
+            from berb.llm.cost_tracker import get_cost_tracker as get_run_tracker
+
+            stage, phase = current_attribution()
+            get_run_tracker().record_from_llm_response(
+                model,
+                int(usage.get("prompt_tokens", 0) or 0),
+                int(usage.get("completion_tokens", 0) or 0),
+                stage=stage,
+                phase=phase,
+                purpose="literature",
+                reported_cost=search_cost,
+            )
+        except Exception:  # noqa: BLE001
+            logger.debug("Run cost tracking failed for Perplexity (non-fatal)", exc_info=True)
 
     def _post_with_retry(self, payload: dict[str, Any]) -> dict[str, Any] | None:
         """POST to the chat completions endpoint with retry + circuit breaker."""
