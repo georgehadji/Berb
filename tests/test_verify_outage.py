@@ -35,6 +35,14 @@ def _result(status: verify.VerifyStatus, method: str = "openalex") -> verify.Cit
     )
 
 
+@pytest.fixture(autouse=True)
+def _isolated_search_cache(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """search_papers falls back to an on-disk cache; keep it out of the repo's."""
+    import berb.literature.cache as lit_cache
+
+    monkeypatch.setattr(lit_cache, "_DEFAULT_CACHE_DIR", tmp_path / "literature_cache")
+
+
 @pytest.fixture
 def tmp_verify_cache(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     cache = tmp_path / "citation_verify"
@@ -166,3 +174,78 @@ def test_cache_hit_keeps_matched_paper_doi(tmp_verify_cache):
 
     assert hit is not None and hit.matched_paper is not None
     assert hit.matched_paper.doi == "10.1/abc"
+
+
+# --- review follow-ups --------------------------------------------------
+
+
+def _paper(title: str) -> Paper:
+    return Paper(paper_id=title, title=title, source="openalex")
+
+
+def _one_source_down(monkeypatch, found: list[Paper]) -> None:
+    """OpenAlex answers with *found*; Semantic Scholar and arXiv are down."""
+
+    def boom(*_a, **_kw):
+        raise urllib.error.URLError("rate limited")
+
+    monkeypatch.setattr("berb.literature.search.search_openalex", lambda *a, **k: found)
+    monkeypatch.setattr("berb.literature.search.search_semantic_scholar", boom)
+    monkeypatch.setattr("berb.literature.search.search_arxiv", boom)
+    monkeypatch.setattr("berb.literature.search.time.sleep", lambda _s: None)
+
+
+def test_partial_outage_weak_match_is_unknown_not_hallucinated(monkeypatch):
+    _one_source_down(monkeypatch, [_paper("Graph Neural Networks For Protein Folding")])
+
+    assert verify.verify_by_title_search("A Brand New Preprint On Diffusion Models") is None
+
+
+def test_partial_outage_partial_match_is_unknown_not_suspicious(monkeypatch):
+    _one_source_down(monkeypatch, [_paper("Attention Is All You Need In Vision")])
+
+    assert verify.verify_by_title_search("Attention Is All You Need") is None
+
+
+def test_partial_outage_positive_match_still_verifies(monkeypatch):
+    _one_source_down(monkeypatch, [_paper("Attention Is All You Need")])
+
+    result = verify.verify_by_title_search("Attention Is All You Need")
+
+    assert result is not None and result.status is verify.VerifyStatus.VERIFIED
+
+
+def test_repeated_hallucinated_title_is_not_requeried(tmp_verify_cache, monkeypatch):
+    verify._session_misses.clear()
+    calls = []
+
+    def miss(_t):
+        calls.append(1)
+        return _result(verify.VerifyStatus.HALLUCINATED)
+
+    monkeypatch.setattr(verify, "verify_by_openalex", miss)
+    monkeypatch.setattr(
+        verify,
+        "verify_by_title_search",
+        lambda *a, **k: _result(verify.VerifyStatus.HALLUCINATED, "title_search"),
+    )
+
+    first = verify.verify_citations(_BIB, inter_verify_delay=0)
+    second = verify.verify_citations(_BIB, inter_verify_delay=0)
+
+    assert first.hallucinated == second.hallucinated == 1
+    assert len(calls) == 1
+    assert not list(tmp_verify_cache.glob("*.json"))  # still never written to disk
+    verify._session_misses.clear()
+
+
+def test_session_miss_expires(tmp_verify_cache, monkeypatch):
+    verify._session_misses.clear()
+    miss = _result(verify.VerifyStatus.HALLUCINATED)
+    verify._write_cache("T", miss)
+    assert verify._read_cache("T") is not None
+
+    monkeypatch.setattr(verify, "_MISS_TTL_SEC", -1.0)
+
+    assert verify._read_cache("T") is None
+    verify._session_misses.clear()

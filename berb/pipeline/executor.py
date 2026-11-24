@@ -335,6 +335,7 @@ def execute_stage(
                                 "status": prm_outcome.status,
                                 "model": prm_gate.model,
                                 "votes": prm_gate.votes,
+                                "votes_returned": prm_outcome.n_votes,
                             }
                             (stage_dir / "prm_score.json").write_text(
                                 _prm_json.dumps(prm_report, indent=2),

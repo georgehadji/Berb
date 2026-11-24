@@ -81,3 +81,40 @@ def test_legacy_cached_none_is_not_trusted(tmp_path):
     with patch("urllib.request.urlopen", _urlopen_for(_CROSSREF_OK, {"is_retracted": True})):
         record = resolve_retraction("k1", "10.1/a", cache_base=tmp_path)
     assert record.state is RetractionState.RETRACTED
+
+
+def _http_404(*_a, **_kw):
+    raise urllib.error.HTTPError("http://x", 404, "Not Found", {}, None)
+
+
+def test_legacy_cite_key_record_is_not_reused_for_another_paper(tmp_path):
+    store_lookup(RetractionRecord("smith2023", RetractionState.RETRACTED), cache_base=tmp_path)
+    with patch("urllib.request.urlopen", _urlopen_for(_CROSSREF_OK, {"is_retracted": False})):
+        record = resolve_retraction("smith2023", "10.1/other", cache_base=tmp_path)
+    assert record.state is RetractionState.NONE
+
+
+def test_work_missing_from_both_indexes_is_unknown_and_cached(tmp_path):
+    with patch("urllib.request.urlopen", _http_404):
+        first = resolve_retraction("k", "10.5281/zenodo.1", cache_base=tmp_path)
+    assert first.state is RetractionState.UNKNOWN
+
+    with patch("urllib.request.urlopen") as net:
+        again = resolve_retraction("k", "10.5281/zenodo.1", cache_base=tmp_path)
+    net.assert_not_called()  # both indexes answered, so it is a complete, cached result
+    assert again.state is RetractionState.UNKNOWN
+
+
+def test_openalex_404_with_clean_crossref_is_none_and_cached(tmp_path):
+    def fake(req, **_kw):
+        url = req.full_url if hasattr(req, "full_url") else str(req)
+        if "openalex.org" in url:
+            return _http_404()
+        return _urlopen_for(_CROSSREF_OK, None)(req)
+
+    with patch("urllib.request.urlopen", fake):
+        record = resolve_retraction("k", "10.1/a", cache_base=tmp_path)
+    assert record.state is RetractionState.NONE
+    with patch("urllib.request.urlopen") as net:
+        resolve_retraction("k", "10.1/a", cache_base=tmp_path)
+    net.assert_not_called()

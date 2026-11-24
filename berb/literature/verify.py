@@ -28,7 +28,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import StrEnum
 from pathlib import Path
 
@@ -549,7 +549,23 @@ def _cache_key(title: str, doi: str = "", arxiv_id: str = "") -> str:
     return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
+# HALLUCINATED is not persisted (see _write_cache), but re-querying every
+# source for the same fabricated title at stages 17, 22 and 23 is slow enough
+# to hit the verification timeout. Remember misses in-process for a short time.
+_MISS_TTL_SEC = 1800.0
+_session_misses: dict[tuple[str, str], tuple[float, CitationResult]] = {}
+
+
+def _session_key(title: str, doi: str, arxiv_id: str) -> tuple[str, str]:
+    return (str(_CACHE_DIR), _cache_key(title, doi, arxiv_id))
+
+
 def _read_cache(title: str, doi: str = "", arxiv_id: str = "") -> CitationResult | None:
+    hit = _session_misses.get(_session_key(title, doi, arxiv_id))
+    if hit is not None:
+        if time.monotonic() - hit[0] < _MISS_TTL_SEC:
+            return replace(hit[1])
+        _session_misses.pop(_session_key(title, doi, arxiv_id), None)
     cache_file = _CACHE_DIR / f"{_cache_key(title, doi, arxiv_id)}.json"
     try:
         data = json.loads(cache_file.read_text(encoding="utf-8"))
@@ -577,9 +593,13 @@ def _read_cache(title: str, doi: str = "", arxiv_id: str = "") -> CitationResult
 
 
 def _write_cache(title: str, result: CitationResult, doi: str = "", arxiv_id: str = "") -> None:
-    """Persist a verdict. HALLUCINATED is never cached: it is the verdict most
-    likely to be an outage artefact, and re-checking a few titles is cheap."""
-    if result.status in (VerifyStatus.SKIPPED, VerifyStatus.HALLUCINATED):
+    """Persist a verdict. HALLUCINATED is never written to disk: it is the
+    verdict most likely to be an outage artefact. It is only remembered
+    in-process for ``_MISS_TTL_SEC``."""
+    if result.status is VerifyStatus.HALLUCINATED:
+        _session_misses[_session_key(title, doi, arxiv_id)] = (time.monotonic(), result)
+        return
+    if result.status is VerifyStatus.SKIPPED:
         return
     try:
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -624,6 +644,18 @@ def verify_by_title_search(
         logger.debug("Title search for %r unverifiable: %s failed", title, sorted(failed_sources))
         return None
 
+    result = _judge_title_matches(title, results)
+    if failed_sources and result.status is not VerifyStatus.VERIFIED:
+        # A positive stands whatever failed; a negative or partial match drawn
+        # from incomplete sources is not evidence (the source that would have
+        # held the paper may be the one that was down).
+        logger.debug("Title search for %r inconclusive: %s failed", title, sorted(failed_sources))
+        return None
+    return result
+
+
+def _judge_title_matches(title: str, results: list[Paper]) -> CitationResult:
+    """Grade the best title match among *results* (may be empty)."""
     if not results:
         return CitationResult(
             cite_key="",
@@ -855,9 +887,18 @@ def verify_citations(
                     result.confidence,
                 )
 
-        # Later layers gave nothing (e.g. network error): the OpenAlex miss stands.
-        if result is None:
-            result = openalex_miss
+        # Later layers gave nothing (network error, rate limit): one index's
+        # miss is not proof of absence, so the citation is unverified, not
+        # hallucinated. OpenAlex lags on new preprints.
+        if result is None and openalex_miss is not None:
+            result = CitationResult(
+                cite_key=key,
+                title=title,
+                status=VerifyStatus.SKIPPED,
+                confidence=0.0,
+                method="openalex",
+                details="OpenAlex found no match; other sources unavailable, not confirmed absent",
+            )
 
         # Fallback: all layers failed (network issues)
         if result is None:

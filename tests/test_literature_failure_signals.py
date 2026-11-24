@@ -214,15 +214,17 @@ def test_openalex_miss_still_tries_semantic_scholar_without_an_arxiv_id(
     assert layers_run == ["openalex", "s2"]
 
 
-def test_openalex_miss_stands_when_no_later_layer_answers(
+def test_openalex_miss_is_unverified_when_no_later_layer_answers(
     layers_run: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """One index's miss is not proof of absence when the others were unreachable."""
     _stub(monkeypatch, layers_run, openalex=_MISS, arxiv=None, s2=None)
 
     report = verify.verify_citations(_BIB_EPRINT)
 
-    assert report.results[0].status == verify.VerifyStatus.HALLUCINATED
-    assert report.hallucinated == 1
+    assert report.results[0].status == verify.VerifyStatus.SKIPPED
+    assert report.hallucinated == 0
+    assert report.skipped == 1
 
 
 def test_a_doi_verdict_is_still_final(

@@ -251,7 +251,8 @@ def test_resolve_retraction_empty_doi_short_circuits_no_network(tmp_path) -> Non
 
 
 def test_resolve_retraction_uses_cache_before_network(tmp_path) -> None:
-    store_lookup(RetractionRecord("k1", RetractionState.RETRACTED), cache_base=tmp_path)
+    # The cache is keyed by DOI, not cite_key (cite_keys collide across papers).
+    store_lookup(RetractionRecord("doi:10.1234/x", RetractionState.RETRACTED), cache_base=tmp_path)
     with patch("urllib.request.urlopen") as mock_urlopen:
         record = resolve_retraction("k1", "10.1234/x", cache_base=tmp_path)
     mock_urlopen.assert_not_called()
