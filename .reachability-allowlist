@@ -82,6 +82,13 @@ berb.writing_guide      # EXEMPT — documentation aid for authors, not pipeline
 # Each is reachable, so none appears in this file. berb.llm.model_router and
 # berb/vision/, berb/research/{gap_analysis,idea_scorer,open_ended_discovery}
 # were deliberately NOT restored — see tasks/recovered_modules_research.md.
+#
+# D-11: CLOSED 2026-11-25 — berb.modes (operation_mode, workflow; 1180 loc)
+# deleted with tests/test_operation_mode.py. Its only importers were the
+# `berb write/experiment/review/rebuttal` stubs, which printed "ready for
+# integration" and ran nothing; wave 5 (SF-13, 3d3650a) made them exit 2
+# "not implemented", leaving the package unreachable (ratchet 686 -> 1866,
+# unnoticed while CI was billing-blocked). The ratchet is back at 686.
 
 # ---------------------------------------------------------------------------
 # D-03 — PARK. Pre-existing parked packages, re-dated 2026-09-02 so the whole
