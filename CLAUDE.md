@@ -27,7 +27,7 @@ pytest --cov=berb tests/                   # with coverage
 ruff check berb/ tests/
 ruff format --check berb/ tests/           # ruff is pinned (==0.15.22); format output drifts across versions
 mypy berb/ --python-version 3.11
-python scripts/check_reachability.py      # dead-code ratchet
+python scripts/check_reachability.py --allowlist .reachability-allowlist --max-unreachable-loc 686  # dead-code ratchet; flags must match ci.yml (no flags = never fails)
 ```
 
 `asyncio_mode = "auto"` in pytest config: async tests need no decorator.
