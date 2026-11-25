@@ -209,7 +209,6 @@ Pour une integration plus poussee, AutoResearchClaw inclut un **systeme d'adapta
 openclaw_bridge:
   use_cron: true              # ⏰ Executions de recherche planifiees
   use_message: true           # 💬 Notifications de progression (Discord/Slack/Telegram)
-  use_memory: true            # 🧠 Persistance des connaissances inter-sessions
   use_sessions_spawn: true    # 🔀 Lancement de sous-sessions paralleles pour les etapes concurrentes
   use_web_fetch: true         # 🌐 Recherche web en direct pendant la revue de litterature
   use_browser: false          # 🖥️ Collecte d'articles via navigateur
@@ -502,7 +501,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # Executions de recherche planifiees
   use_message: false               # Notifications de progression
-  use_memory: false                # Persistance des connaissances inter-sessions
   use_sessions_spawn: false        # Lancement de sous-sessions paralleles
   use_web_fetch: false             # Recherche web en direct
   use_browser: false               # Collecte d'articles via navigateur

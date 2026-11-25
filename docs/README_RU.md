@@ -203,7 +203,6 @@ experiment:
 openclaw_bridge:
   use_cron: true              # ⏰ Запуск исследований по расписанию
   use_message: true           # 💬 Уведомления о прогрессе (Discord/Slack/Telegram)
-  use_memory: true            # 🧠 Сохранение знаний между сессиями
   use_sessions_spawn: true    # 🔀 Запуск параллельных подсессий для независимых этапов
   use_web_fetch: true         # 🌐 Поиск в интернете в реальном времени при обзоре литературы
   use_browser: false          # 🖥️ Сбор статей через браузер
@@ -496,7 +495,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # Запуск исследований по расписанию
   use_message: false               # Уведомления о прогрессе
-  use_memory: false                # Сохранение знаний между сессиями
   use_sessions_spawn: false        # Запуск параллельных подсессий
   use_web_fetch: false             # Поиск в интернете в реальном времени
   use_browser: false               # Сбор статей через браузер

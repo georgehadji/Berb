@@ -67,7 +67,7 @@ def rc_config(tmp_path: Path) -> RCConfig:
             "on_gate_required": True,
         },
         "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-        "openclaw_bridge": {"use_memory": True, "use_message": True},
+        "openclaw_bridge": {"use_message": True},
         "llm": {
             "provider": "openai-compatible",
             "base_url": "http://localhost:1234/v1",
@@ -464,8 +464,6 @@ def test_execute_stage_gate_behavior_auto_approve_true_keeps_done(
         auto_approve_gates=True,
     )
     assert result.status == StageStatus.DONE
-    memory_entries = getattr(adapters.memory, "entries", [])
-    assert any(ns == "gates" and "auto-approved" in content for ns, content in memory_entries)
 
 
 def test_failed_gate_stage_is_failed_not_blocked(
@@ -938,7 +936,7 @@ class TestIterativeRefine:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -1041,7 +1039,7 @@ class TestIterativeRefine:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -2222,7 +2220,7 @@ class TestQualityGateEnsembleVeto:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -3643,7 +3641,7 @@ class TestComputeBudgetBlock:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -3709,7 +3707,7 @@ class TestPartialTimeoutStatus:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -3814,7 +3812,7 @@ class TestTimeoutAwareRefine:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -4306,7 +4304,7 @@ class TestRefineTimeoutAndIterationCap:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -4576,7 +4574,7 @@ class TestStdoutTruncation:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -4655,7 +4653,7 @@ class TestNoImproveStreakFix:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -4727,7 +4725,7 @@ class TestStdoutFailureDetection:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -4796,7 +4794,7 @@ class TestStdoutFailureDetection:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -4869,7 +4867,7 @@ class TestSecurityRejectionStatus:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -5128,7 +5126,7 @@ class TestConditionCoverageDetection:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -5204,7 +5202,7 @@ class TestConditionCoverageDetection:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -5303,7 +5301,7 @@ class TestRefineFilePreservation:
                 "on_gate_required": True,
             },
             "knowledge_base": {"backend": "markdown", "root": str(tmp_path / "kb")},
-            "openclaw_bridge": {"use_memory": True, "use_message": True},
+            "openclaw_bridge": {"use_message": True},
             "llm": {
                 "provider": "openai-compatible",
                 "base_url": "http://localhost:1234/v1",
@@ -5511,3 +5509,68 @@ class TestValidateDraftQuality:
         assert "section_analysis" in data
         assert "overall_warnings" in data
         assert "revision_directives" in data
+
+
+# W8: notifications.on_stage_fail was parsed and never read.
+
+
+def test_on_stage_fail_notifies(
+    monkeypatch: pytest.MonkeyPatch,
+    run_dir: Path,
+    rc_config: RCConfig,
+    adapters: AdapterBundle,
+) -> None:
+    import dataclasses
+
+    def broken(*_a: object, **_k: object):
+        raise RuntimeError("boom")
+
+    _write_prior_artifact(run_dir, 1, "goal.md", "goal")
+    _patch_stage_executor(monkeypatch, Stage.PROBLEM_DECOMPOSE, broken)
+    config = dataclasses.replace(
+        rc_config,
+        notifications=dataclasses.replace(
+            rc_config.notifications, on_stage_start=False, on_stage_fail=True
+        ),
+    )
+    result = rc_executor.execute_stage(
+        Stage.PROBLEM_DECOMPOSE,
+        run_dir=run_dir,
+        run_id="run-f",
+        config=config,
+        adapters=adapters,
+        auto_approve_gates=True,
+    )
+
+    assert result.status == StageStatus.FAILED
+    calls = adapters.message.calls  # type: ignore[attr-defined]
+    assert calls and calls[-1][1] == "stage-02-failed"
+    assert "boom" in calls[-1][2]
+
+
+def test_on_stage_fail_off_sends_nothing(
+    monkeypatch: pytest.MonkeyPatch,
+    run_dir: Path,
+    rc_config: RCConfig,
+    adapters: AdapterBundle,
+) -> None:
+    import dataclasses
+
+    def broken(*_a: object, **_k: object):
+        raise RuntimeError("boom")
+
+    _patch_stage_executor(monkeypatch, Stage.PROBLEM_DECOMPOSE, broken)
+    config = dataclasses.replace(
+        rc_config,
+        notifications=dataclasses.replace(rc_config.notifications, on_stage_start=False),
+    )
+    rc_executor.execute_stage(
+        Stage.PROBLEM_DECOMPOSE,
+        run_dir=run_dir,
+        run_id="run-f",
+        config=config,
+        adapters=adapters,
+        auto_approve_gates=True,
+    )
+
+    assert adapters.message.calls == []  # type: ignore[attr-defined]

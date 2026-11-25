@@ -342,7 +342,10 @@ Write a complete, well-structured section ({plan.estimated_tokens // 4} words).
 Include appropriate citations and cross-references.
 """
 
-        response = self._llm_client.chat(
+        # chat() is synchronous; on the event loop it ran the sections of a
+        # wave one after another. A thread per call makes them concurrent.
+        response = await asyncio.to_thread(
+            self._llm_client.chat,
             messages=[{"role": "user", "content": prompt}],
             system=f"You are writing the {plan.section_name} section of an academic paper.",
         )

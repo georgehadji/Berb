@@ -209,7 +209,6 @@ Fuer tiefere Integration enthaelt AutoResearchClaw ein **Bridge-Adapter-System**
 openclaw_bridge:
   use_cron: true              # ⏰ Geplante Forschungsdurchlaeufe
   use_message: true           # 💬 Fortschrittsbenachrichtigungen (Discord/Slack/Telegram)
-  use_memory: true            # 🧠 Sitzungsuebergreifende Wissenspersistenz
   use_sessions_spawn: true    # 🔀 Parallele Sub-Sessions fuer gleichzeitige Stufen
   use_web_fetch: true         # 🌐 Live-Websuche waehrend der Literaturrecherche
   use_browser: false          # 🖥️ Browserbasierte Paper-Sammlung
@@ -502,7 +501,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # Geplante Forschungsdurchlaeufe
   use_message: false               # Fortschrittsbenachrichtigungen
-  use_memory: false                # Sitzungsuebergreifende Wissenspersistenz
   use_sessions_spawn: false        # Parallele Sub-Sessions starten
   use_web_fetch: false             # Live-Websuche
   use_browser: false               # Browserbasierte Paper-Sammlung

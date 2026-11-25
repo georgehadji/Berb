@@ -558,10 +558,9 @@ For deeper integration with OpenClaw, AutoResearchClaw includes a bridge adapter
 ```yaml
 openclaw_bridge:
   use_cron: true              # Scheduled research runs
-  use_message: true           # Progress notifications (Discord/Slack/Telegram)
-  use_memory: true            # Cross-session knowledge persistence
+  use_message: true           # Progress notifications: notifications.channel console (log) or webhook (POST to notifications.target; Slack/Discord)
   use_sessions_spawn: true    # Spawn parallel sub-sessions for concurrent stages
-  use_web_fetch: true         # Check literature source URLs (needs a real fetch adapter; the built-in stubs record "unverified")
+  use_web_fetch: true         # Check literature source URLs: "reachable" / "unreachable" (SSRF-checked HTTP request)
   use_browser: false          # Browser-based paper collection
 ```
 

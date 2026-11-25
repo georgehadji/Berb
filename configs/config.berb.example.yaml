@@ -29,7 +29,6 @@ knowledge_base:
 openclaw_bridge:
   use_cron: false
   use_message: false
-  use_memory: false
   use_sessions_spawn: false
   use_web_fetch: false
   use_browser: false

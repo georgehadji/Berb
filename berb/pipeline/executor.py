@@ -149,6 +149,22 @@ from berb.pipeline.stage_impls._topic import (  # noqa: E402,F401
 # Stage _execute_* imports above trigger @register_stage decorators.
 
 
+def _notify_stage_failed(
+    config: RCConfig, adapters: AdapterBundle, stage: Stage, result: StageResult
+) -> None:
+    """Send ``notifications.on_stage_fail`` for a FAILED stage."""
+    if (
+        result.status == StageStatus.FAILED
+        and config.openclaw_bridge.use_message
+        and config.notifications.on_stage_fail
+    ):
+        adapters.message.notify(
+            config.notifications.channel,
+            f"stage-{int(stage):02d}-failed",
+            f"{stage.name} failed: {result.error or 'unknown error'}",
+        )
+
+
 def execute_stage(
     stage: Stage,
     *,
@@ -177,6 +193,7 @@ def execute_stage(
                     decision="retry",
                 )
                 _write_stage_meta(stage_dir, stage, run_id, result)
+                _notify_stage_failed(config, adapters, stage, result)
                 return result
 
     bridge = config.openclaw_bridge
@@ -186,8 +203,6 @@ def execute_stage(
             f"stage-{int(stage):02d}-start",
             f"Starting {stage.name}",
         )
-    if bridge.use_memory:
-        adapters.memory.append("stages", f"{run_id}:{int(stage)}:running")
 
     llm = None
     try:
@@ -364,10 +379,7 @@ def execute_stage(
     if result.status == StageStatus.DONE and gate_required(
         stage, config.security.hitl_required_stages
     ):
-        if auto_approve_gates:
-            if bridge.use_memory:
-                adapters.memory.append("gates", f"{run_id}:{int(stage)}:auto-approved")
-        else:
+        if not auto_approve_gates:
             result = StageResult(
                 stage=result.stage,
                 status=StageStatus.BLOCKED_APPROVAL,
@@ -383,8 +395,7 @@ def execute_stage(
                     f"Approval required for {stage.name}",
                 )
 
-    if bridge.use_memory:
-        adapters.memory.append("stages", f"{run_id}:{int(stage)}:{result.status.value}")
+    _notify_stage_failed(config, adapters, stage, result)
 
     _write_stage_meta(stage_dir, stage, run_id, result)
 

@@ -232,11 +232,15 @@ def _execute_search_strategy(
                     # A stub made no request: record that, not a verified 200 (BR-26).
                     src["status"] = "unverified"
                     continue
+                # API endpoints answer a bare request with 400 although the
+                # service is up; 404/410 and 5xx mean the source is not there.
+                code = response.status_code
                 src["status"] = (
-                    "verified" if response.status_code in (200, 301, 302, 405) else "unreachable"
+                    "reachable" if code < 500 and code not in (404, 410) else "unreachable"
                 )
-                src["http_status"] = response.status_code
-            except Exception:  # noqa: BLE001
+                src["http_status"] = code
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Source check failed for %s: %s", src.get("url"), exc)
                 src["status"] = "unknown"
     (stage_dir / "search_plan.yaml").write_text(
         yaml.dump(plan, default_flow_style=False, allow_unicode=True),

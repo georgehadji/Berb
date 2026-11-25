@@ -209,7 +209,6 @@ Para una integracion mas profunda, AutoResearchClaw incluye un **sistema de adap
 openclaw_bridge:
   use_cron: true              # ⏰ Ejecuciones de investigacion programadas
   use_message: true           # 💬 Notificaciones de progreso (Discord/Slack/Telegram)
-  use_memory: true            # 🧠 Persistencia de conocimiento entre sesiones
   use_sessions_spawn: true    # 🔀 Generar sub-sesiones paralelas para etapas concurrentes
   use_web_fetch: true         # 🌐 Busqueda web en vivo durante la revision de literatura
   use_browser: false          # 🖥️ Recopilacion de articulos basada en navegador
@@ -502,7 +501,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # Ejecuciones de investigacion programadas
   use_message: false               # Notificaciones de progreso
-  use_memory: false                # Persistencia de conocimiento entre sesiones
   use_sessions_spawn: false        # Generar sub-sesiones paralelas
   use_web_fetch: false             # Busqueda web en vivo
   use_browser: false               # Recopilacion de articulos basada en navegador

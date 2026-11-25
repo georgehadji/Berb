@@ -209,7 +209,6 @@ experiment:
 openclaw_bridge:
   use_cron: true              # ⏰ 예약된 연구 실행
   use_message: true           # 💬 진행 상황 알림 (Discord/Slack/Telegram)
-  use_memory: true            # 🧠 세션 간 지식 영속성
   use_sessions_spawn: true    # 🔀 동시 단계를 위한 병렬 서브세션 생성
   use_web_fetch: true         # 🌐 문헌 검토 중 실시간 웹 검색
   use_browser: false          # 🖥️ 브라우저 기반 논문 수집
@@ -502,7 +501,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # 예약된 연구 실행
   use_message: false               # 진행 상황 알림
-  use_memory: false                # 세션 간 지식 영속성
   use_sessions_spawn: false        # 병렬 서브세션 생성
   use_web_fetch: false             # 실시간 웹 검색
   use_browser: false               # 브라우저 기반 논문 수집
