@@ -13,6 +13,8 @@ import json
 import logging
 import os
 import tempfile
+from collections.abc import Iterable
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -57,22 +59,90 @@ def write_heartbeat(run_dir: Path, stage: Stage, run_id: str) -> None:
 # ============================================================================
 
 
-def write_checkpoint(run_dir: Path, stage: Stage, run_id: str) -> None:
-    """Write checkpoint atomically via temp file + rename to prevent corruption.
+@dataclass(frozen=True)
+class CheckpointState:
+    """What a run directory's checkpoint says about resuming it (PC-6).
 
-    Includes SHA-256 checksum for integrity validation and fsync() for
-    durability against power failure/crashes.
+    ``next_stage`` is the first stage, in DAG order, that this run has not
+    completed; None when the run is complete or the checkpoint is unreadable.
     """
-    checkpoint = {
+
+    completed: frozenset[Stage]
+    next_stage: Stage | None
+    complete: bool
+    unreadable: bool = False
+
+
+def _checksum(stage_num: object, stage_name: object, run_id: object) -> str:
+    # Unchanged since before completed_stages existed, so older builds still
+    # validate (and fall back to last_completed_stage on) a newer checkpoint.
+    data = f"{stage_num}:{stage_name}:{run_id}"
+    return hashlib.sha256(data.encode()).hexdigest()[:16]
+
+
+def _completed_from(data: dict) -> set[int]:
+    """Completed stage numbers recorded in a parsed checkpoint."""
+    if isinstance(data.get("completed_stages"), list):
+        return {int(n) for n in data["completed_stages"]}
+    # Legacy format: only a high-water mark, read as "everything up to it".
+    from berb.pipeline.resolution import resolve_stage_order
+
+    last = data.get("last_completed_stage")
+    if last is None:
+        return set()
+    order = list(resolve_stage_order())
+    last_stage = Stage(last)
+    if last_stage not in order:
+        return set()
+    return {int(s) for s in order[: order.index(last_stage) + 1]}
+
+
+def _load_completed(run_dir: Path) -> set[int]:
+    state = load_checkpoint(run_dir)
+    return {int(s) for s in state.completed} if state else set()
+
+
+def write_checkpoint(run_dir: Path, stage: Stage, run_id: str) -> None:
+    """Record *stage* as completed, atomically (temp file + rename).
+
+    Keeps the set of completed stages, not just the last one written: in a
+    parallel DAG level a later stage can finish after an earlier one failed,
+    and a high-water mark would make resume skip the failed stage (PC-6).
+    Includes a SHA-256 checksum and fsync() for durability.
+    """
+    _write_checkpoint_file(run_dir, _load_completed(run_dir) | {int(stage)}, stage, run_id)
+
+
+def forget_completed(run_dir: Path, stage_nums: Iterable[int]) -> None:
+    """Mark *stage_nums* as not completed, e.g. after a PIVOT archives them (PC-5)."""
+    state = load_checkpoint(run_dir)
+    if state is None or state.unreadable:
+        return
+    done = {int(s) for s in state.completed} - {int(n) for n in stage_nums}
+    if not done:
+        (run_dir / "checkpoint.json").unlink(missing_ok=True)
+        return
+    _write_checkpoint_file(run_dir, done, Stage(max(done)), _read_run_id(run_dir))
+
+
+def _read_run_id(run_dir: Path) -> str:
+    try:
+        data = json.loads((run_dir / "checkpoint.json").read_text(encoding="utf-8"))
+        return str(data.get("run_id", ""))
+    except (OSError, json.JSONDecodeError):
+        return ""
+
+
+def _write_checkpoint_file(run_dir: Path, done: set[int], stage: Stage, run_id: str) -> None:
+    completed = sorted(done)
+    checkpoint: dict[str, object] = {
         "last_completed_stage": int(stage),
         "last_completed_name": stage.name,
+        "completed_stages": completed,
         "run_id": run_id,
         "timestamp": _utcnow_iso(),
     }
-
-    # Compute checksum of core fields
-    checksum_data = f"{int(stage)}:{stage.name}:{run_id}"
-    checkpoint["checksum"] = hashlib.sha256(checksum_data.encode()).hexdigest()[:16]
+    checkpoint["checksum"] = _checksum(int(stage), stage.name, run_id)
 
     target = run_dir / "checkpoint.json"
     fd, tmp_path = tempfile.mkstemp(dir=run_dir, suffix=".tmp", prefix="checkpoint_")
@@ -114,8 +184,7 @@ def validate_checkpoint_checksum(data: dict) -> bool:
         logger.warning("Checkpoint missing required fields for checksum validation")
         return False
 
-    checksum_data = f"{stage}:{stage_name}:{run_id}"
-    actual = hashlib.sha256(checksum_data.encode()).hexdigest()[:16]
+    actual = _checksum(stage, stage_name, run_id)
 
     if actual != expected:
         logger.error(
@@ -129,11 +198,14 @@ def validate_checkpoint_checksum(data: dict) -> bool:
     return True
 
 
-def read_checkpoint(run_dir: Path) -> Stage | None:
-    """Read checkpoint and return the NEXT stage to execute, or None if no checkpoint.
+def load_checkpoint(run_dir: Path) -> CheckpointState | None:
+    """Read a run's checkpoint. None means there is no checkpoint file.
 
-    Validates checksum before returning. Returns None if corrupted.
-    Now uses DAG resolution instead of STAGE_SEQUENCE.
+    Resume starts at the first stage in DAG order that is not completed,
+    ignoring stages before the earliest completed one (a run started with
+    ``--from-stage`` never ran those here). A finished run reads as
+    ``complete`` rather than as "no checkpoint", which made ``--resume``
+    restart at stage 1 and overwrite the paper (PC-6).
     """
     from berb.pipeline.resolution import resolve_stage_order
 
@@ -142,29 +214,27 @@ def read_checkpoint(run_dir: Path) -> Stage | None:
         return None
     try:
         data = json.loads(cp_path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or not validate_checkpoint_checksum(data):
+            raise ValueError("checksum validation failed")
+        done = _completed_from(data)
+    except (OSError, json.JSONDecodeError, TypeError, ValueError) as e:
+        logger.error("Checkpoint at %s is unreadable (%s)", cp_path, e)
+        return CheckpointState(frozenset(), None, complete=False, unreadable=True)
 
-        if not validate_checkpoint_checksum(data):
-            logger.error(
-                "Checkpoint at %s failed checksum validation. "
-                "File may be corrupted. Consider deleting and restarting.",
-                cp_path,
-            )
-            return None
+    order = list(resolve_stage_order())
+    first_done = next((i for i, s in enumerate(order) if int(s) in done), len(order))
+    next_stage = next((s for s in order[first_done:] if int(s) not in done), None)
+    completed = frozenset(s for s in order if int(s) in done)
+    return CheckpointState(completed, next_stage, complete=bool(done) and next_stage is None)
 
-        last_num = data.get("last_completed_stage")
-        if last_num is None:
-            return None
-        last_stage = Stage(last_num)
-        order = resolve_stage_order()
-        for i, stage in enumerate(order):
-            if stage == last_stage:
-                if i + 1 < len(order):
-                    return order[i + 1]
-                return None
-        return None
-    except (json.JSONDecodeError, TypeError, ValueError) as e:
-        logger.error("Failed to parse checkpoint: %s", e)
-        return None
+
+def read_checkpoint(run_dir: Path) -> Stage | None:
+    """Return the next stage to execute, or None (no checkpoint, unreadable, or complete).
+
+    Use :func:`load_checkpoint` to tell those three apart.
+    """
+    state = load_checkpoint(run_dir)
+    return state.next_stage if state else None
 
 
 # ============================================================================

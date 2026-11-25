@@ -58,7 +58,14 @@ logger = logging.getLogger(__name__)
 
 
 def _should_pivot(result: StageResult, pivot_depth: int) -> bool:
-    return result.decision in DECISION_ROLLBACK and pivot_depth < MAX_DECISION_PIVOTS
+    """Whether stage 15 asked for a rollback.
+
+    The cap is not applied here: _handle_pivot applies it, so a decision past
+    the cap still gets the quality check and forced PROCEED instead of flowing
+    silently into writing (PC-4). *pivot_depth* is kept for callers.
+    """
+    _ = pivot_depth
+    return result.decision in DECISION_ROLLBACK
 
 
 def _get_rollback_target(stage: Stage, decision: str) -> Stage:
@@ -478,10 +485,13 @@ async def execute_pipeline(
                 ]
             )
 
-        for result in stage_results:
-            results.append(result)
-            previous_status = result.status
+        # PC-10: record every stage that ran in this level before acting on any
+        # of them; a FAILED sibling used to break out before the others that
+        # finished (and checkpointed) were appended to results.
+        results.extend(stage_results)
+        previous_status = stage_results[-1].status
 
+        for result in stage_results:
             stage = result.stage
 
             # Experiment diagnosis + repair after Stage 14
@@ -628,7 +638,9 @@ async def _handle_pivot(
     event_store: EventStore,
 ) -> list[StageResult]:
     """Handle a PIVOT/REFINE decision from the orchestrator."""
-    pivot_count = read_pivot_count(run_dir)
+    # The recursion depth is a floor: a corrupt or deleted decision_history.json
+    # must not reset the cap (PC-4).
+    pivot_count = max(read_pivot_count(run_dir), pivot_depth)
     if _should_force_proceed(pivot_count, run_dir):
         logger.warning("Consecutive REFINE cycles produced empty metrics — forcing PROCEED")
         print(f"[{run_id}] Consecutive empty metrics across REFINE cycles — forcing PROCEED")

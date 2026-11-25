@@ -468,6 +468,31 @@ def test_execute_stage_gate_behavior_auto_approve_true_keeps_done(
     assert any(ns == "gates" and "auto-approved" in content for ns, content in memory_entries)
 
 
+def test_failed_gate_stage_is_failed_not_blocked(
+    monkeypatch: pytest.MonkeyPatch,
+    run_dir: Path,
+    rc_config: RCConfig,
+    adapters: AdapterBundle,
+) -> None:
+    """PC-12: a gate stage that crashed must not be shown as awaiting approval."""
+    _write_prior_artifact(run_dir, 4, "candidates.jsonl", '{"title": "paper"}')
+
+    def crashing_executor(*_a: object, **_kw: object):
+        raise RuntimeError("screening crashed")
+
+    _patch_stage_executor(monkeypatch, Stage.LITERATURE_SCREEN, crashing_executor)
+    result = rc_executor.execute_stage(
+        Stage.LITERATURE_SCREEN,
+        run_dir=run_dir,
+        run_id="run-pc12",
+        config=rc_config,
+        adapters=adapters,
+        auto_approve_gates=False,
+    )
+    assert result.status == StageStatus.FAILED
+    assert result.decision != "block"
+
+
 def test_execute_stage_gate_behavior_auto_approve_false_blocks(
     monkeypatch: pytest.MonkeyPatch,
     run_dir: Path,

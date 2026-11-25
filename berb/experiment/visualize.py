@@ -715,7 +715,11 @@ def generate_all_charts(
 
     # Collect experiment runs
     runs: list[dict[str, Any]] = []
+    from berb.pipeline._io_helpers import _is_archived_stage_path
+
     for stage_subdir in sorted(run_dir.glob("stage-*/runs")):
+        if _is_archived_stage_path(stage_subdir):
+            continue
         for run_file in sorted(stage_subdir.glob("*.json")):
             try:
                 data = json.loads(run_file.read_text(encoding="utf-8"))

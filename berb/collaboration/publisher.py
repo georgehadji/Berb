@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from berb.collaboration.repository import ResearchRepository
+from berb.pipeline._io_helpers import _is_archived_stage_path, _stage_rank
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,9 @@ class ArtifactPublisher:
 
     def _extract_literature(self, run_dir: Path) -> Any:
         """Extract literature summary from stage 7."""
-        for stage_dir in run_dir.glob("stage-07*"):
+        for stage_dir in sorted(run_dir.glob("stage-07*"), key=_stage_rank, reverse=True):
+            if _is_archived_stage_path(stage_dir):
+                continue
             for name in ("synthesis.md", "synthesis.json"):
                 path = stage_dir / name
                 if path.exists():
@@ -75,7 +78,9 @@ class ArtifactPublisher:
 
     def _extract_experiments(self, run_dir: Path) -> Any:
         """Extract experiment results from stage 14."""
-        for stage_dir in run_dir.glob("stage-14*"):
+        for stage_dir in sorted(run_dir.glob("stage-14*"), key=_stage_rank, reverse=True):
+            if _is_archived_stage_path(stage_dir):
+                continue
             summary = stage_dir / "experiment_summary.json"
             if summary.exists():
                 try:
@@ -86,7 +91,9 @@ class ArtifactPublisher:
 
     def _extract_code(self, run_dir: Path) -> Any:
         """Extract code template from stage 10."""
-        for stage_dir in run_dir.glob("stage-10*"):
+        for stage_dir in sorted(run_dir.glob("stage-10*"), key=_stage_rank, reverse=True):
+            if _is_archived_stage_path(stage_dir):
+                continue
             main_py = stage_dir / "main.py"
             if main_py.exists():
                 return main_py.read_text(encoding="utf-8")[:10000]
@@ -94,7 +101,9 @@ class ArtifactPublisher:
 
     def _extract_review(self, run_dir: Path) -> Any:
         """Extract review feedback from stage 18."""
-        for stage_dir in run_dir.glob("stage-18*"):
+        for stage_dir in sorted(run_dir.glob("stage-18*"), key=_stage_rank, reverse=True):
+            if _is_archived_stage_path(stage_dir):
+                continue
             review = stage_dir / "review.md"
             if review.exists():
                 return review.read_text(encoding="utf-8")[:5000]

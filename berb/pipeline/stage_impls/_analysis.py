@@ -33,7 +33,9 @@ logger = logging.getLogger(__name__)
 
 @register_stage(
     stage=Stage.RESULT_ANALYSIS,
-    depends_on=frozenset({Stage.EXPERIMENT_RUN}),
+    # PC-10: reads ITERATIVE_REFINE's selection_bias.json, so it must not
+    # share a DAG level with stage 13.
+    depends_on=frozenset({Stage.EXPERIMENT_RUN, Stage.ITERATIVE_REFINE}),
     contract=StageContract(
         stage=Stage.RESULT_ANALYSIS,
         input_files=("runs/", "selection_bias.json"),
@@ -816,32 +818,24 @@ def _parse_decision(text: str) -> str:
             break
     search_text = decision_section or text[:500]
 
-    # First try: look for a line that is just the keyword (possibly with
+    # First try: the first line that is just the keyword (possibly with
     # whitespace / markdown bold / trailing punctuation).
     for line in search_text.splitlines():
-        stripped = line.strip().strip("*").strip("#").strip()
+        stripped = line.strip().strip("*").strip("#").strip().rstrip(".:!")
         if stripped.upper() in ("PROCEED", "PIVOT", "REFINE"):
             return stripped.lower()
 
-    # Fallback: regex for standalone word boundaries so that
-    # "PIVOT is not warranted" does NOT match as a decision.
-    for kw in ("PIVOT", "REFINE", "PROCEED"):
-        # Only match if the keyword appears as the FIRST keyword-class token
-        # on its own (not embedded in a sentence saying "not PIVOT").
-        pattern = _re.compile(r"(?:^|##\s*Decision\s*\n\s*)" + kw, _re.IGNORECASE | _re.MULTILINE)
-        if pattern.search(search_text):
-            return kw.lower()
-
-    # Last resort: position-based — prefer whichever keyword appears LAST
-    # (the final conclusion after deliberation is more reliable than early mentions)
-    # BUG-DA8-08: Old code always returned "refine" when both keywords present
-    search_upper = search_text.upper()
-    last_refine = search_upper.rfind("REFINE")
-    last_pivot = search_upper.rfind("PIVOT")
-    if last_refine >= 0 and (last_pivot < 0 or last_refine > last_pivot):
-        return "refine"
-    if last_pivot >= 0 and (last_refine < 0 or last_pivot > last_refine):
-        return "pivot"
+    # Fallback (SI-04): the first keyword, as a whole word, in a clause that
+    # does not negate it. Whole words keep "Refinements" from reading as
+    # REFINE; the clause check keeps "PIVOT is not warranted" and "no reason
+    # to PIVOT" from reading as PIVOT, while "not PROCEED; PIVOT instead"
+    # still finds PIVOT in its own clause.
+    keyword = _re.compile(r"\b(PROCEED|PIVOT|REFINE)\b", _re.IGNORECASE)
+    negation = _re.compile(r"\b(not|no|never|without|unwarranted|unnecessary)\b|n't\b", _re.I)
+    for clause in _re.split(r"[;,.!?\n]", search_text):
+        match = keyword.search(clause)
+        if match and not negation.search(clause):
+            return match.group(1).lower()
     return "proceed"
 
 
@@ -928,7 +922,11 @@ def _execute_research_decision(
     _exp_sum_path = run_dir / "experiment_summary_best.json"
     if not _exp_sum_path.is_file():
         _exp_sum_path = None
-        for _s14 in sorted(run_dir.glob("stage-14*/experiment_summary.json"), reverse=True):
+        from berb.pipeline._io_helpers import _stage_rank
+
+        for _s14 in sorted(
+            run_dir.glob("stage-14*/experiment_summary.json"), key=_stage_rank, reverse=True
+        ):
             _exp_sum_path = _s14
             break
     if _exp_sum_path and _exp_sum_path.is_file():

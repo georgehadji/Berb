@@ -351,6 +351,50 @@ def test_resume_finds_existing_checkpoint_dir(
     assert old_run_dir.name in captured.out
 
 
+def test_resume_of_a_finished_run_does_not_rerun_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """PC-6: --resume on a complete run must not restart at stage 1."""
+    import hashlib
+
+    from berb.pipeline.checkpoint import write_checkpoint
+    from berb.pipeline.resolution import resolve_stage_order
+
+    monkeypatch.chdir(tmp_path)
+    config_path = tmp_path / "config.arc.yaml"
+    _write_valid_config(config_path)
+    topic_hash = hashlib.sha256(b"Synthetic benchmark research").hexdigest()[:6]
+    old_run_dir = tmp_path / "artifacts" / f"rc-20260319-100000-{topic_hash}"
+    old_run_dir.mkdir(parents=True)
+    for stage in resolve_stage_order():
+        write_checkpoint(old_run_dir, stage, old_run_dir.name)
+
+    import berb.pipeline.runner as runner_mod
+
+    calls: list[dict] = []
+
+    async def _fake_execute_pipeline(**kw):
+        calls.append(kw)
+        return []
+
+    monkeypatch.setattr(runner_mod, "execute_pipeline", _fake_execute_pipeline)
+    args = argparse.Namespace(
+        config=str(config_path),
+        topic=None,
+        output=None,
+        from_stage=None,
+        auto_approve=False,
+        skip_preflight=True,
+        resume=True,
+        skip_noncritical_stage=False,
+        no_graceful_degradation=False,
+    )
+
+    assert rc_cli.cmd_run(args) == 0
+    assert calls == []
+    assert "already complete" in capsys.readouterr().out
+
+
 def test_resume_no_checkpoint_warns(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:

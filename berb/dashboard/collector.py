@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from berb.pipeline._io_helpers import _is_archived_stage_path
+
 logger = logging.getLogger(__name__)
 
 
@@ -116,6 +118,8 @@ class DashboardCollector:
 
         # --- experiment metrics (results.json) ---
         for results_path in run_dir.rglob("results.json"):
+            if _is_archived_stage_path(results_path):
+                continue
             try:
                 with results_path.open() as f:
                     snap.metrics = json.load(f)

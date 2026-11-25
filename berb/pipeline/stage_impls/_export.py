@@ -40,6 +40,7 @@ from berb.pipeline._helpers import (
     _topic_constraint_block,  # noqa: F401
     reconcile_figure_refs,
 )
+from berb.pipeline._io_helpers import _is_archived_stage_path, _stage_rank
 from berb.pipeline.contracts import StageContract
 from berb.pipeline.registry import register_stage
 from berb.pipeline.stage_impls._archive import _sanitize_fabricated_data
@@ -463,9 +464,15 @@ def _execute_export_publish(
     # BUG-215: Also search stage-14* versioned dirs (stage-14_v1, etc.)
     # in case stage-14/ was renamed and never recreated.
     _chart_search_dirs = [stage_dir / "charts", run_dir / "stage-14" / "charts"]
-    for _s14_charts in sorted(run_dir.glob("stage-14*/charts"), reverse=True):
-        if _s14_charts not in _chart_search_dirs:
-            _chart_search_dirs.append(_s14_charts)
+    # Archived attempts are a fallback only: with a live stage-14 present they
+    # would inject pre-pivot charts into the current paper (PC-5).
+    _live_s14 = (run_dir / "stage-14" / "charts").is_dir()
+    for _s14_charts in sorted(run_dir.glob("stage-14*/charts"), key=_stage_rank, reverse=True):
+        if _s14_charts in _chart_search_dirs:
+            continue
+        if _live_s14 and _is_archived_stage_path(_s14_charts):
+            continue
+        _chart_search_dirs.append(_s14_charts)
     for _chart_src_dir in _chart_search_dirs:
         if _chart_src_dir.is_dir():
             chart_files.extend(sorted(_chart_src_dir.glob("*.png")))
@@ -1232,7 +1239,7 @@ def _execute_export_publish(
 
             # Copy FigureAgent charts from stage-14 (any version)
             _fa_charts_found = False
-            for _fa_dir in sorted(run_dir.glob("stage-14*/charts"), reverse=True):
+            for _fa_dir in sorted(run_dir.glob("stage-14*/charts"), key=_stage_rank, reverse=True):
                 _fa_pngs = list(_fa_dir.glob("fig_*.png"))
                 if _fa_pngs:
                     import shutil

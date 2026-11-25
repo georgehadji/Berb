@@ -37,19 +37,54 @@ def _read_prior_artifact(run_dir: Path, filename: str) -> str | None:
     return found.read_text(encoding="utf-8")
 
 
+# stage-NN (live), stage-NN_vK (archived by a PIVOT/REFINE rollback, see
+# iterative._version_rollback_stages) and stage-NN_repair_vK (repair attempts).
+_STAGE_DIR_RE = re.compile(r"^stage-(\d+)(?:_(v|repair_v)(\d+))?$")
+_KIND_RANK = {"repair_v": 2, None: 1, "v": 0}
+
+
+def _stage_rank(path: Path) -> tuple[int, int, int]:
+    """Sort key ranking a path by the stage directory it lives in.
+
+    Within one stage: repair attempts (newest first, as before), then the live
+    ``stage-NN``, then rollback archives ``stage-NN_vK`` (newest first). A
+    plain string sort ranks ``stage-08_v1`` above ``stage-08``, so after a
+    PIVOT readers picked the pre-pivot artifact (PC-5, SI-03). Use with the
+    caller's existing ``reverse`` flag. Paths outside a stage dir rank lowest.
+    """
+    for part in reversed(path.parts):
+        m = _STAGE_DIR_RE.match(part)
+        if m:
+            num, kind, version = m.groups()
+            return (int(num), _KIND_RANK[kind], int(version or 0))
+    return (-1, -1, -1)
+
+
+def _is_archived_stage_path(path: Path) -> bool:
+    """True if *path* lies in a rollback archive ``stage-NN_vK``.
+
+    Aggregators that should only see the current attempt filter these out.
+    """
+    for part in reversed(path.parts):
+        m = _STAGE_DIR_RE.match(part)
+        if m:
+            return m.group(2) == "v"
+    return False
+
+
 def _find_prior_file(run_dir: Path, filename: str) -> Path | None:
     """Locate a prior stage artifact file by filename.
 
-    Searches stage directories in reverse order.  Returns the *last*
-    (reverse-sorted first) match.
+    Prefers the highest stage number, and within a stage the live directory
+    over its rollback archives (see :func:`_stage_rank`).
     """
     found = None
     if not run_dir or not run_dir.is_dir():
         return None
-    candidates = sorted(run_dir.glob("stage-*/" + filename), reverse=True)
+    candidates = sorted(run_dir.glob("stage-*/" + filename), key=_stage_rank, reverse=True)
     found = candidates[0] if candidates else None
     if found is None:
-        candidates = sorted(run_dir.glob("stage-*/*/" + filename), reverse=True)
+        candidates = sorted(run_dir.glob("stage-*/*/" + filename), key=_stage_rank, reverse=True)
         found = candidates[0] if candidates else None
     if found is None:
         candidates = sorted(run_dir.glob(filename), reverse=True)
