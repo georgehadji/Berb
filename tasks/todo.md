@@ -450,3 +450,52 @@ Not fixed: BR-26's message/memory stubs still log only to in-process lists,
 and no real web-fetch adapter exists. The parallel writer's `_write_section`
 still calls a sync `llm.chat` inside a coroutine, so sections are not
 actually concurrent. LL-22 was not run against a real acpx.
+
+# Wave 8: real adapters, acpx transport, concurrent writer (2026-11-25)
+
+Research: `tasks/not_fixed_research.md`. Decisions taken with the user's
+"Yes, start wave 8": narrower ACP permission default, retire `use_memory`,
+`reachable` status semantics.
+
+- [x] W8-1 `berb run` and `POST /pipeline/start` build adapters with
+      `create_adapters(config)` (was a bare `AdapterBundle()`).
+- [x] W8-2 `HttpWebFetchAdapter`: SSRF check per redirect hop, HEAD then GET,
+      10 s timeout. Stage 3 records `reachable` (< 500, not 404/410) or
+      `unreachable`. MCP placeholder adapters deleted.
+- [x] W8-3 `ConsoleMessageAdapter` / `WebhookMessageAdapter` chosen by
+      `notifications.channel`; `on_stage_fail` notifies; validation warns on an
+      unknown channel and errors on a webhook with no target.
+- [x] W8-4 `use_memory` retired: flag, memory port and call sites removed;
+      validation warns "no effect".
+- [x] W8-5 ACP: prompt on stdin (`--file -`), `--format quiet`,
+      `llm.acp.permission_mode` (default `approve-reads`); temp-file transport
+      and output heuristics removed; exit 4 reconnects, exit 5 explains.
+      Fake-acpx contract test; opt-in real e2e (`BERB_ACP_E2E=1`).
+- [x] W8-6 Parallel writer runs `llm.chat` in a thread.
+
+## Review
+
+All W8 items done; tests written first and seen failing (14). Gates at
+baseline: ruff clean, format (USAGE.md only), mypy 4 yaml-stub errors,
+reachability OK at 686, bandit clean, unit suite 4731 passed with only the
+6 known baseline failures, coverage 67.5%.
+
+Also: a stage that fails on a missing input now sends `on_stage_fail` too
+(it returned before any notification). `use_memory` removed from the example
+config, integration guide and the translated READMEs; `config.berb.yaml`
+(untracked, the user's own) was left alone.
+
+Not verified: no run against a real acpx (the opt-in e2e test skips without
+`BERB_ACP_E2E=1`) and no real webhook POST. Limit: the webhook refuses
+private-network targets (SSRF check), so a LAN-hosted chat server is not
+reachable. Default `permission_mode: approve-reads` may make an agent that
+needs write tools fail with exit 5; the error names the setting.
+
+Review fixes: ACP prompts are serialized per client (the parallel writer's
+threads shared one session, and a reconnect closed it under the others);
+acpx exit 2 says to upgrade acpx; an acpx launch `OSError` is a
+`RuntimeError` again; the webhook-without-target error applies only with
+`use_message` on; webhook text is cut to 1900 characters (Discord's 2000
+limit); a source check has one 10 s budget across redirects; the route
+wiring test moved to `tests/test_berb_adapters.py`. Suite: 4737 passed, only
+the 6 baseline failures.

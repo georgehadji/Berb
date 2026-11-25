@@ -209,7 +209,6 @@ experiment:
 openclaw_bridge:
   use_cron: true              # ⏰ スケジュール実行
   use_message: true           # 💬 進捗通知（Discord/Slack/Telegram）
-  use_memory: true            # 🧠 セッション間の知識永続化
   use_sessions_spawn: true    # 🔀 並列サブセッションの生成
   use_web_fetch: true         # 🌐 文献レビュー中のライブWeb検索
   use_browser: false          # 🖥️ ブラウザベースの論文収集
@@ -502,7 +501,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # スケジュール研究実行
   use_message: false               # 進捗通知
-  use_memory: false                # セッション間の知識永続化
   use_sessions_spawn: false        # 並列サブセッションの生成
   use_web_fetch: false             # ライブWeb検索
   use_browser: false               # ブラウザベースの論文収集

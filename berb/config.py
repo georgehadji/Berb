@@ -109,6 +109,11 @@ REMOVED_INTEGRITY_KEYS = (
     "require_source_snippets",
     "auto_strict_domains",
 )
+# notifications.channel values with a MessageAdapter (berb/adapters.py).
+# Any other channel is logged to the console.
+NOTIFICATION_CHANNELS = {"console", "webhook"}
+# acpx permission flags (--approve-reads, --approve-all, --deny-all).
+ACP_PERMISSION_MODES = {"approve-reads", "approve-all", "deny-all"}
 # Every entry here must have a branch in experiment/factory.py::create_sandbox
 # (or, for "simulated", in the Stage 12 dispatch). A mode accepted here but not
 # implemented there passes validation, survives eleven stages of work, and then
@@ -230,7 +235,6 @@ class KnowledgeBaseConfig:
 class OpenClawBridgeConfig:
     use_cron: bool = False
     use_message: bool = False
-    use_memory: bool = False
     use_sessions_spawn: bool = False
     use_web_fetch: bool = False
     use_browser: bool = False
@@ -245,6 +249,9 @@ class AcpConfig:
     acpx_command: str = ""
     session_name: str = "berb"
     timeout_sec: int = 1800
+    # acpx tool-permission flag. Prompts carry text from third-party papers,
+    # so "approve-all" lets that text drive the agent's write and shell tools.
+    permission_mode: str = "approve-reads"
 
 
 @dataclass(frozen=True)
@@ -1078,7 +1085,6 @@ class RCConfig:
             openclaw_bridge=OpenClawBridgeConfig(
                 use_cron=bool(bridge.get("use_cron", False)),
                 use_message=bool(bridge.get("use_message", False)),
-                use_memory=bool(bridge.get("use_memory", False)),
                 use_sessions_spawn=bool(bridge.get("use_sessions_spawn", False)),
                 use_web_fetch=bool(bridge.get("use_web_fetch", False)),
                 use_browser=bool(bridge.get("use_browser", False)),
@@ -1321,6 +1327,38 @@ def validate_config(
                     "no effect; nothing reads it. Remove it."
                 )
 
+    bridge_section = data.get("openclaw_bridge")
+    if isinstance(bridge_section, dict) and "use_memory" in bridge_section:
+        warnings.append(
+            "CONFIGURATION WARNING: openclaw_bridge.use_memory has no effect; stage and "
+            "gate history is in each run's event_log.json. Remove it."
+        )
+    channel = _get_by_path(data, "notifications.channel")
+    use_message = isinstance(bridge_section, dict) and bool(bridge_section.get("use_message"))
+    if (
+        use_message
+        and channel == "webhook"
+        and _is_blank(_get_by_path(data, "notifications.target"))
+    ):
+        errors.append("notifications.channel 'webhook' needs notifications.target (the URL)")
+    elif (
+        use_message
+        and not _is_blank(channel)
+        and (not isinstance(channel, str) or channel not in NOTIFICATION_CHANNELS)
+    ):
+        warnings.append(
+            f"CONFIGURATION WARNING: notifications.channel '{channel}' has no adapter; "
+            "notifications go to the console log. Use 'console' or 'webhook'."
+        )
+    acp_permission = _get_by_path(data, "llm.acp.permission_mode")
+    if not _is_blank(acp_permission) and (
+        not isinstance(acp_permission, str) or acp_permission not in ACP_PERMISSION_MODES
+    ):
+        errors.append(
+            f"Invalid llm.acp.permission_mode: {acp_permission} "
+            f"(expected one of {', '.join(sorted(ACP_PERMISSION_MODES))})"
+        )
+
     exp_mode = _get_by_path(data, "experiment.mode")
     if not _is_blank(exp_mode) and exp_mode not in EXPERIMENT_MODES:
         errors.append(f"Invalid experiment.mode: {exp_mode}")
@@ -1404,6 +1442,7 @@ def _parse_llm_config(data: dict[str, Any]) -> LlmConfig:
             acpx_command=acp_data.get("acpx_command", ""),
             session_name=acp_data.get("session_name", "berb"),
             timeout_sec=int(acp_data.get("timeout_sec", 1800)),
+            permission_mode=str(acp_data.get("permission_mode") or "approve-reads"),
         ),
     )
 

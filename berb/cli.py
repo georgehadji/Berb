@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import cast
 
-from berb.adapters import AdapterBundle
+from berb.adapters import create_adapters
 from berb.commands import (
     cmd_analyze_results,
     cmd_anti_ai_editing,
@@ -358,7 +358,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         kb_root_path = Path(config.knowledge_base.root)
         kb_root_path.mkdir(parents=True, exist_ok=True)
 
-    adapters = AdapterBundle()
+    adapters = create_adapters(config)
 
     from berb.pipeline.checkpoint import load_checkpoint
     from berb.pipeline.runner import execute_pipeline
@@ -961,7 +961,6 @@ def cmd_literature(args: argparse.Namespace) -> int:
     import sys
 
     from berb import __version__
-    from berb.adapters import create_adapters
     from berb.config import load_config
     from berb.pipeline.runner import execute_pipeline
     from berb.pipeline.stages import Stage

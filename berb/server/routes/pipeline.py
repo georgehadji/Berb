@@ -115,7 +115,7 @@ async def start_pipeline(req: PipelineStartRequest) -> PipelineStartResponse:
 
     async def _run_in_background() -> None:
         try:
-            from berb.adapters import AdapterBundle
+            from berb.adapters import create_adapters
             from berb.pipeline import runner
 
             kb_root = Path(config.knowledge_base.root) if config.knowledge_base.root else None
@@ -127,7 +127,7 @@ async def start_pipeline(req: PipelineStartRequest) -> PipelineStartResponse:
                 run_dir=run_dir,
                 run_id=run_id,
                 config=config,
-                adapters=AdapterBundle(),
+                adapters=create_adapters(config),
                 auto_approve_gates=auto_approve,
                 stop_on_gate=stop_on_gate,
                 skip_noncritical=True,

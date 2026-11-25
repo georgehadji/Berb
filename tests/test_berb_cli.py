@@ -454,3 +454,40 @@ def test_main_dispatches_init(monkeypatch: pytest.MonkeyPatch) -> None:
     code = rc_cli.main(["init", "--force"])
     assert code == 0
     assert captured["args"].force is True
+
+
+def test_cmd_run_builds_adapters_from_config(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """W8: cmd_run passed a bare AdapterBundle(), so no configured adapter ran."""
+    from berb.adapters import ConsoleMessageAdapter, HttpWebFetchAdapter
+
+    monkeypatch.chdir(tmp_path)
+    config_path = tmp_path / "config.arc.yaml"
+    _write_valid_config(config_path)
+
+    import berb.pipeline.runner as runner_mod
+
+    calls: list[dict] = []
+
+    async def _fake_execute_pipeline(**kw):
+        calls.append(kw)
+        return []
+
+    monkeypatch.setattr(runner_mod, "execute_pipeline", _fake_execute_pipeline)
+    args = argparse.Namespace(
+        config=str(config_path),
+        topic=None,
+        output=None,
+        from_stage=None,
+        auto_approve=True,
+        skip_preflight=True,
+        resume=False,
+        skip_noncritical_stage=False,
+        no_graceful_degradation=False,
+    )
+    rc_cli.cmd_run(args)
+
+    assert calls
+    assert isinstance(calls[0]["adapters"].message, ConsoleMessageAdapter)
+    assert isinstance(calls[0]["adapters"].web_fetch, HttpWebFetchAdapter)

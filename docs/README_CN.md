@@ -209,7 +209,6 @@ AutoResearchClaw 内置了 **Bridge 适配器系统**，提供 6 个可选集成
 openclaw_bridge:
   use_cron: true              # ⏰ 定时研究任务
   use_message: true           # 💬 进度通知（Discord/Slack/Telegram）
-  use_memory: true            # 🧠 跨会话知识持久化
   use_sessions_spawn: true    # 🔀 为并行阶段派生子会话
   use_web_fetch: true         # 🌐 文献检索中的实时网络搜索
   use_browser: false          # 🖥️ 基于浏览器的论文采集
@@ -544,7 +543,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # 定时研究运行
   use_message: false               # 进度通知
-  use_memory: false                # 跨会话知识持久化
   use_sessions_spawn: false        # 派生并行子会话
   use_web_fetch: false             # 实时网络搜索
   use_browser: false               # 基于浏览器的论文采集

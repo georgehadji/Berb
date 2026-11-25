@@ -209,7 +209,6 @@ experiment:
 openclaw_bridge:
   use_cron: true              # ⏰ عمليات تشغيل بحث مجدولة
   use_message: true           # 💬 إشعارات التقدم (Discord/Slack/Telegram)
-  use_memory: true            # 🧠 استمرارية المعرفة عبر الجلسات
   use_sessions_spawn: true    # 🔀 إطلاق جلسات فرعية متوازية للمراحل المتزامنة
   use_web_fetch: true         # 🌐 بحث ويب مباشر أثناء مراجعة الأدبيات
   use_browser: false          # 🖥️ جمع الأوراق عبر المتصفح
@@ -502,7 +501,6 @@ metaclaw_bridge:
 openclaw_bridge:
   use_cron: false                  # عمليات تشغيل بحث مجدولة
   use_message: false               # إشعارات التقدم
-  use_memory: false                # استمرارية المعرفة عبر الجلسات
   use_sessions_spawn: false        # إطلاق جلسات فرعية متوازية
   use_web_fetch: false             # بحث ويب مباشر
   use_browser: false               # جمع الأوراق عبر المتصفح

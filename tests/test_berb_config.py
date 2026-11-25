@@ -41,14 +41,13 @@ research:
 runtime:
   timezone: America/New_York
 notifications:
-  channel: discord
+  channel: console
 knowledge_base:
   backend: markdown
   root: docs/kb
 openclaw_bridge:
   use_cron: true
   use_message: true
-  use_memory: true
   use_sessions_spawn: true
   use_web_fetch: true
   use_browser: false
@@ -72,12 +71,11 @@ def _valid_config_data() -> dict[str, dict[str, object]]:
         "project": {"name": "demo", "mode": "docs-first"},
         "research": {"topic": "Test topic", "domains": ["ml", "agents"]},
         "runtime": {"timezone": "America/New_York"},
-        "notifications": {"channel": "discord"},
+        "notifications": {"channel": "console"},
         "knowledge_base": {"backend": "markdown", "root": "docs/kb"},
         "openclaw_bridge": {
             "use_cron": True,
             "use_message": True,
-            "use_memory": True,
             "use_sessions_spawn": True,
             "use_web_fetch": True,
             "use_browser": False,
@@ -523,3 +521,78 @@ class TestUnwiredConfigSections:
         """Guards against a typo silencing the check, or a stale entry."""
         fields = {f.name for f in dataclasses.fields(RCConfig)}
         assert set(UNWIRED_CONFIG_SECTIONS) <= fields
+
+
+# W8: notification channels, the retired use_memory flag, ACP permission mode.
+
+_W8_BASE = {
+    "project": {"name": "t"},
+    "research": {"topic": "t"},
+    "runtime": {"timezone": "UTC"},
+    "notifications": {"channel": "console"},
+    "knowledge_base": {"root": "kb"},
+    "llm": {"provider": "openai-compatible", "base_url": "http://x", "api_key_env": "T"},
+}
+
+
+def _w8(**sections: dict) -> dict:
+    import copy
+
+    data = copy.deepcopy(_W8_BASE)
+    for name, values in sections.items():
+        data.setdefault(name, {}).update(values)
+    return data
+
+
+def _check(data: dict):
+    return validate_config(data, check_paths=False, check_security=False)
+
+
+def test_use_memory_is_warned_as_having_no_effect():
+    result = _check(_w8(openclaw_bridge={"use_memory": True}))
+
+    assert result.ok
+    assert any("use_memory" in w and "no effect" in w for w in result.warnings)
+
+
+def test_webhook_channel_needs_a_target():
+    result = _check(
+        _w8(openclaw_bridge={"use_message": True}, notifications={"channel": "webhook"})
+    )
+
+    assert not result.ok
+    assert any("notifications.target" in e for e in result.errors)
+
+
+def test_unknown_channel_is_warned_when_messages_are_on():
+    result = _check(
+        _w8(openclaw_bridge={"use_message": True}, notifications={"channel": "discord"})
+    )
+
+    assert result.ok
+    assert any("discord" in w and "console" in w for w in result.warnings)
+
+
+def test_unknown_channel_is_silent_when_messages_are_off():
+    result = _check(_w8(notifications={"channel": "discord"}))
+
+    assert not any("discord" in w for w in result.warnings)
+
+
+def test_acp_permission_mode_defaults_to_approve_reads():
+    from berb.config import RCConfig
+
+    cfg = RCConfig.from_dict(_w8(), check_paths=False)
+
+    assert cfg.llm.acp.permission_mode == "approve-reads"
+
+
+def test_acp_permission_mode_rejects_a_typo():
+    result = _check(_w8(llm={"acp": {"permission_mode": "approve_all"}}))
+
+    assert not result.ok
+    assert any("llm.acp.permission_mode" in e for e in result.errors)
+
+
+def test_webhook_without_target_is_fine_when_messages_are_off():
+    assert _check(_w8(notifications={"channel": "webhook"})).ok
