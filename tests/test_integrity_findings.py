@@ -61,9 +61,10 @@ def test_info_never_gates_in_any_mode() -> None:
         assert gates((finding,), mode) == ()
 
 
-def test_unknown_mode_gates_nothing() -> None:
-    finding = _finding(Severity.BLOCK)
-    assert gates((finding,), "not-a-real-mode") == ()
+def test_unknown_mode_gates_as_strict() -> None:
+    # RI-11: an unknown mode used to gate nothing; it now fails closed.
+    findings = tuple(_finding(s) for s in Severity)
+    assert gates(findings, "not-a-real-mode") == gates(findings, "strict")
 
 
 def test_gates_preserves_order_and_is_pure() -> None:

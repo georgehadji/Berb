@@ -379,3 +379,28 @@ turning `done` and status changes independently; `stages_completed` skips
 Not verified: the monitor page was not type-checked or opened in a browser
 (no `node_modules`). A reused pid reads as alive. The web still has no gate
 approval surface (D2); it points to `berb run --resume ... --auto-approve`.
+
+---
+
+# Wave 6: config validation (2026-11-25)
+
+Plan: `tasks/state_machines_p2_results.md` item 6.
+Tests: `tests/test_integrity_config_validation.py`.
+
+- [x] RI-11: `validate_config` rejects an unknown `integrity.mode` (blank
+      still falls back to `draft`), so `RCConfig.from_dict` refuses to load it.
+      `integrity/findings.py::gates()` fails closed: an unknown mode reaching
+      it (an `IntegrityConfig` built directly) logs a warning and gates as
+      `strict` instead of gating nothing.
+- [x] RI-12: removed the unread `fail_on_unsupported_claims`,
+      `fail_on_unverified_statistics`, `fail_on_citation_fallback`,
+      `require_source_snippets` and `auto_strict_domains` from
+      `IntegrityConfig` and the example config. A config that still sets one
+      loads, with a warning that it has no effect.
+
+## Review
+
+Not verified: user configs in the wild that set the removed keys only get a
+warning; nothing migrates them. `INTEGRITY_MODES` in `config.py` duplicates
+the keys of `_GATING_SEVERITIES_BY_MODE` (comment points at it); importing it
+would make `config.py` depend on `integrity/`.
