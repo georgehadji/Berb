@@ -66,8 +66,9 @@ class CascadeStep:
         model: Model id to try at this rung.
         min_score: Accept this rung's response when the evaluator scores it at
             least this high. The last rung should use ``0.0`` — it is the
-            "always accept" backstop, without which a low score at the end
-            falls through to the fallback model or an error.
+            "always accept" backstop. A low score at the last rung still
+            returns that answer (it is the most capable one); the fallback
+            model is tried only when the last rung raised.
         max_tokens: Per-rung token cap; ``None`` uses the client's default.
         temperature: Per-rung sampling temperature.
     """
@@ -85,7 +86,8 @@ class CascadeConfig:
     cascade: tuple[CascadeStep, ...] = ()
     quick_eval_enabled: bool = True
 
-    # Used only when every rung failed or was rejected.
+    # Tried only when no rung was accepted and the last rung raised; a
+    # rejected answer from the last rung is returned instead.
     fallback_model: str | None = None
 
 
@@ -159,9 +161,10 @@ class CascadingLLMClient:
                 no-op.
 
         Returns:
-            The response from the first rung whose score met its threshold; if
-            none did, the last response received; if no rung returned at all,
-            the fallback model's response.
+            The response from the first rung whose score met its threshold. If
+            none did: the last rung's answer when the last rung answered;
+            otherwise the fallback model's answer, or failing that the last
+            (rejected) answer any rung gave.
 
         Raises:
             RuntimeError: Every rung failed and no fallback succeeded.
@@ -178,8 +181,10 @@ class CascadingLLMClient:
 
         last_response: Any | None = None
         last_error: Exception | None = None
+        last_answered = False  # did the final rung tried return at all?
 
         for step_idx, step in enumerate(self._config.cascade):
+            last_answered = False
             try:
                 response = self._base_client.chat(
                     messages,
@@ -218,16 +223,19 @@ class CascadingLLMClient:
                 step.min_score,
             )
             last_response = response
+            last_answered = True
 
         # Every rung answered but none cleared its bar: the last (most capable)
-        # answer is still the best one we have.
-        if last_response is not None:
+        # rung's answer is still the best one we have. That holds only if the
+        # last rung answered — a rejected cheap answer followed by a failing
+        # strong rung is what the fallback model exists for (LL-9).
+        if last_response is not None and last_answered:
             logger.warning("All cascade steps below threshold; returning the last response")
             return last_response
 
         if self._config.fallback_model is not None:
             logger.warning(
-                "All cascade steps failed; trying fallback model: %s",
+                "No cascade step was accepted; trying fallback model: %s",
                 self._config.fallback_model,
             )
             try:
@@ -239,10 +247,17 @@ class CascadingLLMClient:
                     **kwargs,
                 )
             except Exception as exc:  # noqa: BLE001
+                if last_response is not None:
+                    logger.warning("Fallback model failed (%s); returning the last response", exc)
+                    return last_response
                 raise RuntimeError(
                     f"All cascade steps and fallback model "
                     f"({self._config.fallback_model}) failed. Last error: {exc}"
                 ) from exc
+
+        if last_response is not None:
+            logger.warning("All cascade steps below threshold; returning the last response")
+            return last_response
 
         raise RuntimeError(f"All cascade steps failed: {last_error}")
 
@@ -293,7 +308,8 @@ class CascadingLLMClient:
         from berb.llm.vision import content_to_text
 
         content = getattr(response, "content", "")
-        if not content:
+        # Whitespace-only reached stripped[-1] below and raised IndexError.
+        if not isinstance(content, str) or not content.strip():
             return 0.0
 
         score = 1.0

@@ -94,3 +94,52 @@ def test_all_adapters_start_with_empty_call_lists():
     assert sessions.calls == []
     assert web_fetch.calls == []
     assert browser.calls == []
+
+
+# BR-26: with use_web_fetch on, stub fetch adapters marked every literature
+# source "verified" / 200 without making a request.
+
+_SEARCH_CFG = {
+    "project": {"name": "t"},
+    "research": {"topic": "graph neural networks"},
+    "runtime": {"timezone": "UTC"},
+    "notifications": {"channel": "console"},
+    "knowledge_base": {"root": "kb"},
+    "llm": {"provider": "openai-compatible", "base_url": "http://x", "api_key_env": "T"},
+    "openclaw_bridge": {"use_web_fetch": True},
+}
+
+
+def _search_sources(tmp_path, adapters) -> list[dict]:
+    import copy
+    import json
+
+    from berb.config import RCConfig
+    from berb.pipeline.stage_impls._literature import _execute_search_strategy
+
+    cfg = RCConfig.from_dict(copy.deepcopy(_SEARCH_CFG), check_paths=False)
+    stage_dir = tmp_path / "stage-03"
+    stage_dir.mkdir(parents=True)
+    _execute_search_strategy(stage_dir, tmp_path, cfg, adapters)
+    return json.loads((stage_dir / "sources.json").read_text(encoding="utf-8"))["sources"]
+
+
+def test_stub_web_fetch_does_not_mark_sources_verified(tmp_path):
+    from berb.adapters import MCPWebFetchAdapter
+
+    for bundle in (AdapterBundle(), AdapterBundle(web_fetch=MCPWebFetchAdapter())):
+        sources = _search_sources(tmp_path / type(bundle.web_fetch).__name__, bundle)
+
+        assert sources
+        assert all(s["status"] == "unverified" for s in sources), sources
+        assert all("http_status" not in s for s in sources), sources
+
+
+def test_real_web_fetch_still_verifies_sources(tmp_path):
+    class _Real:
+        def fetch(self, url: str) -> FetchResponse:
+            return FetchResponse(url=url, status_code=200, text="ok")
+
+    sources = _search_sources(tmp_path, AdapterBundle(web_fetch=_Real()))
+
+    assert all(s["status"] == "verified" and s["http_status"] == 200 for s in sources)

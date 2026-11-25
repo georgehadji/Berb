@@ -108,6 +108,9 @@ class JournalNode:
     cost_usd: float = 0.0
     result_source: str = "structured"  # structured, stdout_fallback, synthesized
     created_at: datetime = field(default_factory=datetime.now)
+    # Runtime only, not serialized: where this node ran, so the stage can
+    # remove non-best node workdirs once the search is over.
+    sandbox_dir: Path | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a JSON-compatible dictionary."""

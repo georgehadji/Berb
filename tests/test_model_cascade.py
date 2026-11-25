@@ -377,3 +377,55 @@ def test_stage_lookup_is_case_insensitive() -> None:
 
 def test_critical_stages_do_not_cascade() -> None:
     assert len(get_cascade_for_stage("PEER_REVIEW").cascade) == 1
+
+
+# LL-9: a rejected cheap answer followed by a failing strong rung returned the
+# rejected answer without trying fallback_model; whitespace crashed the
+# evaluator with IndexError.
+
+
+class _ByModel:
+    def __init__(self, answers: dict[str, object]) -> None:
+        self.answers = answers
+
+    def chat(self, messages: Any, *, model: Any = None, **_: Any) -> Any:
+        from types import SimpleNamespace
+
+        answer = self.answers[model]
+        if isinstance(answer, Exception):
+            raise answer
+        return SimpleNamespace(content=answer)
+
+
+def _two_rung(answers: dict[str, object]) -> CascadingLLMClient:
+    steps = (CascadeStep(model="cheap", min_score=0.5), CascadeStep(model="strong", min_score=0.0))
+    return CascadingLLMClient(_ByModel(answers), CascadeConfig(cascade=steps, fallback_model="fb"))
+
+
+_ASK = [{"role": "user", "content": "Explain the result."}]
+
+
+def test_fallback_is_tried_when_the_last_rung_fails() -> None:
+    client = _two_rung(
+        {"cheap": "I cannot help with that.", "strong": RuntimeError("down"), "fb": "Answer."}
+    )
+
+    assert client.chat(_ASK).content == "Answer."
+
+
+def test_rejected_answer_returned_when_fallback_also_fails() -> None:
+    client = _two_rung(
+        {
+            "cheap": "I cannot help with that.",
+            "strong": RuntimeError("down"),
+            "fb": RuntimeError("down too"),
+        }
+    )
+
+    assert client.chat(_ASK).content == "I cannot help with that."
+
+
+def test_whitespace_only_answer_escalates() -> None:
+    client = _two_rung({"cheap": "   ", "strong": "A full answer.", "fb": "unused"})
+
+    assert client.chat(_ASK).content == "A full answer."

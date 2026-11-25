@@ -427,3 +427,88 @@ def test_pixel_critic_accepts_a_drawn_chart(tmp_path) -> None:
     critique = asyncio.run(PixelPlotCritic().analyze_figure(drawn))
 
     assert critique.is_acceptable is True
+
+
+def test_search_runner_executes_candidate_in_a_real_sandbox(tmp_path) -> None:
+    """EX-03: nodes ran ``sandbox.run()`` with no code, so every node was buggy."""
+    import asyncio
+    import sys
+
+    from berb.config import SandboxConfig
+    from berb.experiment.sandbox import ExperimentSandbox
+    from berb.experiment.search.policy import BestFirstDiversePolicy
+    from berb.experiment.search.runner import SearchRunner
+
+    workdir = tmp_path / "sb"
+    runner = SearchRunner(
+        config=SearchConfig(enabled=True, max_nodes=1, num_workers=1, num_roots=1),
+        policy=BestFirstDiversePolicy(seed=0),
+        sandbox_factory=lambda: ExperimentSandbox(
+            SandboxConfig(python_path=sys.executable), workdir
+        ),
+        generator=lambda **_: [
+            {"files": {"main.py": "print('primary_metric: 1.0')"}, "plan": "", "origin": "draft"}
+        ],
+        cost_tracker=CostTracker(),
+        metric_key="primary_metric",
+    )
+
+    result = asyncio.run(runner.run())
+
+    node = result.best_node
+    assert node is not None, [n.stderr for n in runner._journal.nodes]
+    assert node.returncode == 0
+    assert node.metrics.get("primary_metric") == 1.0
+    assert node.sandbox_dir == workdir.resolve()
+
+
+def test_candidate_file_cannot_escape_the_project(tmp_path) -> None:
+    import asyncio
+
+    runner = _runner_with_critic(tmp_path, critic=None)
+
+    class _Sandbox:
+        def run_project(self, *_a, **_k):  # pragma: no cover - must not run
+            raise AssertionError("ran an escaping candidate")
+
+    with pytest.raises(ValueError, match="escapes"):
+        asyncio.run(runner._run_in_sandbox(_Sandbox(), {"../evil.py": "x = 1"}))
+
+
+def _search_result(tmp_path, *, best: bool):
+    from types import SimpleNamespace
+
+    from berb.experiment.journal import ExperimentJournal
+
+    journal = ExperimentJournal()
+    nodes = []
+    for i in range(2):
+        d = tmp_path / f"node-{i}"
+        d.mkdir()
+        (d / "fig.png").write_bytes(b"x")
+        node = JournalNode(node_id=f"n{i}", sandbox_dir=d, plot_paths=(d / "fig.png",))
+        journal.append(node)
+        nodes.append(node)
+    return SimpleNamespace(journal=journal, best_node=nodes[0] if best else None), nodes
+
+
+def test_prune_keeps_only_the_best_node_workdir(tmp_path) -> None:
+    from berb.pipeline.stage_impls._execution import _prune_node_workdirs
+
+    result, (best, other) = _search_result(tmp_path, best=True)
+
+    _prune_node_workdirs(result)
+
+    assert best.sandbox_dir.exists() and best.plot_paths
+    assert not other.sandbox_dir.exists()
+    assert other.plot_paths == ()
+
+
+def test_prune_keeps_everything_when_the_search_failed(tmp_path) -> None:
+    from berb.pipeline.stage_impls._execution import _prune_node_workdirs
+
+    result, nodes = _search_result(tmp_path, best=False)
+
+    _prune_node_workdirs(result)
+
+    assert all(n.sandbox_dir.exists() and n.plot_paths for n in nodes)

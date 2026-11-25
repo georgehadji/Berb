@@ -404,3 +404,49 @@ Not verified: user configs in the wild that set the removed keys only get a
 warning; nothing migrates them. `INTEGRITY_MODES` in `config.py` duplicates
 the keys of `_GATING_SEVERITIES_BY_MODE` (comment points at it); importing it
 would make `config.py` depend on `integrity/`.
+
+---
+
+# Wave 7: flag-gated defects (2026-11-25)
+
+Plan: `tasks/state_machines_p2_results.md` item 7. Every path here is off by
+default. Tests sit beside each module's own: `test_experiment_search.py`,
+`test_acp_client.py`, `test_model_cascade.py`, `test_parallel_writer.py`,
+`test_berb_adapters.py`.
+
+- [x] EX-03 (`experiment.search.enabled`): `SearchRunner._run_in_sandbox`
+      stages candidate files in a temp project and calls the shipped
+      `run_project` protocol in a worker thread (was `sandbox.run()` with no
+      code, so every node was buggy). Candidate filenames cannot escape the
+      project. `timed_out` now comes from the result. EX-06, latent until now:
+      each node gets its own sandbox workdir, so the figure gate no longer
+      judges a node on earlier nodes' plots.
+- [x] LL-22 (`llm.provider: acp`): `ACPClient.chat` accepts and ignores
+      `stage=`. `__del__` is gone (it closed the shared named session when
+      the previous stage's client was collected); atexit closes every opened
+      session, including ones whose client was already collected.
+- [x] LL-9 (`cascade.enabled`): when no rung is accepted and the last rung
+      failed, `fallback_model` is tried before returning a rejected cheaper
+      answer; a whitespace-only answer scores 0 and escalates instead of
+      raising `IndexError`.
+- [x] RI-16 (`BERB_EXPERIMENTAL_PARALLEL_WRITER=1`): a failed section, or no
+      section ready, raises so stage 17 falls back to the sequential writer
+      (was an infinite retry loop, or a silent partial draft). A section gets
+      `MAX_SECTION_ATTEMPTS` (2) tries first, so one transient error does not
+      discard the draft.
+
+Review fixes: the search's asyncio backstop has 30 s headroom over the
+backend timeout, so the backend kills the process first; non-best node
+workdirs are removed after the search (all kept when no node succeeded, and
+removed nodes' plot paths cleared); the cascade docstrings now say the
+fallback covers a failing last rung only.
+- [x] BR-26 (`openclaw_bridge.use_web_fetch`): `FetchResponse.fetched`;
+      the recording and MCP stubs set it False and stage 3 records
+      `unverified` instead of `verified` / 200. Integration guide corrected.
+
+## Review
+
+Not fixed: BR-26's message/memory stubs still log only to in-process lists,
+and no real web-fetch adapter exists. The parallel writer's `_write_section`
+still calls a sync `llm.chat` inside a coroutine, so sections are not
+actually concurrent. LL-22 was not run against a real acpx.

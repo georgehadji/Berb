@@ -30,6 +30,9 @@ SandboxFactory = Callable[[], Any]
 # deliberately: the pixel checks behind PixelPlotCritic need a rasterised image.
 _PLOT_SUFFIXES = (".png", ".jpg", ".jpeg")
 
+# Headroom past eval_timeout_sec for the outer asyncio backstop.
+_BACKEND_TIMEOUT_GRACE_SEC = 30
+
 
 @dataclass
 class SearchResult:
@@ -353,11 +356,16 @@ class SearchRunner:
         sandbox: Any | None = None
         try:
             sandbox = self._sandbox_factory()
+            workdir = getattr(sandbox, "workdir", None)
+            node.sandbox_dir = Path(workdir) if workdir is not None else None
             # Execute the code — exact sandbox interface depends on the
             # concrete factory, but standard attributes:
+            # The backend enforces eval_timeout_sec and kills the process; this
+            # outer limit is a backstop with headroom for staging, so it does
+            # not abandon a still-running worker thread first.
             result = await asyncio.wait_for(
                 self._run_in_sandbox(sandbox, node.files),
-                timeout=self._config.eval_timeout_sec,
+                timeout=self._config.eval_timeout_sec + _BACKEND_TIMEOUT_GRACE_SEC,
             )
 
             # Populate execution results
@@ -365,8 +373,9 @@ class SearchRunner:
             node.stdout = getattr(result, "stdout", "")
             node.stderr = getattr(result, "stderr", "")
             node.elapsed_sec = getattr(result, "elapsed_sec", None)
-            node.timed_out = False
-            node.is_buggy = node.returncode != 0
+            # The backend enforces timeout_sec itself and reports it here.
+            node.timed_out = bool(getattr(result, "timed_out", False))
+            node.is_buggy = node.returncode != 0 or node.timed_out
 
             # Parse metrics (from stdout or structured result)
             node.metrics = {}
@@ -474,30 +483,42 @@ class SearchRunner:
             logger.info("Node %s gated on figures: %s", node.node_id[:8], verdict.summary)
 
     async def _run_in_sandbox(self, sandbox: Any, files: dict[str, str]) -> Any:
-        """Run candidate code in a sandbox.
+        """Run candidate code through ``SandboxProtocol.run_project``.
 
-        Concrete sandbox implementations should return an object with:
-        - returncode: int
-        - stdout: str
-        - stderr: str
-        - elapsed_sec: float
-        - metrics: dict[str, float]
+        Every shipped backend (``create_sandbox``) implements that protocol;
+        the earlier ``sandbox.run()`` call passed no code, so every node
+        failed with a TypeError (EX-03). The files are staged in a temporary
+        project directory and the blocking call runs in a worker thread so
+        ``asyncio.wait_for`` can still time it out.
 
         Args:
             sandbox: Sandbox instance from factory.
-            files: Dict of filename -> code content.
+            files: Dict of relative filename -> code content. ``main.py`` is
+                the entry point when present, else the first file.
 
         Returns:
-            Result object.
+            The backend's ``SandboxResult``.
         """
-        # Default implementation: write files to sandbox and run
-        if hasattr(sandbox, "write_files"):
-            sandbox.write_files(files)
+        import tempfile
 
-        if hasattr(sandbox, "run"):
-            return await sandbox.run()
-
-        raise NotImplementedError(f"Sandbox {type(sandbox).__name__} does not support run()")
+        with tempfile.TemporaryDirectory(
+            prefix="berb-candidate-", ignore_cleanup_errors=True
+        ) as tmp:
+            project = Path(tmp).resolve()
+            for name, code in files.items():
+                # Filenames come from generated candidates: keep them inside.
+                path = (project / name).resolve()
+                if not path.is_relative_to(project):
+                    raise ValueError(f"Candidate file escapes the project: {name!r}")
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(code, encoding="utf-8")
+            entry_point = "main.py" if "main.py" in files else next(iter(files))
+            return await asyncio.to_thread(
+                sandbox.run_project,
+                project,
+                entry_point=entry_point,
+                timeout_sec=self._config.eval_timeout_sec,
+            )
 
     def _parse_metrics_from_stdout(self, stdout: str) -> dict[str, float]:
         """Parse metrics from stdout fallback.

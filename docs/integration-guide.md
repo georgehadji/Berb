@@ -561,7 +561,7 @@ openclaw_bridge:
   use_message: true           # Progress notifications (Discord/Slack/Telegram)
   use_memory: true            # Cross-session knowledge persistence
   use_sessions_spawn: true    # Spawn parallel sub-sessions for concurrent stages
-  use_web_fetch: true         # Live web search during literature review
+  use_web_fetch: true         # Check literature source URLs (needs a real fetch adapter; the built-in stubs record "unverified")
   use_browser: false          # Browser-based paper collection
 ```
 

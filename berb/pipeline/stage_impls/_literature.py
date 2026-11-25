@@ -228,6 +228,10 @@ def _execute_search_strategy(
         for src in sources:
             try:
                 response = adapters.web_fetch.fetch(str(src.get("url", "")))
+                if not getattr(response, "fetched", True):
+                    # A stub made no request: record that, not a verified 200 (BR-26).
+                    src["status"] = "unverified"
+                    continue
                 src["status"] = (
                     "verified" if response.status_code in (200, 301, 302, 405) else "unreachable"
                 )
