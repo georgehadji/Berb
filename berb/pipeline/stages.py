@@ -78,6 +78,25 @@ class StageStatus(StrEnum):
     DONE = "done"
 
 
+class RunStatus(StrEnum):
+    """Status of a whole run, derived from its stages' statuses (W2).
+
+    ``running``: a stage's last status is RUNNING or RETRYING.
+    ``blocked_approval`` / ``paused`` / ``failed`` / ``done``: the run ended
+    (or, with no summary yet, came to rest) on a stage with that status.
+    ``stopped``: stopped on request, or its process went away mid-run.
+    ``pending``: nothing has run yet.
+    """
+
+    PENDING = "pending"
+    RUNNING = "running"
+    BLOCKED_APPROVAL = "blocked_approval"
+    PAUSED = "paused"
+    FAILED = "failed"
+    DONE = "done"
+    STOPPED = "stopped"
+
+
 class TransitionEvent(StrEnum):
     START = "start"
     SUCCEED = "succeed"
@@ -546,13 +565,13 @@ class EventStore:
             "events": [e.to_dict() for e in self._events],
         }
 
-        # Write atomically via temp file
+        from berb.utils.atomic import replace_with_retry
+
+        # Write atomically via temp file. Replace, don't unlink-then-rename: a
+        # reader polling the run status (W2) would find no file in the gap.
         temp_path = path.with_suffix(".tmp")
         temp_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
-        # Windows: remove existing file before rename
-        if path.exists():
-            path.unlink()
-        temp_path.rename(path)
+        replace_with_retry(temp_path, path)
 
     def _load_from_disk(self) -> None:
         """Load events from disk."""
@@ -567,8 +586,8 @@ class EventStore:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
             self._events = [StageTransitionEvent.from_dict(e) for e in data.get("events", [])]
-        except (json.JSONDecodeError, KeyError, ValueError):
-            # Corrupted file - start fresh
+        except (OSError, json.JSONDecodeError, KeyError, ValueError):
+            # Corrupted, or replaced underneath us by a concurrent save
             self._events = []
 
 

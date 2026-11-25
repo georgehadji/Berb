@@ -342,10 +342,13 @@ class TestDashboardCollector:
         from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
+            from berb.pipeline.checkpoint import write_checkpoint
+            from berb.pipeline.stages import Stage
+
             run_dir = Path(tmpdir) / "rc-20260315-abc123"
             run_dir.mkdir()
-            ckpt = {"stage": 5, "stage_name": "LITERATURE_SCREEN", "status": "running"}
-            (run_dir / "checkpoint.json").write_text(json.dumps(ckpt))
+            # SF-1: the format the runner writes, not the keys this test used to invent.
+            write_checkpoint(run_dir, Stage.LITERATURE_SCREEN, "rc-20260315-abc123")
 
             collector = DashboardCollector(artifacts_dir=tmpdir)
             runs = collector.collect_all()
@@ -357,10 +360,14 @@ class TestDashboardCollector:
         from berb.dashboard.collector import DashboardCollector
 
         with tempfile.TemporaryDirectory() as tmpdir:
+            from berb.pipeline.checkpoint import write_checkpoint, write_heartbeat
+            from berb.pipeline.stages import Stage
+
             run_dir = Path(tmpdir) / "rc-20260315-test01"
             run_dir.mkdir()
-            hb = {"timestamp": time.time()}  # fresh heartbeat
-            (run_dir / "heartbeat.json").write_text(json.dumps(hb))
+            # Between stages: one done, fresh ISO heartbeat (SF-1 parsed a float).
+            write_checkpoint(run_dir, Stage.TOPIC_INIT, "rc-20260315-test01")
+            write_heartbeat(run_dir, Stage.TOPIC_INIT, "rc-20260315-test01")
 
             collector = DashboardCollector(artifacts_dir=tmpdir)
             runs = collector.collect_all()

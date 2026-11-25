@@ -70,12 +70,21 @@ class BerbMCPServer:
         run_dir = Path(f"artifacts/{run_id}")
         if not run_dir.exists():
             return {"success": False, "error": f"Run not found: {run_id}"}
-        # Read checkpoint if available
+        from berb.pipeline.run_status import read_run_status
+
+        view = read_run_status(run_dir)
+        out: dict[str, Any] = {
+            "success": True,
+            "run_id": run_id,
+            "run_status": view.status.value,
+            **{k: v for k, v in view.to_dict().items() if k not in ("run_id", "status")},
+        }
         checkpoint_file = run_dir / "checkpoint.json"
         if checkpoint_file.exists():
-            data = json.loads(checkpoint_file.read_text(encoding="utf-8"))
-            return {"success": True, "run_id": run_id, "checkpoint": data}
-        return {"success": True, "run_id": run_id, "status": "no_checkpoint"}
+            out["checkpoint"] = json.loads(checkpoint_file.read_text(encoding="utf-8"))
+        else:
+            out["status"] = "no_checkpoint"
+        return out
 
     async def _handle_get_results(self, args: dict[str, Any]) -> dict[str, Any]:
         """Get experiment results."""

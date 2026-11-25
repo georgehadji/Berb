@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import threading
 from pathlib import Path
 
 from berb.adapters import AdapterBundle
@@ -288,6 +289,7 @@ async def _maybe_run_discovery(
     from_stage: Stage,
     auto_approve_gates: bool,
     kb_root: Path | None,
+    stop_event: threading.Event | None = None,
 ) -> str:
     """Run the discovery loop if configured, and promote its winning slice.
 
@@ -315,6 +317,7 @@ async def _maybe_run_discovery(
             adapters=adapters,
             auto_approve_gates=auto_approve_gates,
             kb_root=kb_root,
+            stop_event=stop_event,
         )
     except Exception:  # noqa: BLE001
         logger.exception("Discovery loop failed — falling back to a single-pass run")
@@ -343,6 +346,7 @@ async def execute_pipeline(
     skip_noncritical: bool = False,
     kb_root: Path | None = None,
     reset_cost_tracker: bool = False,
+    stop_event: threading.Event | None = None,
     _pivot_depth: int = 0,
 ) -> list[StageResult]:
     """Execute pipeline stages using DAG-based scheduling.
@@ -358,6 +362,10 @@ async def execute_pipeline(
         reset_cost_tracker: Clear the process-global cost tracker first.
             True only where a new run starts (CLI, server); nested callers
             leave it False so the run's spend survives.
+        stop_event: Checked before each DAG level. Once set, the run stops
+            there and its summary records ``final_status: "stopped"``. A
+            stage already running finishes first: it runs in a thread that
+            cancelling the asyncio task would not stop (SF-2).
     """
     event_store_path = run_dir / "event_log.json" if run_dir else None
     event_store = EventStore(run_id=run_id, storage_path=str(event_store_path))
@@ -423,6 +431,7 @@ async def execute_pipeline(
             from_stage=from_stage,
             auto_approve_gates=auto_approve_gates,
             kb_root=kb_root,
+            stop_event=stop_event,
         )
         if promoted:
             skip_slice = {
@@ -444,7 +453,11 @@ async def execute_pipeline(
             if bounded
         ]
 
+    stopped = False
     for level_stages in levels:
+        if stop_event is not None and stop_event.is_set():
+            stopped = True
+            break
         # Run all stages in this level — they're eligible by construction
         if len(level_stages) == 1:
             stage = next(iter(level_stages))
@@ -521,8 +534,11 @@ async def execute_pipeline(
                     skip_noncritical=skip_noncritical,
                     kb_root=kb_root,
                     event_store=event_store,
+                    stop_event=stop_event,
                 )
                 results.extend(pivot_results)
+                # The recursion is where a stop during the re-run took effect.
+                stopped = _summary_final_status(run_dir) == "stopped"
                 break
 
             if result.status == StageStatus.FAILED:
@@ -542,6 +558,10 @@ async def execute_pipeline(
         from_stage=from_stage,
         run_dir=run_dir,
     )
+    # Only a run that ended early is "stopped"; a stop that arrives during the
+    # last level, after every stage finished, leaves a completed run.
+    if stopped:
+        summary["final_status"] = "stopped"
     write_pipeline_summary(run_dir, summary)
 
     # A4-3: persist the cost breakdown. Only on the outermost call — a PIVOT
@@ -607,6 +627,9 @@ async def _run_sync_stage_internal(
     """Run a stage via asyncio.to_thread, write checkpoint and heartbeat on success."""
     import asyncio as _asyncio
 
+    # Also at start, so the run-status read model has this process's pid
+    # while the first stage runs and can tell a live stage from a dead one.
+    write_heartbeat(run_dir, stage, run_id)
     result = await _asyncio.to_thread(
         execute_stage,
         stage,
@@ -620,6 +643,25 @@ async def _run_sync_stage_internal(
         checkpoint_mgr.write(run_dir, stage, run_id)
     write_heartbeat(run_dir, stage, run_id)
     return result
+
+
+def _summary_final_status(run_dir: Path) -> str:
+    try:
+        data = json.loads((run_dir / "pipeline_summary.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return ""
+    return str(data.get("final_status", "")) if isinstance(data, dict) else ""
+
+
+def gate_policy(mode: str, auto_approve: bool | None) -> tuple[bool, bool]:
+    """Return ``(auto_approve_gates, stop_on_gate)`` for a run.
+
+    An explicit *auto_approve* wins; ``None`` defers to ``project.mode``:
+    ``full-auto`` approves gates, every other mode stops at them.
+    """
+    if auto_approve is None:
+        auto_approve = mode.lower() == "full-auto"
+    return auto_approve, not auto_approve
 
 
 async def _handle_pivot(
@@ -636,6 +678,7 @@ async def _handle_pivot(
     skip_noncritical: bool,
     kb_root: Path | None,
     event_store: EventStore,
+    stop_event: threading.Event | None = None,
 ) -> list[StageResult]:
     """Handle a PIVOT/REFINE decision from the orchestrator."""
     # The recursion depth is a floor: a corrupt or deleted decision_history.json
@@ -657,6 +700,7 @@ async def _handle_pivot(
             stop_on_gate=stop_on_gate,
             skip_noncritical=skip_noncritical,
             kb_root=kb_root,
+            stop_event=stop_event,
             _pivot_depth=pivot_depth,
         )
     elif pivot_count < MAX_DECISION_PIVOTS:
@@ -688,6 +732,7 @@ async def _handle_pivot(
             stop_on_gate=stop_on_gate,
             skip_noncritical=skip_noncritical,
             kb_root=kb_root,
+            stop_event=stop_event,
             _pivot_depth=pivot_depth + 1,
         )
         _promote_best_stage14(run_dir, config)
@@ -726,6 +771,7 @@ async def _handle_pivot(
             stop_on_gate=stop_on_gate,
             skip_noncritical=skip_noncritical,
             kb_root=kb_root,
+            stop_event=stop_event,
             _pivot_depth=pivot_depth,
         )
 
