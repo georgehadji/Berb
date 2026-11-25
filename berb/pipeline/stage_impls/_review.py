@@ -31,6 +31,7 @@ from berb.pipeline._helpers import (
     _topic_constraint_block,  # noqa: F401
     _utcnow_iso,
 )
+from berb.pipeline._io_helpers import _is_archived_stage_path, _stage_rank
 from berb.pipeline.contracts import StageContract
 from berb.pipeline.registry import register_stage
 from berb.pipeline.stages import Stage, StageStatus
@@ -115,6 +116,8 @@ def _collect_experiment_evidence(run_dir: Path) -> str:
     # 4. Count actual number of experiment runs
     actual_run_count = 0
     for stage_subdir in sorted(run_dir.glob("stage-*/runs")):
+        if _is_archived_stage_path(stage_subdir):
+            continue
         for rf in stage_subdir.glob("*.json"):
             if rf.name != "results.json":
                 actual_run_count += 1
@@ -694,7 +697,9 @@ def _execute_quality_gate(
     )
     # Phase 1: Enhanced fabrication detection via VerifiedRegistry
     # BUG-108: Also pass refinement_log so NaN best_metric is properly handled
-    _rl20_candidates = sorted(run_dir.glob("stage-13*/refinement_log.json"), reverse=True)
+    _rl20_candidates = sorted(
+        run_dir.glob("stage-13*/refinement_log.json"), key=_stage_rank, reverse=True
+    )
     _rl20_path = _rl20_candidates[0] if _rl20_candidates else None
     _rl20: dict | None = None
     if _rl20_path and _rl20_path.is_file():

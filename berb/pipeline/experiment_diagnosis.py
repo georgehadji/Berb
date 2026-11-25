@@ -793,6 +793,7 @@ def run_experiment_diagnosis(run_dir: Path, config: RCConfig, run_id: str) -> No
 
     import yaml as _yaml_diag
 
+    from berb.pipeline._io_helpers import _is_archived_stage_path, _stage_rank
     from berb.pipeline.checkpoint import _utcnow_iso
     from berb.pipeline.experiment_repair import build_repair_prompt
 
@@ -800,7 +801,7 @@ def run_experiment_diagnosis(run_dir: Path, config: RCConfig, run_id: str) -> No
 
     try:
         summary_path = None
-        for candidate in sorted(run_dir.glob("stage-14*/experiment_summary.json")):
+        for candidate in sorted(run_dir.glob("stage-14*/experiment_summary.json"), key=_stage_rank):
             summary_path = candidate
         if not summary_path or not summary_path.exists():
             return
@@ -820,20 +821,22 @@ def run_experiment_diagnosis(run_dir: Path, config: RCConfig, run_id: str) -> No
                     continue
 
         plan = None
-        for candidate in sorted(run_dir.glob("stage-09*/exp_plan.yaml")):
+        for candidate in sorted(run_dir.glob("stage-09*/exp_plan.yaml"), key=_stage_rank):
             try:
                 plan = _yaml_diag.safe_load(candidate.read_text(encoding="utf-8"))
             except Exception as exc:
                 logger.debug("YAML plan load failed (%s: %s)", type(exc).__name__, exc)
         if plan is None:
-            for candidate in sorted(run_dir.glob("stage-09*/experiment_design.json")):
+            for candidate in sorted(
+                run_dir.glob("stage-09*/experiment_design.json"), key=_stage_rank
+            ):
                 try:
                     plan = json.loads(candidate.read_text(encoding="utf-8"))
                 except (json.JSONDecodeError, OSError):
                     pass
 
         ref_log = None
-        for candidate in sorted(run_dir.glob("stage-13*/refinement_log.json")):
+        for candidate in sorted(run_dir.glob("stage-13*/refinement_log.json"), key=_stage_rank):
             try:
                 ref_log = json.loads(candidate.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, OSError):
@@ -872,6 +875,8 @@ def run_experiment_diagnosis(run_dir: Path, config: RCConfig, run_id: str) -> No
                 "stage-10*/*.py",
             ):
                 for candidate in sorted(run_dir.glob(_glob_pat)):
+                    if _is_archived_stage_path(candidate):
+                        continue
                     try:
                         code[candidate.name] = candidate.read_text(encoding="utf-8")
                     except (OSError, UnicodeDecodeError):

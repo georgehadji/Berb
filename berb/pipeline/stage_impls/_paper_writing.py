@@ -35,6 +35,7 @@ from berb.pipeline._helpers import (
     _safe_json_loads,
     _utcnow_iso,
 )
+from berb.pipeline._io_helpers import _is_archived_stage_path, _stage_rank
 from berb.pipeline.contracts import StageContract
 from berb.pipeline.registry import register_stage
 from berb.pipeline.stages import Stage, StageStatus
@@ -156,6 +157,8 @@ def _collect_raw_experiment_metrics(run_dir: Path) -> tuple[str, bool]:
     has_parsed_metrics = False
 
     for stage_subdir in sorted(run_dir.glob("stage-*/runs")):
+        if _is_archived_stage_path(stage_subdir):
+            continue
         for run_file in sorted(stage_subdir.glob("*.json")):
             if run_file.name == "results.json":
                 continue
@@ -1518,7 +1521,9 @@ def _execute_paper_draft(
     _verified_registry = None  # Phase 1: anti-fabrication verified data registry
     # BUG-108: Load refinement_log so VerifiedRegistry has per-iteration metrics
     _refinement_log_for_vr: dict | None = None
-    _rl_candidates = sorted(run_dir.glob("stage-13*/refinement_log.json"), reverse=True)
+    _rl_candidates = sorted(
+        run_dir.glob("stage-13*/refinement_log.json"), key=_stage_rank, reverse=True
+    )
     _rl_path = _rl_candidates[0] if _rl_candidates else None
     if _rl_path and _rl_path.is_file():
         try:
@@ -1812,6 +1817,8 @@ def _execute_paper_draft(
     # R10: HARD BLOCK — refuse to write paper when all data is simulated
     all_simulated = True
     for stage_subdir in sorted(run_dir.glob("stage-*/runs")):
+        if _is_archived_stage_path(stage_subdir):
+            continue
         for run_file in sorted(stage_subdir.glob("*.json")):
             if run_file.name == "results.json":
                 continue
@@ -2027,7 +2034,7 @@ def _execute_paper_draft(
     # BUG-178: Iterate in reverse order so we read the LATEST stage-14
     # iteration's figure plan, matching Stage 22 which copies charts
     # from the newest iteration.
-    for _s14_dir in sorted(run_dir.glob("stage-14*"), reverse=True):
+    for _s14_dir in sorted(run_dir.glob("stage-14*"), key=_stage_rank, reverse=True):
         # Prefer the final plan (dict with figure_descriptions) if it exists
         for _fp_name in ("figure_plan_final.json", "figure_plan.json"):
             _fp_path = _s14_dir / _fp_name
@@ -2063,7 +2070,7 @@ def _execute_paper_draft(
         # Fallback: scan for chart files from the LATEST stage-14 iteration
         # BUG-178: Must use reverse order to match Stage 22 chart copy behavior
         _chart_files: list[str] = []
-        for _s14_dir in sorted(run_dir.glob("stage-14*"), reverse=True):
+        for _s14_dir in sorted(run_dir.glob("stage-14*"), key=_stage_rank, reverse=True):
             _charts_path = _s14_dir / "charts"
             if _charts_path.is_dir():
                 _found = sorted(_charts_path.glob("*.png"))

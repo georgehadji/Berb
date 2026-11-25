@@ -676,14 +676,15 @@ class TestPureFunctions:
         assert _should_pivot(result, 0) is True
         assert _should_pivot(result, 1) is True
 
-    def test_should_pivot_false_max_depth(self):
-        """Test _should_pivot returns False at max depth."""
+    def test_should_pivot_ignores_depth(self):
+        """The pivot cap lives in _handle_pivot, which forces PROCEED after the
+        quality check (PC-4); _should_pivot only reads the decision."""
         result = MagicMock()
         result.decision = "pivot"
 
         from berb.pipeline.stages import MAX_DECISION_PIVOTS
 
-        assert _should_pivot(result, MAX_DECISION_PIVOTS) is False
+        assert _should_pivot(result, MAX_DECISION_PIVOTS) is True
 
     def test_should_pivot_false_invalid_decision(self):
         """Test _should_pivot returns False for invalid decision."""

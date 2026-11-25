@@ -26,6 +26,7 @@ from berb.pipeline._helpers import (
     _safe_json_loads,
     _utcnow_iso,
 )
+from berb.pipeline._io_helpers import _stage_rank
 from berb.pipeline.contracts import StageContract
 from berb.pipeline.registry import register_stage
 from berb.pipeline.stages import Stage, StageStatus
@@ -275,7 +276,7 @@ def _execute_code_generation(
 
     # --- BA: Inject BenchmarkAgent plan from Stage 9 ---
     _bp_path = None
-    for _s9_dir in sorted(run_dir.glob("stage-09*"), reverse=True):
+    for _s9_dir in sorted(run_dir.glob("stage-09*"), key=_stage_rank, reverse=True):
         _candidate = _s9_dir / "benchmark_plan.json"
         if _candidate.exists():
             _bp_path = _candidate

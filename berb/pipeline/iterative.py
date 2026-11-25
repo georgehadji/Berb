@@ -143,11 +143,23 @@ def _version_rollback_stages(run_dir: Path, rollback_target: Stage, attempt: int
 
     for stage_num in range(rollback_num, decision_num + 1):
         stage_dir = run_dir / f"stage-{stage_num:02d}"
+        version_dir = run_dir / f"stage-{stage_num:02d}_v{attempt}"
         if stage_dir.exists():
-            version_dir = run_dir / f"stage-{stage_num:02d}_v{attempt}"
             if version_dir.exists():
                 _shutil.rmtree(version_dir)
             stage_dir.rename(version_dir)
+        # Repair attempts belong to the attempt being archived; left in place,
+        # stage-14_repair_vK outranks the re-run stage-14 for every reader.
+        for repair_dir in sorted(run_dir.glob(f"stage-{stage_num:02d}_repair_v*")):
+            version_dir.mkdir(exist_ok=True)
+            repair_dir.rename(version_dir / repair_dir.name.split("_", 1)[1])
+
+    # The archived stages are no longer done: without this, a stage failing
+    # right after the rollback leaves the checkpoint at RESEARCH_DECISION and
+    # --resume jumps to paper writing on the archived results (PC-5).
+    from berb.pipeline.checkpoint import forget_completed
+
+    forget_completed(run_dir, range(rollback_num, decision_num + 1))
 
 
 def _promote_best_stage14(run_dir: Path, config: RCConfig) -> None:

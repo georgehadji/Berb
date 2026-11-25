@@ -349,7 +349,8 @@ CONTRACTS: dict[Stage, StageContract] = {
         output_files=("analysis.md", "experiment_summary.json"),
         dod="Metrics analyzed with statistical tests and conclusions",
         error_code="E14_ANALYSIS_ERR",
-        depends_on=frozenset({Stage.EXPERIMENT_RUN}),
+        # PC-10: selection_bias.json is written by ITERATIVE_REFINE.
+        depends_on=frozenset({Stage.EXPERIMENT_RUN, Stage.ITERATIVE_REFINE}),
     ),
     Stage.RESEARCH_DECISION: StageContract(
         stage=Stage.RESEARCH_DECISION,

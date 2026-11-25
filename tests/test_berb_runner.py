@@ -665,6 +665,85 @@ async def test_proceed_decision_does_not_trigger_rollback(
     assert not (run_dir / "decision_history.json").exists()
 
 
+async def test_third_pivot_runs_the_quality_check_before_forced_proceed(
+    monkeypatch: pytest.MonkeyPatch,
+    run_dir: Path,
+    rc_config: RCConfig,
+    adapters: AdapterBundle,
+) -> None:
+    """PC-4: the pivot cap must be applied where the run actually is, not by depth."""
+
+    def mock_execute_stage(stage: Stage, **kwargs) -> StageResult:
+        _ = kwargs
+        if stage == Stage.RESEARCH_DECISION:
+            return _pivot_result(stage)
+        return _done(stage)
+
+    monkeypatch.setattr(rc_runner, "execute_stage", mock_execute_stage)
+    await rc_runner.execute_pipeline(
+        run_dir=run_dir, run_id="run-pc4", config=rc_config, adapters=adapters
+    )
+
+    assert (run_dir / "quality_warning.txt").exists()
+
+
+async def test_failed_stage_after_pivot_resumes_at_the_rolled_back_stage(
+    monkeypatch: pytest.MonkeyPatch,
+    run_dir: Path,
+    rc_config: RCConfig,
+    adapters: AdapterBundle,
+) -> None:
+    """PC-5: a rollback must rewind the checkpoint, or resume skips the pivot."""
+    from berb.pipeline.checkpoint import read_checkpoint
+
+    runs: dict[Stage, int] = {}
+
+    def mock_execute_stage(stage: Stage, **kwargs) -> StageResult:
+        _ = kwargs
+        runs[stage] = runs.get(stage, 0) + 1
+        if stage == Stage.RESEARCH_DECISION and runs[stage] == 1:
+            return _pivot_result(stage)
+        if stage == Stage.HYPOTHESIS_GEN and runs[stage] == 2:
+            return _failed(stage)
+        return _done(stage)
+
+    monkeypatch.setattr(rc_runner, "execute_stage", mock_execute_stage)
+    await rc_runner.execute_pipeline(
+        run_dir=run_dir, run_id="run-pc5", config=rc_config, adapters=adapters
+    )
+
+    assert read_checkpoint(run_dir) == Stage.HYPOTHESIS_GEN
+
+
+def _first_parallel_level() -> list[Stage]:
+    levels = rc_runner._build_dag_levels(tuple(STAGE_SEQUENCE))
+    return sorted(next(level for level in levels if len(level) > 1))
+
+
+@pytest.mark.parametrize("failing_index", [0, 1])
+async def test_failed_sibling_does_not_drop_completed_stages_in_its_level(
+    failing_index: int,
+    monkeypatch: pytest.MonkeyPatch,
+    run_dir: Path,
+    rc_config: RCConfig,
+    adapters: AdapterBundle,
+) -> None:
+    """PC-10: every stage that ran in a level is recorded, even if one failed."""
+    level = _first_parallel_level()
+    failing = level[failing_index % len(level)]
+
+    def mock_execute_stage(stage: Stage, **kwargs) -> StageResult:
+        _ = kwargs
+        return _failed(stage) if stage == failing else _done(stage)
+
+    monkeypatch.setattr(rc_runner, "execute_stage", mock_execute_stage)
+    results = await rc_runner.execute_pipeline(
+        run_dir=run_dir, run_id="run-pc10", config=rc_config, adapters=adapters
+    )
+
+    assert set(level) <= {r.stage for r in results}
+
+
 def test_read_pivot_count_returns_zero_for_no_history(run_dir: Path) -> None:
     assert rc_runner.read_pivot_count(run_dir) == 0
 

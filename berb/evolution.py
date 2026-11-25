@@ -263,7 +263,9 @@ def _extract_decision_rationale(run_dir: Path) -> str:
     - ``rationale`` or ``reason`` key (direct)
     - ``raw_text_excerpt`` containing ``## Justification`` section (LLM output)
     """
-    for stage_dir in sorted(run_dir.glob("stage-15*"), reverse=True):
+    from berb.pipeline._io_helpers import _stage_rank
+
+    for stage_dir in sorted(run_dir.glob("stage-15*"), key=_stage_rank, reverse=True):
         decision_file = stage_dir / "decision_structured.json"
         if decision_file.exists():
             try:
@@ -315,7 +317,11 @@ def _extract_runtime_lessons(run_dir: Path, timestamp: str, run_id: str) -> list
     lessons: list[LessonEntry] = []
 
     # Check sandbox run results for stderr warnings and NaN
+    from berb.pipeline._io_helpers import _is_archived_stage_path
+
     for runs_dir in run_dir.glob("stage-*/runs"):
+        if _is_archived_stage_path(runs_dir):
+            continue
         for run_file in runs_dir.glob("*.json"):
             if run_file.name == "results.json":
                 continue

@@ -20,6 +20,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from berb.pipeline._io_helpers import _is_archived_stage_path, _stage_rank
 from berb.pipeline.experiment_diagnosis import (
     DeficiencyType,
     ExperimentDiagnosis,
@@ -536,7 +537,9 @@ def run_repair_loop(
 
 def _load_experiment_summary(run_dir: Path) -> dict | None:
     """Load the most recent experiment_summary.json."""
-    for candidate in sorted(run_dir.glob("stage-14*/experiment_summary.json"), reverse=True):
+    for candidate in sorted(
+        run_dir.glob("stage-14*/experiment_summary.json"), key=_stage_rank, reverse=True
+    ):
         try:
             return json.loads(candidate.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
@@ -546,7 +549,9 @@ def _load_experiment_summary(run_dir: Path) -> dict | None:
 
 def _load_refinement_log(run_dir: Path) -> dict | None:
     """Load the most recent refinement_log.json."""
-    for candidate in sorted(run_dir.glob("stage-13*/refinement_log.json"), reverse=True):
+    for candidate in sorted(
+        run_dir.glob("stage-13*/refinement_log.json"), key=_stage_rank, reverse=True
+    ):
         try:
             return json.loads(candidate.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
@@ -562,7 +567,9 @@ def _load_experiment_code(run_dir: Path) -> dict[str, str]:
     code: dict[str, str] = {}
 
     # Try refined code first
-    for refine_dir in sorted(run_dir.glob("stage-13*/experiment_final"), reverse=True):
+    for refine_dir in sorted(
+        run_dir.glob("stage-13*/experiment_final"), key=_stage_rank, reverse=True
+    ):
         if refine_dir.is_dir():
             for py_file in sorted(refine_dir.glob("*.py")):
                 try:
@@ -581,7 +588,7 @@ def _load_experiment_code(run_dir: Path) -> dict[str, str]:
                 return code
 
     # Fall back to stage-10 experiment directory
-    for exp_dir in sorted(run_dir.glob("stage-10*/experiment"), reverse=True):
+    for exp_dir in sorted(run_dir.glob("stage-10*/experiment"), key=_stage_rank, reverse=True):
         if exp_dir.is_dir():
             for py_file in sorted(exp_dir.glob("*.py")):
                 try:
@@ -599,7 +606,7 @@ def _load_experiment_code(run_dir: Path) -> dict[str, str]:
                 return code
 
     # Last resort: any .py files in stage-10*
-    for stage_dir in sorted(run_dir.glob("stage-10*"), reverse=True):
+    for stage_dir in sorted(run_dir.glob("stage-10*"), key=_stage_rank, reverse=True):
         for py_file in sorted(stage_dir.glob("*.py")):
             try:
                 code[py_file.name] = py_file.read_text(encoding="utf-8")
@@ -613,7 +620,9 @@ def _load_experiment_code(run_dir: Path) -> dict[str, str]:
 
 def _load_experiment_plan(run_dir: Path) -> dict | None:
     """Load experiment plan from stage-09."""
-    for candidate in sorted(run_dir.glob("stage-09*/experiment_design.json"), reverse=True):
+    for candidate in sorted(
+        run_dir.glob("stage-09*/experiment_design.json"), key=_stage_rank, reverse=True
+    ):
         try:
             return json.loads(candidate.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
@@ -627,6 +636,8 @@ def _collect_experiment_output(run_dir: Path) -> tuple[str, str]:
     stderr_parts: list[str] = []
 
     for stage_dir in sorted(run_dir.glob("stage-14*")):
+        if _is_archived_stage_path(stage_dir):
+            continue
         runs_dir = stage_dir / "runs"
         if not runs_dir.is_dir():
             continue

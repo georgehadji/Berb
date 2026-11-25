@@ -358,7 +358,12 @@ def execute_stage(
     except Exception:  # noqa: BLE001
         logger.warning("MetaClaw PRM evaluation failed (non-blocking)")
 
-    if gate_required(stage, config.security.hitl_required_stages):
+    # PC-12: only a stage that finished can await approval. A crashed or FAILED
+    # gate stage must stay FAILED, or the runner reports it as "awaiting
+    # approval", the CLI counts 0 failures and stop_on_gate=False walks on.
+    if result.status == StageStatus.DONE and gate_required(
+        stage, config.security.hitl_required_stages
+    ):
         if auto_approve_gates:
             if bridge.use_memory:
                 adapters.memory.append("gates", f"{run_id}:{int(stage)}:auto-approved")

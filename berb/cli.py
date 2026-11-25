@@ -366,7 +366,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     adapters = AdapterBundle()
 
-    from berb.pipeline.checkpoint import read_checkpoint
+    from berb.pipeline.checkpoint import load_checkpoint
     from berb.pipeline.runner import execute_pipeline
     from berb.pipeline.stages import Stage
 
@@ -383,9 +383,20 @@ def cmd_run(args: argparse.Namespace) -> int:
             )
             return 1
     elif resume:
-        resumed = read_checkpoint(run_dir)
-        if resumed is not None:
-            from_stage = resumed
+        state = load_checkpoint(run_dir)
+        if state is not None and state.complete:
+            # PC-6: a finished run used to read as "no checkpoint" and restart
+            # at stage 1 in the same directory, overwriting the paper.
+            print(f"Run {run_id} is already complete; nothing to resume.")
+            print("  Use --from-stage to re-run part of it.")
+            return 0
+        if state is not None and state.unreadable:
+            print(
+                f"Warning: checkpoint in {run_dir} is unreadable; starting from stage 1.",
+                file=sys.stderr,
+            )
+        elif state is not None and state.next_stage is not None:
+            from_stage = state.next_stage
             print(f"Resuming from checkpoint: Stage {int(from_stage)}: {from_stage.name}")
 
     from berb import __version__
