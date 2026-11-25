@@ -336,24 +336,16 @@ class TestIntegrityConfig:
         cfg = IntegrityConfig()
         assert cfg.mode == "draft"
 
-    def test_has_auto_strict_domains(self) -> None:
-        cfg = IntegrityConfig()
-        assert "biomedical" in cfg.auto_strict_domains
-        assert "clinical" in cfg.auto_strict_domains
-        assert "legal" in cfg.auto_strict_domains
+    # auto_strict_domains and the fail_on_* flags were removed (RI-12): nothing
+    # read them. See tests/test_integrity_config_validation.py.
 
     def test_rc_config_has_integrity(self) -> None:
         assert "integrity" in RCConfig.__dataclass_fields__
 
     def test_config_custom_values(self) -> None:
-        cfg = IntegrityConfig(
-            mode="submission",
-            fail_on_unsupported_claims=True,
-            fail_on_unverified_statistics=True,
-        )
+        cfg = IntegrityConfig(mode="submission", retraction_ack=("k2024",))
         assert cfg.mode == "submission"
-        assert cfg.fail_on_unsupported_claims is True
-        assert cfg.fail_on_unverified_statistics is True
+        assert cfg.retraction_ack == ("k2024",)
 
     def test_strict_mode_config(self) -> None:
         cfg = IntegrityConfig(mode="strict")

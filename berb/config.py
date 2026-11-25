@@ -98,6 +98,17 @@ KB_SUBDIRS = (
 )
 PROJECT_MODES = {"docs-first", "semi-auto", "full-auto"}
 KB_BACKENDS = {"markdown", "obsidian"}
+# Must match the keys of berb/integrity/findings.py::_GATING_SEVERITIES_BY_MODE.
+INTEGRITY_MODES = {"draft", "submission", "strict"}
+# integrity.* keys that were once accepted but never read (RI-12). Setting
+# one changed nothing, so validation warns instead of silently ignoring it.
+REMOVED_INTEGRITY_KEYS = (
+    "fail_on_unsupported_claims",
+    "fail_on_unverified_statistics",
+    "fail_on_citation_fallback",
+    "require_source_snippets",
+    "auto_strict_domains",
+)
 # Every entry here must have a branch in experiment/factory.py::create_sandbox
 # (or, for "simulated", in the Stage 12 dispatch). A mode accepted here but not
 # implemented there passes validation, survives eleven stages of work, and then
@@ -362,37 +373,12 @@ class IntegrityConfig:
     """Verification strictness: ``draft`` (warn only), ``submission`` (fail
     on critical issues), or ``strict`` (fail closed)."""
 
-    fail_on_unsupported_claims: bool = False
-    """In submission/strict mode, fail if empirical/comparative claims lack
-    supporting evidence records."""
-
-    fail_on_unverified_statistics: bool = False
-    """Fail if p-values, confidence intervals, or significance claims are
-    not backed by registered statistical tests."""
-
-    fail_on_citation_fallback: bool = False
-    """Fail if citation verification falls back to metadata-only checks
-    instead of full-text support confirmation."""
-
-    require_source_snippets: bool = False
-    """Require literature source snippets to be stored for citation
-    support verification."""
-
     retraction_ack: tuple[str, ...] = ()
     """Cite keys the author has knowingly kept despite a retraction or
     expression-of-concern finding (e.g. discussing the retraction itself).
     Downgrades that finding's gate severity to INFO but keeps it recorded —
     an acknowledgement, not a silent suppression. See
     tasks/ars_integration_plan.md W2 / berb.literature.retraction."""
-
-    auto_strict_domains: tuple[str, ...] = (
-        "biomedical",
-        "clinical",
-        "legal",
-        "finance",
-        "policy",
-    )
-    """Domains that automatically default to strict mode."""
 
 
 @dataclass(frozen=True)
@@ -1114,20 +1100,9 @@ class RCConfig:
                 cross_model_max_usd_per_run=float(security.get("cross_model_max_usd_per_run", 0.0)),
             ),
             integrity=IntegrityConfig(
-                mode=str(integrity.get("mode", "draft")),
-                fail_on_unsupported_claims=bool(integrity.get("fail_on_unsupported_claims", False)),
-                fail_on_unverified_statistics=bool(
-                    integrity.get("fail_on_unverified_statistics", False)
-                ),
-                fail_on_citation_fallback=bool(integrity.get("fail_on_citation_fallback", False)),
-                require_source_snippets=bool(integrity.get("require_source_snippets", False)),
+                # Blank validates as the default, so it must load as it too.
+                mode=str(integrity.get("mode") or "").strip() or "draft",
                 retraction_ack=tuple(integrity.get("retraction_ack", ())),
-                auto_strict_domains=tuple(
-                    integrity.get(
-                        "auto_strict_domains",
-                        ("biomedical", "clinical", "legal", "finance", "policy"),
-                    )
-                ),
             ),
             experiment=_parse_experiment_config(experiment),
             export=ExportConfig(
@@ -1323,6 +1298,28 @@ def validate_config(
             for stage in hitl_required_stages:
                 if not isinstance(stage, int) or not 1 <= stage <= 23:
                     errors.append(f"Invalid security.hitl_required_stages entry: {stage}")
+
+    integrity_mode = _get_by_path(data, "integrity.mode")
+    if not _is_blank(integrity_mode) and (
+        not isinstance(integrity_mode, str) or integrity_mode not in INTEGRITY_MODES
+    ):
+        # RI-11: a typo used to switch every integrity gate off. gates() now
+        # fails closed as strict, so reject it here rather than run stricter
+        # than the user meant.
+        errors.append(
+            f"Invalid integrity.mode: {integrity_mode} "
+            f"(expected one of {', '.join(sorted(INTEGRITY_MODES))})"
+        )
+    integrity_section = data.get("integrity")
+    if integrity_section is not None and not isinstance(integrity_section, dict):
+        errors.append("Invalid integrity: expected a mapping (e.g. integrity: {mode: draft})")
+    elif isinstance(integrity_section, dict):
+        for key in REMOVED_INTEGRITY_KEYS:
+            if key in integrity_section:
+                warnings.append(
+                    f"CONFIGURATION WARNING: integrity.{key} is not implemented and has "
+                    "no effect; nothing reads it. Remove it."
+                )
 
     exp_mode = _get_by_path(data, "experiment.mode")
     if not _is_blank(exp_mode) and exp_mode not in EXPERIMENT_MODES:

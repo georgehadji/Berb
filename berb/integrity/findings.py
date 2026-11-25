@@ -15,6 +15,7 @@ detection outcome.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any
@@ -139,15 +140,16 @@ def gates(
 ) -> tuple[Finding, ...]:
     """Return the subset of ``findings`` that must fail the current stage.
 
-    ``cfg`` is accepted for forward compatibility with per-check
-    ``fail_on_*`` overrides in ``IntegrityConfig`` (e.g. a future
-    ``fail_on_retraction=False`` escape hatch) but is not yet consulted —
-    today gating is mode-only, exactly as specified in
-    ``tasks/ars_integration_plan.md`` W0.2.  Unknown modes gate nothing
-    rather than fail closed on a typo'd config value; callers that want
-    fail-closed-on-unknown behaviour should validate ``mode`` up front
-    (``berb.config`` already restricts it to the three known values).
+    ``cfg`` is accepted for forward compatibility with per-check overrides
+    but is not consulted: gating is mode-only, as specified in
+    ``tasks/ars_integration_plan.md`` W0.2.  ``berb.config.validate_config``
+    rejects an unknown ``integrity.mode``; one that still reaches here (an
+    ``IntegrityConfig`` built directly) fails closed as ``strict`` rather
+    than switching every gate off (RI-11).
     """
     del cfg  # reserved, see docstring
-    gating = _GATING_SEVERITIES_BY_MODE.get(mode, frozenset())
+    gating = _GATING_SEVERITIES_BY_MODE.get(mode)
+    if gating is None:
+        logging.getLogger(__name__).warning("Unknown integrity mode %r; gating as 'strict'", mode)
+        gating = _GATING_SEVERITIES_BY_MODE["strict"]
     return tuple(f for f in findings if f.severity in gating)
