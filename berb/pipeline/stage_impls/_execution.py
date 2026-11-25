@@ -396,6 +396,24 @@ def _execute_experiment_run(
     )
 
 
+def _prune_node_workdirs(result: Any) -> None:
+    """Remove every search node's workdir except the best node's.
+
+    With no best node the whole search failed: keep every dir for debugging.
+    Plot paths of removed nodes are cleared so journal.json does not point
+    into deleted directories.
+    """
+    import shutil
+
+    if result.best_node is None:
+        return
+    best_dir = result.best_node.sandbox_dir
+    for node in result.journal.nodes:
+        if node.sandbox_dir is not None and node.sandbox_dir != best_dir:
+            shutil.rmtree(node.sandbox_dir, ignore_errors=True)
+            node.plot_paths = ()
+
+
 def _execute_experiment_run_with_search(
     stage_dir: Path,
     run_dir: Path,
@@ -454,9 +472,17 @@ def _execute_experiment_run_with_search(
     cost_tracker = get_cost_tracker()
     policy = BestFirstDiversePolicy()
 
+    import itertools
+
+    _node_seq = itertools.count(1)
+
     def _sandbox_factory():
-        """Create a fresh sandbox for each candidate evaluation."""
-        return create_sandbox(config.experiment, runs_dir / "sandbox")
+        """Create a fresh sandbox, in its own workdir, for each candidate.
+
+        The figure gate scans the sandbox workdir for plots; a shared one
+        would judge each node on every earlier node's figures (EX-06).
+        """
+        return create_sandbox(config.experiment, runs_dir / "sandbox" / f"node-{next(_node_seq)}")
 
     def _candidate_generator(**kwargs: Any) -> list[dict[str, Any]]:
         """Generate candidate implementations from existing experiment code."""
@@ -509,6 +535,8 @@ def _execute_experiment_run_with_search(
             context={"phase": "baseline"},
         )
     )
+
+    _prune_node_workdirs(result)
 
     # Write outputs
     journal_path = stage_dir / "journal.json"

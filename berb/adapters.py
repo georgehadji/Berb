@@ -14,6 +14,8 @@ class FetchResponse:
     url: str
     status_code: int
     text: str
+    fetched: bool = True
+    """False for a stub that made no request; its status_code proves nothing."""
 
 
 @dataclass(frozen=True)
@@ -112,7 +114,7 @@ class RecordingWebFetchAdapter:
 
     def fetch(self, url: str) -> FetchResponse:
         self.calls.append(url)
-        return FetchResponse(url=url, status_code=200, text=f"stub fetch for {url}")
+        return FetchResponse(url=url, status_code=200, text=f"stub fetch for {url}", fetched=False)
 
 
 @dataclass
@@ -154,12 +156,13 @@ class MCPMessageAdapter:
 
 @dataclass
 class MCPWebFetchAdapter:
-    """WebFetchAdapter backed by an MCP tool call."""
+    """Placeholder for an MCP-backed WebFetchAdapter. No MCP call is made yet,
+    so it reports ``fetched=False`` rather than a fabricated success (BR-26)."""
 
     server_uri: str = "http://localhost:3000"
 
     def fetch(self, url: str) -> FetchResponse:
-        return FetchResponse(url=url, status_code=200, text=f"mcp fetch for {url}")
+        return FetchResponse(url=url, status_code=200, text=f"mcp fetch for {url}", fetched=False)
 
 
 @dataclass

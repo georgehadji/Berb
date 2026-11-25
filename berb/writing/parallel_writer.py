@@ -28,6 +28,9 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+# Tries per section before the whole parallel draft is abandoned (RI-16).
+MAX_SECTION_ATTEMPTS = 2
+
 
 class SectionDependency(StrEnum):
     """Section dependency type."""
@@ -171,6 +174,7 @@ class ParallelSectionWriter:
 
         # Track completed sections
         completed: set[str] = set()
+        attempts: dict[str, int] = {}
         paper = PaperSections()
 
         # Write sections in waves
@@ -183,8 +187,9 @@ class ParallelSectionWriter:
             ]
 
             if not ready:
-                logger.warning("No sections ready - possible deadlock")
-                break
+                # A partial paper must not pass as a draft; the caller falls back.
+                unwritten = [p.section_name for p in plans if p.section_name not in completed]
+                raise RuntimeError(f"No sections ready; unwritten: {unwritten}")
 
             # Write ready sections in parallel
             tasks = [
@@ -195,8 +200,17 @@ class ParallelSectionWriter:
 
             # Add completed sections
             for plan, result in zip(ready, results, strict=False):
-                if isinstance(result, Exception):
+                if isinstance(result, BaseException):
                     logger.error(f"Failed to write {plan.section_name}: {result}")
+                    attempts[plan.section_name] = attempts.get(plan.section_name, 0) + 1
+                    # A failed section was re-selected every wave, forever
+                    # (RI-16). Retry it a bounded number of times, then raise
+                    # so the caller falls back to the sequential writer.
+                    if attempts[plan.section_name] >= MAX_SECTION_ATTEMPTS:
+                        raise RuntimeError(
+                            f"Failed to write {plan.section_name} after "
+                            f"{MAX_SECTION_ATTEMPTS} attempts: {result}"
+                        ) from result
                 else:
                     paper.add_section(plan.section_name, result)
                     completed.add(plan.section_name)

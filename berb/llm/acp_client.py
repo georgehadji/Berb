@@ -43,6 +43,18 @@ class ACPConfig:
     timeout_sec: int = 1800  # per-prompt timeout
 
 
+def _close_session(acpx: str, cwd: str, agent: str, session_name: str) -> None:
+    """Best-effort ``acpx sessions close``; never raises."""
+    try:
+        subprocess.run(
+            [acpx, "--ttl", "0", "--cwd", cwd, agent, "sessions", "close", session_name],
+            capture_output=True,
+            timeout=15,
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def _find_acpx() -> str | None:
     """Find the acpx binary — check PATH, then OpenClaw's plugin directory."""
     found = shutil.which("acpx")
@@ -66,6 +78,8 @@ class ACPClient:
     # Track live instances for atexit cleanup (weak refs to avoid preventing GC)
     _live_instances: list[weakref.ref[ACPClient]] = []
     _atexit_registered: bool = False
+    # (acpx, cwd, agent, session_name) of every session opened and not yet closed.
+    _open_sessions: set[tuple[str, str, str, str]] = set()
 
     def __init__(self, acp_config: ACPConfig) -> None:
         self.config = acp_config
@@ -108,6 +122,7 @@ class ACPClient:
         cached_prefix: str | None = None,
         cache_ttl: str = "5m",
         strip_thinking: bool = False,
+        stage: Any | None = None,
     ) -> LLMResponse:
         """Send a prompt and return the agent's response.
 
@@ -117,8 +132,11 @@ class ACPClient:
         parameters. ``cached_prefix``/``cache_ttl`` request provider-side
         prompt caching, which doesn't apply to a CLI-driven agent — the
         text is still sent (folded into ``system``) so it isn't silently
-        dropped, just without a cache_control breakpoint.
+        dropped, just without a cache_control breakpoint. ``stage`` (per-stage
+        token limits in ``LLMClient``) is accepted and ignored for the same
+        reason; every stage passes it, so rejecting it failed them all (LL-22).
         """
+        del stage, model, max_tokens, temperature, json_mode
         if cached_prefix:
             system = f"{cached_prefix}\n\n{system}" if system else cached_prefix
         prompt_text = self._messages_to_prompt(messages, system=system)
@@ -159,32 +177,18 @@ class ACPClient:
         acpx = self._resolve_acpx()
         if not acpx:
             return
-        try:
-            subprocess.run(
-                [
-                    acpx,
-                    "--ttl",
-                    "0",
-                    "--cwd",
-                    self._abs_cwd(),
-                    self.config.agent,
-                    "sessions",
-                    "close",
-                    self.config.session_name,
-                ],
-                capture_output=True,
-                timeout=15,
-            )
-        except Exception:  # noqa: BLE001
-            pass
+        key = self._session_key(acpx)
+        _close_session(*key)
+        ACPClient._open_sessions.discard(key)
         self._session_ready = False
 
-    def __del__(self) -> None:
-        """Best-effort cleanup on garbage collection."""
-        try:
-            self.close()
-        except Exception:  # noqa: BLE001
-            pass
+    def _session_key(self, acpx: str) -> tuple[str, str, str, str]:
+        return (acpx, self._abs_cwd(), self.config.agent, self.config.session_name)
+
+    # No __del__: the acpx session is shared by name across clients. The
+    # executor builds each stage's client before dropping the previous one, so
+    # closing on garbage collection killed the session the new client was
+    # about to reuse (LL-22). _atexit_cleanup closes it once, at shutdown.
 
     @classmethod
     def _atexit_cleanup(cls) -> None:
@@ -197,6 +201,10 @@ class ACPClient:
                 except Exception:  # noqa: BLE001
                     pass
         cls._live_instances.clear()
+        # Sessions whose client was already garbage-collected.
+        for key in list(cls._open_sessions):
+            _close_session(*key)
+        cls._open_sessions.clear()
 
     # ------------------------------------------------------------------
     # Internals
@@ -264,6 +272,7 @@ class ACPClient:
             if result.returncode != 0:
                 raise RuntimeError(f"Failed to create ACP session: {result.stderr.strip()}")
         self._session_ready = True
+        ACPClient._open_sessions.add(self._session_key(acpx))
         logger.info("ACP session '%s' ready (%s)", self.config.session_name, self.config.agent)
 
     # Linux MAX_ARG_STRLEN is 128 KB; Windows CreateProcess limit is ~32 KB
