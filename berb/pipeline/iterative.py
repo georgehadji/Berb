@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import logging
+import threading
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -330,6 +331,7 @@ async def execute_iterative_pipeline(
     max_iterations: int = 3,
     quality_threshold: float = 7.0,
     convergence_rounds: int = 2,
+    stop_event: threading.Event | None = None,
 ) -> dict[str, object]:
     """Run the full pipeline with iterative quality improvement.
 
@@ -358,6 +360,7 @@ async def execute_iterative_pipeline(
         adapters=adapters,
         auto_approve_gates=auto_approve_gates,
         kb_root=kb_root,
+        stop_event=stop_event,
     )
     all_results.append(results)
     score = read_quality_score(run_dir)
@@ -365,6 +368,9 @@ async def execute_iterative_pipeline(
     logger.info("Iteration 1 score: %s", score)
 
     for iteration in range(2, max_iterations + 1):
+        if stop_event is not None and stop_event.is_set():
+            logger.info("Stop requested. Not starting iteration %d.", iteration)
+            break
         if score is not None and score >= quality_threshold:
             logger.info(
                 "Quality threshold %.1f met (score=%.1f). Stopping.",
@@ -404,6 +410,7 @@ async def execute_iterative_pipeline(
             from_stage=Stage.PAPER_OUTLINE,
             auto_approve_gates=auto_approve_gates,
             kb_root=kb_root,
+            stop_event=stop_event,
         )
         all_results.append(results)
         score = read_quality_score(run_dir)

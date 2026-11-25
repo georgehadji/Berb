@@ -250,16 +250,10 @@ def cmd_run(args: argparse.Namespace) -> int:
         config = _dc_gd.replace(config, research=new_research)
 
     # Derive gate behavior from project.mode (CLI --auto-approve overrides)
-    mode = config.project.mode.lower()
-    if auto_approve:
-        # Explicit CLI flag takes precedence over config mode
-        stop_on_gate = False
-    elif mode == "full-auto":
-        auto_approve = True
-        stop_on_gate = False
-    else:
-        # "semi-auto" and "docs-first" should block on gates
-        stop_on_gate = True
+    from berb.pipeline.runner import gate_policy
+
+    # --auto-approve is a store_true flag: False means "not given".
+    auto_approve, stop_on_gate = gate_policy(config.project.mode, auto_approve or None)
 
     if topic:
         import dataclasses
@@ -674,6 +668,10 @@ def cmd_wizard(args: argparse.Namespace) -> int:
     import yaml
 
     config = wizard.run_interactive()
+    if not config:
+        # SF-27: a blank topic returns {}; writing it would wipe --output.
+        print("Wizard cancelled; nothing written.", file=sys.stderr)
+        return 1
     if output:
         Path(output).write_text(yaml.dump(config, default_flow_style=False))
         print(f"Config written to {output}")
@@ -976,14 +974,16 @@ def cmd_literature(args: argparse.Namespace) -> int:
         print(f"Error loading config: {e}", file=sys.stderr)
         return 1
 
-    # Override topic
-    config.research.topic = args.topic
+    import dataclasses
+
+    # Override topic (the config is frozen: replace, don't assign — SF-13)
+    config = dataclasses.replace(
+        config, research=dataclasses.replace(config.research, topic=args.topic)
+    )
 
     # Resolve uploaded files
     uploaded = _resolve_upload_args(args)
     if uploaded:
-        import dataclasses
-
         new_research = dataclasses.replace(
             config.research,
             uploaded_file_paths=tuple(str(p) for p in uploaded),
@@ -1006,7 +1006,7 @@ def cmd_literature(args: argparse.Namespace) -> int:
     print(f"  Run ID:  {run_id}")
     print(f"  Topic:   {config.research.topic}")
     print(f"  Output:  {run_dir}")
-    print("  Stages:  1-8 (TOPIC_INIT -> KNOWLEDGE_EXTRACT)")
+    print("  Stages:  1-8 (TOPIC_INIT -> HYPOTHESIS_GEN)")
     print()
 
     # Execute pipeline
@@ -1019,6 +1019,7 @@ def cmd_literature(args: argparse.Namespace) -> int:
             config=config,
             adapters=adapters,
             from_stage=from_stage,
+            to_stage=Stage.HYPOTHESIS_GEN,
             auto_approve_gates=True,
             stop_on_gate=False,
             skip_noncritical=True,
@@ -1045,116 +1046,34 @@ def cmd_literature(args: argparse.Namespace) -> int:
     return 0 if failed == 0 else 1
 
 
-def cmd_write(args: argparse.Namespace) -> int:
-    """Write paper from existing results."""
-    from berb.modes.workflow import create_workflow_manager
-
-    config_path = Path(cast(str, args.config)) if args.config else None
-    if config_path and not config_path.exists():
-        print(f"Error: config file not found: {config_path}", file=sys.stderr)
-        return 1
-
-    # Create workflow manager for paper-from-results
-    workflow_manager = create_workflow_manager(
-        workflow="paper-from-results",
-        stages=[14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-        operation_mode="autonomous",
+def _not_implemented(command: str, instead: str = "") -> int:
+    """SF-13: these workflow commands used to print a plan and exit 0."""
+    hint = f" Use `{instead}` instead." if instead else ""
+    print(
+        f"Error: `berb {command}` is not implemented yet; nothing was run.{hint}",
+        file=sys.stderr,
     )
+    return 2
 
-    print(f"Starting paper-from-results workflow for: {args.topic}")
-    print(f"Workflow: {workflow_manager.current_workflow.value}")
-    print(f"Stages: {workflow_manager.get_enabled_stages()}")
 
-    if args.data:
-        print(f"Data files: {', '.join(args.data)}")
-    if args.figures:
-        print(f"Figures: {', '.join(args.figures)}")
-
-    # TODO: Integrate with actual pipeline execution
-    print("\nNote: Paper-from-results workflow is ready for integration.")
-    return 0
+def cmd_write(args: argparse.Namespace) -> int:
+    """Write paper from existing results (not built yet)."""
+    return _not_implemented("write", "berb run --from-stage RESULT_ANALYSIS")
 
 
 def cmd_experiment(args: argparse.Namespace) -> int:
-    """Run experiment-only workflow."""
-    from berb.modes.workflow import create_workflow_manager
-
-    config_path = Path(cast(str, args.config)) if args.config else None
-    if config_path and not config_path.exists():
-        print(f"Error: config file not found: {config_path}", file=sys.stderr)
-        return 1
-
-    # Create workflow manager for experiment-only
-    workflow_manager = create_workflow_manager(
-        workflow="experiment-only",
-        stages=[9, 10, 11, 12, 13, 14, 15],
-        operation_mode="autonomous",
-    )
-
-    print("Starting experiment-only workflow")
-    print(f"Hypothesis: {args.hypothesis}")
-    print(f"Workflow: {workflow_manager.current_workflow.value}")
-    print(f"Stages: {workflow_manager.get_enabled_stages()}")
-
-    if args.context:
-        print(f"Context file: {args.context}")
-
-    # TODO: Integrate with actual pipeline execution
-    print("\nNote: Experiment-only workflow is ready for integration.")
-    return 0
+    """Run experiment-only workflow (not built yet)."""
+    return _not_implemented("experiment", "berb run --from-stage EXPERIMENT_DESIGN")
 
 
 def cmd_review(args: argparse.Namespace) -> int:
-    """Review existing manuscript."""
-    from berb.modes.workflow import create_workflow_manager
-
-    config_path = Path(cast(str, args.config)) if args.config else None
-    if config_path and not config_path.exists():
-        print(f"Error: config file not found: {config_path}", file=sys.stderr)
-        return 1
-
-    # Create workflow manager for review-only
-    workflow_manager = create_workflow_manager(
-        workflow="review-only",
-        stages=[18],
-        operation_mode="autonomous",
-    )
-
-    print(f"Starting review workflow for: {args.manuscript}")
-    print(f"Workflow: {workflow_manager.current_workflow.value}")
-    print(f"Stages: {workflow_manager.get_enabled_stages()}")
-
-    if args.venue:
-        print(f"Target venue: {args.venue}")
-
-    # TODO: Integrate with actual pipeline execution
-    print("\nNote: Review-only workflow is ready for integration.")
-    return 0
+    """Review existing manuscript (not built yet)."""
+    return _not_implemented("review")
 
 
 def cmd_rebuttal(args: argparse.Namespace) -> int:
-    """Generate rebuttal letter."""
-    from berb.modes.workflow import create_workflow_manager
-
-    config_path = Path(cast(str, args.config)) if args.config else None
-    if config_path and not config_path.exists():
-        print(f"Error: config file not found: {config_path}", file=sys.stderr)
-        return 1
-
-    # Create workflow manager for rebuttal
-    workflow_manager = create_workflow_manager(
-        workflow="rebuttal",
-        operation_mode="autonomous",
-    )
-
-    print("Starting rebuttal workflow")
-    print(f"Manuscript: {args.manuscript}")
-    print(f"Reviews: {args.reviews}")
-    print(f"Workflow: {workflow_manager.current_workflow.value}")
-
-    # TODO: Integrate with actual pipeline execution
-    print("\nNote: Rebuttal workflow is ready for integration.")
-    return 0
+    """Generate rebuttal letter (not built yet)."""
+    return _not_implemented("rebuttal")
 
 
 def cmd_survey(args: argparse.Namespace) -> int:

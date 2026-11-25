@@ -39,19 +39,17 @@ class DashboardBroadcaster:
                 # New run discovered
                 await self._manager.broadcast(Event(type=EventType.RUN_DISCOVERED, data=d))
             else:
-                # Check for stage changes
-                if d["current_stage"] != prev.get("current_stage"):
-                    await self._manager.broadcast(
-                        Event(
-                            type=(
-                                EventType.STAGE_COMPLETE
-                                if d["current_stage"] > prev.get("current_stage", 0)
-                                else EventType.RUN_STATUS_CHANGED
-                            ),
-                            data=d,
-                        )
-                    )
-                elif d["status"] != prev.get("status"):
+                # A stage is complete when its own status turns "done";
+                # current_stage is the running stage, so it moves on start.
+                before = prev.get("stage_statuses", {})
+                if any(
+                    st == "done" and before.get(n) != "done"
+                    for n, st in d["stage_statuses"].items()
+                ):
+                    await self._manager.broadcast(Event(type=EventType.STAGE_COMPLETE, data=d))
+                # Independent of the above: a stage that fails and ends the run
+                # changes both in one poll.
+                if d["status"] != prev.get("status"):
                     await self._manager.broadcast(Event(type=EventType.RUN_STATUS_CHANGED, data=d))
                 # Check for metric updates
                 if d["metrics"] and d["metrics"] != prev.get("metrics"):

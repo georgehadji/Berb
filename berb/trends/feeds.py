@@ -4,9 +4,24 @@ from __future__ import annotations
 
 import logging
 from datetime import date
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from berb.literature.models import Paper
 
 logger = logging.getLogger(__name__)
+
+
+def _paper_fields(paper: Paper) -> dict[str, Any]:
+    """The fields every feed shares. The search clients return ``Paper``
+    dataclasses, not dicts; ``.get()`` on them raised, and the per-source
+    ``except`` turned every fetch into "No new papers found" (BR-31)."""
+    return {
+        "title": paper.title,
+        "authors": [a.name for a in paper.authors],
+        "abstract": paper.abstract,
+        "url": paper.url,
+    }
 
 
 class FeedManager:
@@ -79,13 +94,10 @@ class FeedManager:
             results = search_arxiv(query, limit=max_papers)
             return [
                 {
-                    "title": r.get("title", ""),
-                    "authors": r.get("authors", []),
-                    "abstract": r.get("abstract", ""),
-                    "url": r.get("url", ""),
+                    **_paper_fields(r),
                     "source": "arxiv",
-                    "published_date": r.get("published", since_date.isoformat()),
-                    "arxiv_id": r.get("arxiv_id", ""),
+                    "published_date": str(r.year) if r.year else since_date.isoformat(),
+                    "arxiv_id": r.arxiv_id,
                 }
                 for r in results
             ]
@@ -101,14 +113,14 @@ class FeedManager:
     ) -> list[dict[str, Any]]:
         """Fetch papers from Semantic Scholar API."""
         try:
-            from berb.literature.semantic_scholar import search_s2
+            from berb.literature.semantic_scholar import search_semantic_scholar
         except ImportError:
             logger.debug("semantic_scholar client not available")
             return []
 
         query = " ".join(domains) if domains else "machine learning"
         try:
-            results = search_s2(
+            results = search_semantic_scholar(
                 query,
                 limit=max_papers,
                 year_min=since_date.year,
@@ -116,13 +128,10 @@ class FeedManager:
             )
             return [
                 {
-                    "title": r.get("title", ""),
-                    "authors": [a.get("name", "") for a in r.get("authors", [])],
-                    "abstract": r.get("abstract", ""),
-                    "url": r.get("url", ""),
+                    **_paper_fields(r),
                     "source": "semantic_scholar",
-                    "published_date": str(r.get("year", since_date.year)),
-                    "citation_count": r.get("citationCount", 0),
+                    "published_date": str(r.year or since_date.year),
+                    "citation_count": r.citation_count,
                 }
                 for r in results
             ]
@@ -148,13 +157,10 @@ class FeedManager:
             results = search_openalex(query, limit=max_papers)
             return [
                 {
-                    "title": r.get("title", ""),
-                    "authors": r.get("authors", []),
-                    "abstract": r.get("abstract", ""),
-                    "url": r.get("url", ""),
+                    **_paper_fields(r),
                     "source": "openalex",
-                    "published_date": r.get("publication_date", ""),
-                    "citation_count": r.get("cited_by_count", 0),
+                    "published_date": str(r.year) if r.year else "",
+                    "citation_count": r.citation_count,
                 }
                 for r in results
             ]

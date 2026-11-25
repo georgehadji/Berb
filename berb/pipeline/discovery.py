@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+import threading
 import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -79,6 +80,7 @@ def make_stage_slice_executor(
     adapters: AdapterBundle,
     auto_approve_gates: bool = False,
     kb_root: Path | None = None,
+    stop_event: threading.Event | None = None,
 ) -> Any:
     """Build the executor that runs one research task through stages 7-15.
 
@@ -93,6 +95,8 @@ def make_stage_slice_executor(
         adapters: The adapter bundle the stages need.
         auto_approve_gates: Passed through to ``execute_pipeline``.
         kb_root: Passed through to ``execute_pipeline``.
+        stop_event: Passed through to ``execute_pipeline``, so a stop request
+            ends each remaining slice before its first stage.
 
     Returns:
         A coroutine matching
@@ -119,6 +123,7 @@ def make_stage_slice_executor(
             to_stage=DISCOVERY_LAST_STAGE,
             auto_approve_gates=auto_approve_gates,
             kb_root=kb_root,
+            stop_event=stop_event,
         )
         outcome = _outcome_from_slice(task, cycle, task_dir, results)
         _record_task(run_dir, task, cycle, task_dir, outcome)
@@ -332,6 +337,7 @@ async def run_discovery(
     adapters: AdapterBundle,
     auto_approve_gates: bool = False,
     kb_root: Path | None = None,
+    stop_event: threading.Event | None = None,
 ) -> DiscoveryResult:
     """Run the discovery loop for this run, if it is enabled.
 
@@ -361,6 +367,7 @@ async def run_discovery(
             adapters=adapters,
             auto_approve_gates=auto_approve_gates,
             kb_root=kb_root,
+            stop_event=stop_event,
         ),
     )
     result = await loop.run()

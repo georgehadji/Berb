@@ -342,3 +342,40 @@ nothing here is blocked on measurement, but the actual savings are
 unverified. Before trusting a number, run a real `berb run` (or just the
 review-ensemble/paper-draft stages) and inspect `response.cached_tokens`
 per call, or OpenRouter's dashboard, with and without each flag enabled.
+
+---
+
+# Wave 5: server and CLI honesty (2026-11-25)
+
+Plan: `tasks/implicit_state_machines_plan.md` (W2) and
+`tasks/state_machines_p2_results.md` item 5. Defaults taken: D1 (event log,
+checkpoint fallback) and D3 (keep old HTTP keys, add `run_status`).
+Tests: `tests/test_honest_status.py`.
+
+- [x] SF-1/W2: `berb/pipeline/run_status.py` (`RunStatus`, `read_run_status`)
+      read by the dashboard collector, MCP `get_status`, chat (via collector),
+      `/pipeline/status` (`run_status` key) and new `/runs/{id}/status`.
+- [x] SF-2: `/pipeline/start` follows `project.mode` via `runner.gate_policy`
+      and passes `stop_on_gate`; a gate-blocked run reads `blocked_approval`
+      with a CLI resume hint; `/stop` on a run that is not running is 409;
+      stop is cooperative (`stop_event`, checked per DAG level, threaded through
+      PIVOT, discovery and iterative re-runs).
+- [x] SF-25: `PipelineMonitor.tsx` polls `/runs/{id}/status`; mock data removed.
+- [x] SF-27: `berb wizard` with a blank topic exits 1 and writes nothing.
+- [x] SF-13: `berb literature` uses `dataclasses.replace` and stops after
+      stage 8; `write`/`experiment`/`review`/`rebuttal` exit 2 "not implemented".
+- [x] BR-31: `berb/trends/feeds.py` reads `Paper` objects and imports
+      `search_semantic_scholar`.
+
+## Review
+
+Code review fixes: an interrupted run reads `stopped` (heartbeat at stage
+start plus a pid liveness check that never signals on Windows); event-log
+save is an atomic replace and loads tolerate `OSError`; a stop after the last
+stage leaves the run `done`; the broadcaster emits `stage_complete` on a stage
+turning `done` and status changes independently; `stages_completed` skips
+`stage-NN_vK` archives; an out-of-range legacy checkpoint stage no longer raises.
+
+Not verified: the monitor page was not type-checked or opened in a browser
+(no `node_modules`). A reused pid reads as alive. The web still has no gate
+approval surface (D2); it points to `berb run --resume ... --auto-approve`.
